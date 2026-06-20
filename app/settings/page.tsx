@@ -1,17 +1,14 @@
 'use client';
 
-import { ProfilePanel } from '@/components/ProfilePanel';
-import { useAuth } from '@/lib/auth-context';
+import { SettingsPanel } from '@/components/SettingsPanel';
 import { useAppState } from '@/lib/storage';
 
-export default function ProfilePage() {
-  const { user } = useAuth();
+export default function SettingsPage() {
   const { state, updateState, cloudSyncing, lastSavedAt, cloudSaveError } = useAppState();
 
   return (
-    <ProfilePanel
+    <SettingsPanel
       state={state}
-      userEmail={user?.email ?? null}
       cloudSyncing={cloudSyncing}
       lastSavedAt={lastSavedAt}
       cloudSaveError={cloudSaveError}

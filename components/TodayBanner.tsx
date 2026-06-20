@@ -66,7 +66,7 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
               {isLow ? '低碳日' : '高碳日'}
             </span>
             <span className="rounded-full bg-white/25 px-4 py-1 text-2xl font-extrabold text-white">
-              {getCycleProgressLabel(day.cycleDayIndex)}
+              {getCycleProgressLabel(day.cycleDayIndex, day.cycleLength)}
             </span>
             <span className="text-2xl font-extrabold tracking-tight text-white drop-shadow-sm sm:text-3xl text-right ml-auto">{formatDisplayDate(day.date)}</span>
           </div>

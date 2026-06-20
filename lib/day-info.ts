@@ -1,25 +1,54 @@
 import type { AppState, DayInfo } from './types';
 import {
-  CYCLE_LENGTH,
   diffDays,
   formatDateISO,
   getCarbLabel,
-  getCycleDayIndex,
+  getCycleLength,
+  isOnOrAfterCycleStart,
   parseDateISO,
+  resolveLiveCycleTemplate,
   todayISO,
 } from './cycle';
+import { isRecordedEntry } from './training-log';
 
 export function buildDayInfo(date: string, state: AppState): DayInfo {
-  const cycleDayIndex = getCycleDayIndex(state.anchorDate, date, state.delayedDates);
-  const template = state.cycleDays[cycleDayIndex] ?? state.cycleDays[0];
+  const cycleLength = getCycleLength(state.cycleDays);
+  const weight = state.weightLog[date] ?? null;
+  const isCycleActive = isOnOrAfterCycleStart(date, state.cycleStartDate);
+  const trainingEntry = state.trainingLog[date];
+  const trainingIncomplete =
+    isCycleActive &&
+    isRecordedEntry(trainingEntry) &&
+    !trainingEntry.completed;
+
+  const snapshot = state.historicalDays[date];
+  if (snapshot) {
+    const intake =
+      snapshot.carbType === 'low' ? state.intakeLow : state.intakeHigh;
+    return {
+      date,
+      cycleDayIndex: snapshot.cycleDayIndex,
+      cycleLength,
+      carbType: snapshot.carbType,
+      workout: snapshot.workout,
+      label: snapshot.label,
+      intake,
+      weight,
+      isToday: date === todayISO(),
+      isDelayed: snapshot.isDelayed,
+      isCycleActive,
+      trainingIncomplete,
+    };
+  }
+
+  const { cycleDayIndex, template } = resolveLiveCycleTemplate(date, state);
   const intake =
     template.carbType === 'low' ? state.intakeLow : state.intakeHigh;
-
-  const weight = state.weightLog[date] ?? null;
 
   return {
     date,
     cycleDayIndex,
+    cycleLength,
     carbType: template.carbType,
     workout: template.workout,
     label: template.label,
@@ -27,6 +56,8 @@ export function buildDayInfo(date: string, state: AppState): DayInfo {
     weight,
     isToday: date === todayISO(),
     isDelayed: state.delayedDates.includes(date),
+    isCycleActive,
+    trainingIncomplete,
   };
 }
 
@@ -72,8 +103,8 @@ export function getWeekdayLabels(): string[] {
   return ['日', '一', '二', '三', '四', '五', '六'];
 }
 
-export function getCycleProgressLabel(dayIndex: number): string {
-  return `Day ${dayIndex + 1} of ${CYCLE_LENGTH}`;
+export function getCycleProgressLabel(dayIndex: number, cycleLength: number): string {
+  return `Day ${dayIndex + 1} of ${cycleLength}`;
 }
 
 export function getCarbShort(type: 'low' | 'high'): string {

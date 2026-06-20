@@ -11,17 +11,47 @@ interface DayCellProps {
 export function DayCell({ day, dayNumber }: DayCellProps) {
   const isLow = day.carbType === 'low';
 
+  const todayRing = day.isToday
+    ? 'ring-2 ring-ink ring-offset-2 ring-offset-surface shadow-card scale-[1.02]'
+    : 'hover:shadow-soft hover:scale-[1.01]';
+
+  if (!day.isCycleActive) {
+    return (
+      <Link
+        href={`/day/${day.date}`}
+        className={`
+          group relative flex min-h-[72px] flex-col rounded-2xl border border-ink/5
+          bg-surface p-2 transition-all duration-200 sm:min-h-[88px] sm:p-3
+          ${todayRing}
+        `}
+      >
+        <span
+          className={`
+            flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold
+            sm:h-8 sm:w-8
+            ${day.isToday ? 'bg-ink text-white' : 'bg-surface-muted text-ink-faint'}
+          `}
+        >
+          {dayNumber}
+        </span>
+      </Link>
+    );
+  }
+
+  const bgClass = day.trainingIncomplete
+    ? 'bg-pink-200 border border-pink-200'
+    : isLow
+      ? 'bg-low-light'
+      : 'bg-high-light';
+
   return (
     <Link
       href={`/day/${day.date}`}
       className={`
         group relative flex min-h-[72px] flex-col rounded-2xl p-2 transition-all duration-200
         sm:min-h-[88px] sm:p-3
-        ${day.isToday
-          ? 'ring-2 ring-ink ring-offset-2 ring-offset-surface shadow-card scale-[1.02]'
-          : 'hover:shadow-soft hover:scale-[1.01]'
-        }
-        ${isLow ? 'bg-low-light' : 'bg-high-light'}
+        ${todayRing}
+        ${bgClass}
       `}
     >
       <div className="flex items-start justify-between">

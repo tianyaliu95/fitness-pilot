@@ -1,8 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import type { CycleDayTemplate } from '@/lib/types';
-import { getCarbLabel } from '@/lib/cycle';
+import { getCarbLabel, todayISO } from '@/lib/cycle';
 
 interface CycleControlsProps {
   cycleDays: CycleDayTemplate[];
@@ -63,6 +64,20 @@ export function CycleControls({
           <span>↺</span>
           重置循环
         </button>
+
+        <Link
+          href="/profile"
+          className="flex items-center gap-2 rounded-2xl border border-ink/10 px-4 py-2.5 text-sm font-medium text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98]"
+        >
+          体重记录
+        </Link>
+
+        <Link
+          href={`/day/${todayISO()}`}
+          className="flex items-center gap-2 rounded-2xl border border-ink/10 px-4 py-2.5 text-sm font-medium text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98]"
+        >
+          训练记录
+        </Link>
       </div>
 
       {resetOpen && pendingDay === null && (

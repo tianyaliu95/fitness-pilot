@@ -6,6 +6,7 @@ interface SaveBarProps {
   lastSavedAt: Date | null;
   saveError: string | null;
   onSave: () => void;
+  embedded?: boolean;
 }
 
 export function SaveBar({
@@ -14,9 +15,16 @@ export function SaveBar({
   lastSavedAt,
   saveError,
   onSave,
+  embedded = false,
 }: SaveBarProps) {
   return (
-    <div className="space-y-3 rounded-3xl border border-ink/5 bg-surface-card p-4 shadow-soft sm:p-5">
+    <div
+      className={
+        embedded
+          ? 'space-y-2 border-t border-ink/5 pt-3'
+          : 'space-y-3 rounded-3xl border border-ink/5 bg-surface-card p-4 shadow-soft sm:p-5'
+      }
+    >
       {dirty && (
         <p className="text-xs font-medium text-amber-700">有未保存的修改</p>
       )}
@@ -25,9 +33,9 @@ export function SaveBar({
         type="button"
         onClick={onSave}
         disabled={!dirty || saving}
-        className="w-full rounded-2xl bg-ink px-4 py-3 text-sm font-semibold text-white transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-2xl bg-ink px-4 py-3 text-sm font-extrabold text-white transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {saving ? '保存中...' : '保存修改'}
+        {'保存修改'}
       </button>
 
       {saveError && (
@@ -37,12 +45,14 @@ export function SaveBar({
       )}
 
       {!dirty && !saveError && lastSavedAt && (
-        <p className="rounded-xl bg-green-50 px-3 py-2 text-xs text-green-800">
+        <p className="rounded-xl bg-green-50 px-3 py-2 text-xs text-green-800 text-center font-bold">
           已保存 ·{' '}
-          {lastSavedAt.toLocaleTimeString('zh-CN', {
+          {lastSavedAt.toLocaleString('zh-CN', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit',
           })}
         </p>
       )}

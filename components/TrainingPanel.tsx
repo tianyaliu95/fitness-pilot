@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { AppState, CycleDayTemplate } from '@/lib/types';
-import { getCarbLabel } from '@/lib/cycle';
+import { getCarbLabel, getCycleSummary } from '@/lib/cycle';
 import { SaveBar } from './SaveBar';
 
 interface TrainingPanelProps {
@@ -60,7 +60,7 @@ export function TrainingPanel({
       <header>
         <h2 className="text-xl font-bold text-ink sm:text-2xl">训练安排</h2>
         <p className="mt-1 text-sm text-ink-muted">
-          4 天循环：3 低碳 + 1 高碳，修改后点击保存
+          {getCycleSummary(state.cycleDays)}，修改后点击保存
         </p>
       </header>
 
