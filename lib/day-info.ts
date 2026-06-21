@@ -20,6 +20,10 @@ export function buildDayInfo(date: string, state: AppState): DayInfo {
     isCycleActive &&
     isRecordedEntry(trainingEntry) &&
     !trainingEntry.completed;
+  const trainingComplete =
+    isCycleActive &&
+    isRecordedEntry(trainingEntry) &&
+    trainingEntry.completed;
 
   const snapshot = state.historicalDays[date];
   if (snapshot) {
@@ -38,6 +42,7 @@ export function buildDayInfo(date: string, state: AppState): DayInfo {
       isDelayed: snapshot.isDelayed,
       isCycleActive,
       trainingIncomplete,
+      trainingComplete,
     };
   }
 
@@ -58,6 +63,7 @@ export function buildDayInfo(date: string, state: AppState): DayInfo {
     isDelayed: state.delayedDates.includes(date),
     isCycleActive,
     trainingIncomplete,
+    trainingComplete,
   };
 }
 

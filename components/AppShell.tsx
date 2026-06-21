@@ -12,7 +12,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen md:grid md:grid-cols-[15rem_minmax(0,1fr)]">
       <Sidebar cloudSyncing={cloudSyncing} />
       <main className="min-w-0 px-4 py-6 pb-24 safe-bottom sm:px-6 sm:py-10 md:pb-10">
-        <div className="mx-auto w-full max-w-3xl">{children}</div>
+        <div className="mx-auto w-full max-w-4xl">{children}</div>
       </main>
     </div>
   );

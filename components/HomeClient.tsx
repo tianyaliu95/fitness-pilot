@@ -24,7 +24,7 @@ export function HomeClient() {
   }, [today.weight, state.weightLog]);
 
   return (
-    <div className="space-y-5 sm:space-y-6">
+    <div className="space-y-5 pb-16 sm:space-y-6 sm:pb-20">
       <header className="md:hidden">
         <h1 className="text-3xl font-bold tracking-tight text-ink">Fitness Pilot</h1>
         <p className="mt-1 text-sm text-ink-muted">碳循环训练助手 · {cycleSummary}</p>

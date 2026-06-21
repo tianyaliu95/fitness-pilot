@@ -51,7 +51,7 @@ export function Calendar({ state }: CalendarProps) {
   }
 
   return (
-    <div className="rounded-3xl bg-surface-card p-4 shadow-soft sm:p-6">
+    <div className="rounded-3xl bg-surface-card px-4 pt-4 pb-8 shadow-soft sm:px-6 sm:pt-6 sm:pb-10">
       <div className="mb-4 flex items-center justify-between sm:mb-6">
         <button
           type="button"

@@ -12,17 +12,16 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
   const isLow = day.carbType === 'low';
 
   const todayRing = day.isToday
-    ? 'ring-2 ring-ink ring-offset-2 ring-offset-surface shadow-card scale-[1.02]'
-    : 'hover:shadow-soft hover:scale-[1.01]';
+    ? 'ring-2 ring-ink ring-offset-0 ring-offset-surface shadow-card scale-[1.02]'
+    : 'hover:shadow-soft hover:scale-[1.05]';
 
   if (!day.isCycleActive) {
     return (
-      <Link
-        href={`/day/${day.date}`}
+      <div
+        aria-disabled="true"
         className={`
-          group relative flex min-h-[72px] flex-col rounded-2xl border border-ink/5
-          bg-surface p-2 transition-all duration-200 sm:min-h-[88px] sm:p-3
-          ${todayRing}
+          relative flex min-h-[72px] cursor-default flex-col rounded-2xl border border-ink/5
+          bg-surface p-2 sm:min-h-[88px] sm:p-3
         `}
       >
         <span
@@ -34,7 +33,7 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
         >
           {dayNumber}
         </span>
-      </Link>
+      </div>
     );
   }
 
@@ -64,11 +63,18 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
         >
           {dayNumber}
         </span>
-        {day.isDelayed && (
+        {day.isDelayed ? (
           <span className="rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-medium text-ink-muted">
             暂停
           </span>
-        )}
+        ) : day.trainingComplete ? (
+          <span
+            className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white shadow-sm"
+            aria-label="训练已完成"
+          >
+            <CheckIcon />
+          </span>
+        ) : null}
       </div>
 
       <div className="mt-auto">
@@ -85,5 +91,13 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
         </p>
       </div>
     </Link>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
   );
 }

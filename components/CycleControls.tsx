@@ -37,7 +37,7 @@ export function CycleControls({
           <button
             type="button"
             onClick={onUndoDelay}
-            className="flex items-center gap-2 rounded-2xl bg-surface-muted px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-ink/5 active:scale-[0.98]"
+            className="flex items-center gap-2 rounded-2xl bg-surface-muted px-4 py-2.5 text-sm font-bold text-ink transition hover:bg-ink/5 active:scale-[0.98]"
           >
             <span>↩</span>
             取消今日暂停
@@ -46,7 +46,7 @@ export function CycleControls({
           <button
             type="button"
             onClick={onDelay}
-            className="flex items-center gap-2 rounded-2xl bg-surface-muted px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-ink/5 active:scale-[0.98]"
+            className="flex items-center gap-2 rounded-2xl bg-surface-muted px-4 py-2.5 text-sm font-bold text-ink transition hover:bg-ink/5 active:scale-[0.98]"
           >
             <span>⏸</span>
             暂停一天
@@ -59,7 +59,7 @@ export function CycleControls({
             setResetOpen(!resetOpen);
             setPendingDay(null);
           }}
-          className="flex items-center gap-2 rounded-2xl border border-ink/10 px-4 py-2.5 text-sm font-medium text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98]"
+          className="flex items-center gap-2 rounded-2xl border border-ink/10 px-4 py-2.5 text-sm font-bold text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98]"
         >
           <span>↺</span>
           重置循环
@@ -67,14 +67,14 @@ export function CycleControls({
 
         <Link
           href="/profile"
-          className="flex items-center gap-2 rounded-2xl border border-ink/10 px-4 py-2.5 text-sm font-medium text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98]"
+          className="flex items-center gap-2 rounded-2xl border border-ink/10 px-4 py-2.5 text-sm font-bold text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98]"
         >
           体重记录
         </Link>
 
         <Link
           href={`/day/${todayISO()}`}
-          className="flex items-center gap-2 rounded-2xl border border-ink/10 px-4 py-2.5 text-sm font-medium text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98]"
+          className="flex items-center gap-2 rounded-2xl border border-ink/10 px-4 py-2.5 text-sm font-bold text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98]"
         >
           训练记录
         </Link>

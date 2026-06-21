@@ -60,8 +60,15 @@ export function DayDetail({
     });
   }
 
+  function handleReset() {
+    setSelectedCompleted(null);
+    onSave(null);
+  }
+
+  const canReset = selectedCompleted !== null && !day.isDelayed;
+
   return (
-    <div className="mx-auto max-w-lg">
+    <div className="mx-auto max-w-3xl">
       <Link
         href="/"
         className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-ink-muted transition hover:text-ink"
@@ -141,6 +148,19 @@ export function DayDetail({
               }`}
             >
               否
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              disabled={!canReset}
+              title="清除是/否选择"
+              className={`rounded-xl px-3 py-1.5 text-sm font-medium transition ${
+                canReset
+                  ? 'cursor-pointer border border-ink/10 bg-surface-card text-ink-muted hover:border-ink/20 hover:text-ink'
+                  : 'cursor-not-allowed border border-ink/5 bg-surface-card/50 text-ink-faint'
+              }`}
+            >
+              重置
             </button>
           </div>
         </div>

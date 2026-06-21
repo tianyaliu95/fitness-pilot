@@ -79,4 +79,6 @@ export interface DayInfo {
   isCycleActive: boolean;
   /** Recorded training marked 否 */
   trainingIncomplete: boolean;
+  /** Recorded training marked 是 */
+  trainingComplete: boolean;
 }

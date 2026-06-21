@@ -138,8 +138,11 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
           <button
             type="button"
             onClick={() => logOut()}
-            className="mt-auto rounded-2xl px-4 py-2.5 text-left text-sm text-ink-muted transition hover:bg-white/60 hover:text-ink"
+            className="mt-auto flex items-center gap-3 rounded-2xl px-4 py-3 text-lg font-medium text-ink-muted transition hover:bg-white/60 hover:text-ink"
           >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
             退出登录
           </button>
         )}
