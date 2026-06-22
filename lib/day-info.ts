@@ -9,7 +9,7 @@ import {
   resolveLiveCycleTemplate,
   todayISO,
 } from './cycle';
-import { isRecordedEntry } from './training-log';
+import { isCompletedNo, isCompletedYes, isRecordedEntry } from './training-log';
 
 export function buildDayInfo(date: string, state: AppState): DayInfo {
   const cycleLength = getCycleLength(state.cycleDays);
@@ -19,11 +19,11 @@ export function buildDayInfo(date: string, state: AppState): DayInfo {
   const trainingIncomplete =
     isCycleActive &&
     isRecordedEntry(trainingEntry) &&
-    !trainingEntry.completed;
+    isCompletedNo(trainingEntry);
   const trainingComplete =
     isCycleActive &&
     isRecordedEntry(trainingEntry) &&
-    trainingEntry.completed;
+    isCompletedYes(trainingEntry);
 
   const snapshot = state.historicalDays[date];
   if (snapshot) {

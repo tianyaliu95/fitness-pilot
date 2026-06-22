@@ -11,6 +11,9 @@ interface TrainingPanelProps {
   lastSavedAt: Date | null;
   cloudSaveError: string | null;
   onUpdate: (updater: (prev: AppState) => AppState) => void;
+  embedded?: boolean;
+  tabbed?: boolean;
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 function cycleDaysEqual(a: CycleDayTemplate[], b: CycleDayTemplate[]): boolean {
@@ -32,6 +35,9 @@ export function TrainingPanel({
   lastSavedAt,
   cloudSaveError,
   onUpdate,
+  embedded = false,
+  tabbed = false,
+  onDirtyChange,
 }: TrainingPanelProps) {
   const [draftDays, setDraftDays] = useState(state.cycleDays);
   const dirty = !cycleDaysEqual(draftDays, state.cycleDays);
@@ -41,6 +47,10 @@ export function TrainingPanel({
       setDraftDays(state.cycleDays.map((d) => ({ ...d })));
     }
   }, [state.cycleDays, dirty]);
+
+  useEffect(() => {
+    onDirtyChange?.(dirty);
+  }, [dirty, onDirtyChange]);
 
   function updateWorkout(dayIndex: number, workout: string) {
     setDraftDays((prev) =>
@@ -55,14 +65,33 @@ export function TrainingPanel({
     }));
   }
 
+  const showHeader = !embedded && !tabbed;
+
   return (
-    <div className="space-y-5">
-      <header>
-        <h2 className="text-xl font-bold text-ink sm:text-2xl">训练安排</h2>
-        <p className="mt-1 text-sm text-ink-muted">
+    <div className={embedded || tabbed ? 'space-y-4' : 'space-y-5'}>
+      {showHeader && (
+        <header>
+          <h2 className="text-xl font-bold text-ink sm:text-2xl">训练安排</h2>
+          <p className="mt-1 text-sm text-ink-muted">
+            {getCycleSummary(state.cycleDays)}，修改后点击保存
+          </p>
+        </header>
+      )}
+
+      {tabbed && (
+        <p className="text-sm text-ink-muted">
           {getCycleSummary(state.cycleDays)}，修改后点击保存
         </p>
-      </header>
+      )}
+
+      {embedded && !tabbed && (
+        <header>
+          <h3 className="text-base font-bold text-ink">训练安排</h3>
+          <p className="mt-1 text-sm text-ink-muted">
+            {getCycleSummary(state.cycleDays)}，修改后点击保存
+          </p>
+        </header>
+      )}
 
       <div className="space-y-3">
         {draftDays.map((day) => (

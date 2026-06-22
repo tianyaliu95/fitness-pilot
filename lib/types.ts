@@ -33,9 +33,11 @@ export type HistoricalDays = Record<string, HistoricalDaySnapshot>;
 /** date (YYYY-MM-DD) → weight in kg */
 export type WeightLog = Record<string, string>;
 
+/** yes = 按计划完成, no = 未完成, unknown = 未选择或已重置 */
+export type TrainingStatus = 'yes' | 'no' | 'unknown';
+
 export interface TrainingLogEntry {
-  /** true = 按计划完成, false = 未完成 */
-  completed: boolean;
+  completed: TrainingStatus;
   notes: string;
 }
 

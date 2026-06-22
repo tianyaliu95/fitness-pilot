@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import type { AppState } from '@/lib/types';
 import { formatDisplayDate } from '@/lib/day-info';
-import { getRecordedTrainings, getTrainingStats } from '@/lib/training-log';
+import { getRecordedTrainings, getTrainingStats, isCompletedYes } from '@/lib/training-log';
 
 interface WorkoutLogPanelProps {
   state: AppState;
@@ -23,7 +23,7 @@ function StatCard({
 }) {
   return (
     <div className="rounded-2xl bg-surface px-4 py-3.5">
-      <p className="text-[11px] font-medium text-ink-muted">{label}</p>
+      <p className="text-sm font-medium text-ink-muted">{label}</p>
       <p className={`mt-1 text-2xl font-extrabold tracking-tight ${accent ?? 'text-ink'}`}>
         {value}
       </p>
@@ -59,7 +59,7 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
                 accent="text-emerald-600"
               />
               <StatCard
-                label="近 7 次"
+                label="近 7 天"
                 value={
                   stats.recent7Rate !== null ? `${stats.recent7Rate}%` : '—'
                 }
@@ -100,13 +100,13 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
                         </p>
                       </div>
                       <span
-                        className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
-                          entry.completed
+                        className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold sm:px-6 sm:py-2 sm:text-sm ${
+                          isCompletedYes(entry)
                             ? 'bg-emerald-50 text-emerald-700'
-                            : 'bg-surface-muted text-ink-muted'
+                            : 'bg-pink-50 text-pink-700'
                         }`}
                       >
-                        {entry.completed ? '已完成' : '未完成'}
+                        {isCompletedYes(entry) ? '已完成' : '未完成'}
                       </span>
                     </div>
                     {entry.notes.trim() && (

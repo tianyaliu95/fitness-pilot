@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import type { DayInfo, TrainingLogEntry } from '@/lib/types';
+import type { DayInfo, TrainingLogEntry, TrainingStatus } from '@/lib/types';
+import { hasCompletionChoice } from '@/lib/training-log';
 import { formatDisplayDate } from '@/lib/day-info';
 import { SaveBar } from './SaveBar';
 
@@ -12,8 +13,14 @@ interface DayDetailProps {
   cloudSyncing: boolean;
   lastSavedAt: Date | null;
   cloudSaveError: string | null;
-  onSave: (entry: TrainingLogEntry | null) => void;
+  onSave: (entry: TrainingLogEntry) => void;
   onToggleDelay: (delayed: boolean) => void;
+}
+
+function statusToUi(completed: TrainingStatus | undefined): boolean | null {
+  if (completed === 'yes') return true;
+  if (completed === 'no') return false;
+  return null;
 }
 
 export function DayDetail({
@@ -28,7 +35,7 @@ export function DayDetail({
   const isLow = day.carbType === 'low';
   const [draftNotes, setDraftNotes] = useState(savedTraining?.notes ?? '');
   const [selectedCompleted, setSelectedCompleted] = useState<boolean | null>(
-    savedTraining?.completed ?? null
+    statusToUi(savedTraining?.completed)
   );
 
   const savedNotes = savedTraining?.notes ?? '';
@@ -41,13 +48,13 @@ export function DayDetail({
   }, [savedNotes, notesDirty]);
 
   useEffect(() => {
-    setSelectedCompleted(savedTraining?.completed ?? null);
+    setSelectedCompleted(statusToUi(savedTraining?.completed));
   }, [savedTraining]);
 
   function handleChoice(completed: boolean) {
     setSelectedCompleted(completed);
     onSave({
-      completed,
+      completed: completed ? 'yes' : 'no',
       notes: draftNotes.trim(),
     });
   }
@@ -55,17 +62,20 @@ export function DayDetail({
   function handleSaveNotes() {
     if (selectedCompleted === null) return;
     onSave({
-      completed: selectedCompleted,
+      completed: selectedCompleted ? 'yes' : 'no',
       notes: draftNotes.trim(),
     });
   }
 
   function handleReset() {
     setSelectedCompleted(null);
-    onSave(null);
+    onSave({
+      completed: 'unknown',
+      notes: draftNotes.trim(),
+    });
   }
 
-  const canReset = selectedCompleted !== null && !day.isDelayed;
+  const canReset = hasCompletionChoice(savedTraining ?? undefined) && !day.isDelayed;
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -124,7 +134,7 @@ export function DayDetail({
           </div>
         </label>
 
-        <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-surface px-4 py-3.5">
+        <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-surface px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
           <span className="text-sm font-medium text-ink">今天训练是否按计划完成？</span>
           <div className="flex shrink-0 gap-2">
             <button

@@ -16,4 +16,8 @@
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0);
   }
+
+  .pb-mobile-nav {
+    padding-bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  }
 }

@@ -4,36 +4,46 @@ import { useParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { DayDetail } from '@/components/DayDetail';
 import { buildDayInfo } from '@/lib/day-info';
-import type { TrainingLogEntry } from '@/lib/types';
-import { isRecordedEntry } from '@/lib/training-log';
+import type { AppState, TrainingLogEntry } from '@/lib/types';
 import { setDateDelayed } from '@/lib/delay';
 import { useAppState } from '@/lib/storage';
 
 export default function DayPage() {
   const params = useParams();
   const date = params.date as string;
-  const { state, updateState, cloudSyncing, lastSavedAt, cloudSaveError } = useAppState();
+  const { state, updateState, persistStateNow, cloudSyncing, lastSavedAt, cloudSaveError } =
+    useAppState();
   const day = buildDayInfo(date, state);
 
-  const savedTraining = useMemo(() => {
-    const entry = state.trainingLog[date];
-    return isRecordedEntry(entry) ? entry : null;
-  }, [state.trainingLog, date]);
+  const savedTraining = useMemo(
+    () => state.trainingLog[date] ?? null,
+    [state.trainingLog, date]
+  );
 
-  function handleSave(entry: TrainingLogEntry | null) {
+  function applyTrainingLogUpdate(prev: AppState, entry: TrainingLogEntry): AppState {
+    return {
+      ...prev,
+      trainingLog: {
+        ...prev.trainingLog,
+        [date]: entry,
+      },
+    };
+  }
+
+  function handleSave(entry: TrainingLogEntry) {
     updateState((prev) => {
-      const nextLog = { ...prev.trainingLog };
-      if (entry === null) {
-        delete nextLog[date];
-      } else {
-        nextLog[date] = entry;
-      }
-      return { ...prev, trainingLog: nextLog };
+      const next = applyTrainingLogUpdate(prev, entry);
+      void persistStateNow(next);
+      return next;
     });
   }
 
   function handleToggleDelay(delayed: boolean) {
-    updateState((prev) => setDateDelayed(prev, date, delayed));
+    updateState((prev) => {
+      const next = setDateDelayed(prev, date, delayed);
+      void persistStateNow(next);
+      return next;
+    });
   }
 
   return (

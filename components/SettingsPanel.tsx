@@ -18,6 +18,9 @@ interface SettingsPanelProps {
   lastSavedAt: Date | null;
   cloudSaveError: string | null;
   onUpdate: (updater: (prev: AppState) => AppState) => void;
+  embedded?: boolean;
+  tabbed?: boolean;
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 const PRESETS = [
@@ -41,6 +44,9 @@ export function SettingsPanel({
   lastSavedAt,
   cloudSaveError,
   onUpdate,
+  embedded = false,
+  tabbed = false,
+  onDirtyChange,
 }: SettingsPanelProps) {
   const [draftDays, setDraftDays] = useState(state.cycleDays);
   const cycleDirty = !cycleDaysEqual(draftDays, state.cycleDays);
@@ -51,6 +57,10 @@ export function SettingsPanel({
       setDraftDays(state.cycleDays.map((d) => ({ ...d })));
     }
   }, [state.cycleDays, cycleDirty]);
+
+  useEffect(() => {
+    onDirtyChange?.(cycleDirty);
+  }, [cycleDirty, onDirtyChange]);
 
   const summary = useMemo(() => getCycleSummary(draftDays), [draftDays]);
   const lowCount = draftDays.filter((d) => d.carbType === 'low').length;
@@ -90,14 +100,27 @@ export function SettingsPanel({
     }));
   }
 
+  const showHeader = !embedded && !tabbed;
+
   return (
-    <div className="space-y-6">
-      <header>
-        <h2 className="text-xl font-bold text-ink sm:text-2xl">设置</h2>
-        <p className="mt-1 text-sm text-ink-muted">
-          配置碳循环日程，训练内容仍在「训练安排」中编辑
-        </p>
-      </header>
+    <div className={embedded || tabbed ? 'space-y-5' : 'space-y-6'}>
+      {showHeader && (
+        <header>
+          <h2 className="text-xl font-bold text-ink sm:text-2xl">设置</h2>
+          <p className="mt-1 text-sm text-ink-muted">
+            配置碳循环日程与循环起始日期
+          </p>
+        </header>
+      )}
+
+      {embedded && !tabbed && (
+        <header>
+          <h3 className="text-base font-bold text-ink">碳循环设置</h3>
+          <p className="mt-1 text-sm text-ink-muted">
+            配置循环起始日与每日低碳 / 高碳安排
+          </p>
+        </header>
+      )}
 
       <section className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
         <h3 className="text-base font-bold text-ink">起始日期</h3>
@@ -170,15 +193,27 @@ export function SettingsPanel({
           ))}
         </div>
 
+        {!tabbed && (
+          <SaveBar
+            embedded
+            dirty={cycleDirty}
+            saving={cloudSyncing}
+            lastSavedAt={lastSavedAt}
+            saveError={cloudSaveError}
+            onSave={handleSaveCycle}
+          />
+        )}
+      </section>
+
+      {tabbed && (
         <SaveBar
-          embedded
           dirty={cycleDirty}
           saving={cloudSyncing}
           lastSavedAt={lastSavedAt}
           saveError={cloudSaveError}
           onSave={handleSaveCycle}
         />
-      </section>
+      )}
 
       <section className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
         <h3 className="text-base font-bold text-ink">说明</h3>

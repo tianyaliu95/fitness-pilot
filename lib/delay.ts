@@ -1,4 +1,5 @@
 import type { AppState } from './types';
+import { isCompletedNo, parseTrainingStatus } from './training-log';
 
 export function setDateDelayed(
   state: AppState,
@@ -15,7 +16,7 @@ export function setDateDelayed(
       trainingLog: {
         ...state.trainingLog,
         [date]: {
-          completed: false,
+          completed: 'no',
           notes: state.trainingLog[date]?.notes ?? '',
         },
       },
@@ -24,7 +25,13 @@ export function setDateDelayed(
 
   const nextLog = { ...state.trainingLog };
   const entry = state.trainingLog[date];
-  if (entry && !entry.completed && !entry.notes.trim()) {
+  if (
+    entry &&
+    parseTrainingStatus(entry.completed) === 'unknown' &&
+    !entry.notes.trim()
+  ) {
+    delete nextLog[date];
+  } else if (entry && isCompletedNo(entry) && !entry.notes.trim()) {
     delete nextLog[date];
   }
 

@@ -285,6 +285,39 @@ export function ProfilePanel({
 
       {/* Recent history + weight log */}
       <div className="grid gap-4 md:grid-cols-5 md:gap-5">
+      <div className="flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:col-span-2 sm:p-6">
+          <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
+            <h3 className="text-sm font-semibold text-ink">体重记录</h3>
+            {selectedDate === today && (
+              <span className="text-xs font-medium text-ink-faint">今天</span>
+            )}
+          </div>
+          <div className="flex min-h-0 flex-1 flex-col">
+            <DatePicker value={selectedDate} max={today} onChange={setSelectedDate} />
+
+            <label className="mt-4 block">
+              <span className="mb-1 block text-xs font-medium text-ink-muted">体重 (kg)</span>
+              <input
+                type="text"
+                inputMode="decimal"
+                value={draftWeight}
+                onChange={(e) => setDraftWeight(e.target.value)}
+                placeholder="例如 72.5"
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ink/10"
+              />
+            </label>
+          </div>
+
+          <SaveBar
+            embedded
+            dirty={weightDirty}
+            saving={cloudSyncing}
+            lastSavedAt={lastSavedAt}
+            saveError={cloudSaveError}
+            onSave={handleSaveWeight}
+          />
+        </div>
+
         <div className="flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:col-span-3 sm:p-6">
           <h3 className="mb-3 shrink-0 text-sm font-semibold text-ink">近期体重</h3>
           <div className="min-h-0 flex-1 overflow-y-auto pr-1">
@@ -327,38 +360,6 @@ export function ProfilePanel({
           </div>
         </div>
 
-        <div className="flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:col-span-2 sm:p-6">
-          <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-ink">体重记录</h3>
-            {selectedDate === today && (
-              <span className="text-xs font-medium text-ink-faint">今天</span>
-            )}
-          </div>
-          <div className="flex min-h-0 flex-1 flex-col">
-            <DatePicker value={selectedDate} max={today} onChange={setSelectedDate} />
-
-            <label className="mt-4 block">
-              <span className="mb-1 block text-xs font-medium text-ink-muted">体重 (kg)</span>
-              <input
-                type="text"
-                inputMode="decimal"
-                value={draftWeight}
-                onChange={(e) => setDraftWeight(e.target.value)}
-                placeholder="例如 72.5"
-                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ink/10"
-              />
-            </label>
-          </div>
-
-          <SaveBar
-            embedded
-            dirty={weightDirty}
-            saving={cloudSyncing}
-            lastSavedAt={lastSavedAt}
-            saveError={cloudSaveError}
-            onSave={handleSaveWeight}
-          />
-        </div>
       </div>
 
       {chartData.length > 0 && (

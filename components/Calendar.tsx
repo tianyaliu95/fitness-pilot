@@ -51,12 +51,12 @@ export function Calendar({ state }: CalendarProps) {
   }
 
   return (
-    <div className="rounded-3xl bg-surface-card px-4 pt-4 pb-8 shadow-soft sm:px-6 sm:pt-6 sm:pb-10">
-      <div className="mb-4 flex items-center justify-between sm:mb-6">
+    <div className="rounded-2xl bg-surface-card px-2.5 pt-3 pb-5 shadow-soft sm:rounded-3xl sm:px-6 sm:pt-6 sm:pb-10">
+      <div className="mb-3 flex items-center justify-between sm:mb-6">
         <button
           type="button"
           onClick={prevMonth}
-          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95"
+          className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95 sm:h-10 sm:w-10 sm:rounded-2xl"
           aria-label="上个月"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -80,7 +80,7 @@ export function Calendar({ state }: CalendarProps) {
         <button
           type="button"
           onClick={nextMonth}
-          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95"
+          className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95 sm:h-10 sm:w-10 sm:rounded-2xl"
           aria-label="下个月"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -89,21 +89,21 @@ export function Calendar({ state }: CalendarProps) {
         </button>
       </div>
 
-      <div className="mb-2 grid grid-cols-7 gap-1 sm:gap-2">
+      <div className="mb-1.5 grid grid-cols-7 gap-0.5 sm:mb-2 sm:gap-2">
         {weekdays.map((wd) => (
           <div
             key={wd}
-            className="py-1 text-center text-xs font-medium text-ink-faint sm:text-sm"
+            className="py-0.5 text-center text-[10px] font-medium text-ink-faint sm:py-1 sm:text-sm"
           >
             {wd}
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-1 sm:gap-2">
+      <div className="grid grid-cols-7 gap-0.5 sm:gap-2">
         {grid.map((date, i) => {
           if (!date) {
-            return <div key={`empty-${i}`} className="min-h-[72px] sm:min-h-[88px]" />;
+            return <div key={`empty-${i}`} className="min-h-[52px] sm:min-h-[88px]" />;
           }
           const iso = formatDateISO(date);
           const dayInfo = buildDayInfo(iso, state);

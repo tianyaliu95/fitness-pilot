@@ -26,14 +26,15 @@ const NAV_ITEMS = [
     match: (path: string) => path === '/intake',
   },
   {
-    href: '/training',
-    label: '训练计划',
+    href: '/planning',
+    label: '训练规划',
     icon: (
       <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 9h2v6H6V9zm10 0h2v6h-2V9zM8 11h8M4 12H2m20 0h-2" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     ),
-    match: (path: string) => path === '/training',
+    match: (path: string) => path === '/planning' || path === '/training' || path === '/settings',
   },
   {
     href: '/workout-log',
@@ -55,17 +56,6 @@ const NAV_ITEMS = [
     ),
     match: (path: string) => path === '/profile',
   },
-  {
-    href: '/settings',
-    label: '循环设置',
-    icon: (
-      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    ),
-    match: (path: string) => path === '/settings',
-  },
 ];
 
 function NavLink({
@@ -84,22 +74,22 @@ function NavLink({
   const base =
     layout === 'sidebar'
       ? 'flex items-center gap-3 rounded-2xl px-4 py-3 text-lg font-medium transition'
-      : 'flex flex-1 flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[11px] font-medium transition';
+      : 'flex min-h-[3.25rem] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1.5 text-[10px] font-medium leading-tight transition';
 
   const activeClass =
     layout === 'sidebar'
       ? 'bg-white text-ink shadow-soft'
-      : 'text-low-dark';
+      : 'bg-surface-muted text-low-dark';
 
   const inactiveClass =
     layout === 'sidebar'
       ? 'text-ink-muted hover:bg-white/60 hover:text-ink'
-      : 'text-ink-faint hover:text-ink-muted';
+      : 'text-ink-faint hover:bg-surface-muted/80 hover:text-ink-muted';
 
   return (
     <Link href={href} className={`${base} ${active ? activeClass : inactiveClass}`}>
-      <span className={active && layout === 'bottom' ? 'text-low' : ''}>{icon}</span>
-      <span>{label}</span>
+      <span className={`shrink-0 ${active && layout === 'bottom' ? 'text-low' : ''}`}>{icon}</span>
+      <span className="max-w-full truncate text-center">{label}</span>
     </Link>
   );
 }
@@ -148,7 +138,7 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
         )}
       </aside>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 flex gap-1 border-t border-ink/5 bg-surface-card/95 px-2 py-2 backdrop-blur-md safe-bottom md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-50 flex gap-0.5 border-t border-ink/5 bg-surface-card/95 px-1.5 py-1.5 backdrop-blur-md safe-bottom md:hidden">
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.href}

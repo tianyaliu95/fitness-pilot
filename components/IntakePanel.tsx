@@ -6,6 +6,7 @@ import { MEAL_FIELDS, mealPlanEquals } from '@/lib/intake';
 import { MealMacroFields } from '@/components/MacroDisplay';
 import { getLatestWeight } from '@/lib/weight';
 import { SaveBar } from './SaveBar';
+import { TabBar } from './TabBar';
 
 interface IntakePanelProps {
   state: AppState;
@@ -15,14 +16,14 @@ interface IntakePanelProps {
   onUpdate: (updater: (prev: AppState) => AppState) => void;
 }
 
+type IntakeTab = 'low' | 'high';
+
 function MealPlanForm({
-  title,
   color,
   plan,
   weightKg,
   onChange,
 }: {
-  title: string;
   color: 'low' | 'high';
   plan: MealPlan;
   weightKg: number | null;
@@ -30,15 +31,9 @@ function MealPlanForm({
 }) {
   const accent =
     color === 'low' ? 'border-low/30 focus:ring-low/30' : 'border-high/30 focus:ring-high/30';
-  const badge =
-    color === 'low' ? 'bg-low-light text-low-dark' : 'bg-high-light text-high-dark';
 
   return (
     <div className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
-      <div className="mb-5">
-        <span className={`rounded-full px-4 py-2 text-base font-extrabold ${badge}`}>{title}</span>
-      </div>
-
       <div className="space-y-3">
         {MEAL_FIELDS.map(({ key, label }) => (
           <label key={key} className="block">
@@ -82,64 +77,84 @@ export function IntakePanel({
   cloudSaveError,
   onUpdate,
 }: IntakePanelProps) {
+  const [tab, setTab] = useState<IntakeTab>('low');
   const [draftLow, setDraftLow] = useState(state.intakeLow);
   const [draftHigh, setDraftHigh] = useState(state.intakeHigh);
 
   const weightKg = useMemo(() => getLatestWeight(state.weightLog), [state.weightLog]);
 
-  const dirty =
-    !mealPlanEquals(draftLow, state.intakeLow) ||
-    !mealPlanEquals(draftHigh, state.intakeHigh);
+  const lowDirty = !mealPlanEquals(draftLow, state.intakeLow);
+  const highDirty = !mealPlanEquals(draftHigh, state.intakeHigh);
 
   useEffect(() => {
-    if (!dirty) {
-      setDraftLow(state.intakeLow);
-      setDraftHigh(state.intakeHigh);
-    }
-  }, [state.intakeLow, state.intakeHigh, dirty]);
+    if (!lowDirty) setDraftLow(state.intakeLow);
+  }, [state.intakeLow, lowDirty]);
 
-  function handleSave() {
-    onUpdate((prev) => ({
-      ...prev,
-      intakeLow: { ...draftLow },
-      intakeHigh: { ...draftHigh },
-    }));
+  useEffect(() => {
+    if (!highDirty) setDraftHigh(state.intakeHigh);
+  }, [state.intakeHigh, highDirty]);
+
+  function handleSaveLow() {
+    onUpdate((prev) => ({ ...prev, intakeLow: { ...draftLow } }));
+  }
+
+  function handleSaveHigh() {
+    onUpdate((prev) => ({ ...prev, intakeHigh: { ...draftHigh } }));
   }
 
   return (
     <div className="space-y-5">
       <header>
         <h2 className="text-xl font-bold text-ink sm:text-2xl">摄入要求</h2>
-        <p className="mt-4 text-sm text-ink-muted">
-          按餐次填写吃什么、吃多少，修改后点击保存。
+        <p className="mt-1 text-sm text-ink-muted">
+          按餐次填写吃什么、吃多少，每个 tab 独立保存。
           {weightKg && (
-            <span className="text-ink-faint">  (按最近体重 {weightKg} kg 计算 g/kg)</span>
+            <span className="text-ink-faint"> 按最近体重 {weightKg} kg 计算 g/kg</span>
           )}
         </p>
       </header>
 
-      <MealPlanForm
-        title="低碳日 (Day 1-3)"
-        color="low"
-        plan={draftLow}
-        weightKg={weightKg}
-        onChange={(field, value) => setDraftLow((p) => ({ ...p, [field]: value }))}
-      />
-      <MealPlanForm
-        title="高碳日 (Day 4)"
-        color="high"
-        plan={draftHigh}
-        weightKg={weightKg}
-        onChange={(field, value) => setDraftHigh((p) => ({ ...p, [field]: value }))}
+      <TabBar
+        aria-label="摄入日类型"
+        tabs={[
+          { id: 'low', label: '低碳日', dirty: lowDirty },
+          { id: 'high', label: '高碳日', dirty: highDirty },
+        ]}
+        activeId={tab}
+        onChange={(id) => setTab(id as IntakeTab)}
       />
 
-      <SaveBar
-        dirty={dirty}
-        saving={cloudSyncing}
-        lastSavedAt={lastSavedAt}
-        saveError={cloudSaveError}
-        onSave={handleSave}
-      />
+      <div className={tab === 'low' ? 'space-y-5' : 'hidden'} role="tabpanel">
+        <MealPlanForm
+          color="low"
+          plan={draftLow}
+          weightKg={weightKg}
+          onChange={(field, value) => setDraftLow((p) => ({ ...p, [field]: value }))}
+        />
+        <SaveBar
+          dirty={lowDirty}
+          saving={cloudSyncing}
+          lastSavedAt={lastSavedAt}
+          saveError={cloudSaveError}
+          onSave={handleSaveLow}
+        />
+      </div>
+
+      <div className={tab === 'high' ? 'space-y-5' : 'hidden'} role="tabpanel">
+        <MealPlanForm
+          color="high"
+          plan={draftHigh}
+          weightKg={weightKg}
+          onChange={(field, value) => setDraftHigh((p) => ({ ...p, [field]: value }))}
+        />
+        <SaveBar
+          dirty={highDirty}
+          saving={cloudSyncing}
+          lastSavedAt={lastSavedAt}
+          saveError={cloudSaveError}
+          onSave={handleSaveHigh}
+        />
+      </div>
     </div>
   );
 }
