@@ -10,6 +10,7 @@ import { WeightChart } from './WeightChart';
 import { BmiGauge } from './BmiGauge';
 import { DatePicker } from './DatePicker';
 import { SaveBar } from './SaveBar';
+import { useAuth } from '@/lib/auth-context';
 
 interface ProfilePanelProps {
   state: AppState;
@@ -82,6 +83,8 @@ export function ProfilePanel({
   const profileDirty = !profileEqual(draftProfile, state.profile);
   const weightDirty = draftWeight !== savedWeight;
   const viewProfile = state.profile;
+
+  const { isConfigured, user, logOut } = useAuth();
 
   useEffect(() => {
     if (!profileDirty) {
@@ -285,7 +288,7 @@ export function ProfilePanel({
 
       {/* Recent history + weight log */}
       <div className="grid gap-4 md:grid-cols-5 md:gap-5">
-      <div className="flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:col-span-2 sm:p-6">
+        <div className="flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:col-span-2 sm:p-6">
           <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-ink">体重记录</h3>
             {selectedDate === today && (
@@ -366,6 +369,21 @@ export function ProfilePanel({
         <div className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
           <h3 className="mb-4 text-sm font-semibold text-ink">体重变化</h3>
           <WeightChart data={chartData} />
+        </div>
+      )}
+
+      {isConfigured && user && (
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={() => logOut()}
+            className="flex items-center justify-center gap-2 rounded-2xl px-3 py-2 text-sm font-medium text-ink-muted transition hover:bg-white/60 hover:text-ink sm:gap-3 sm:px-4 sm:py-3 sm:text-lg sm:underline"
+          >
+            <svg className="inline-block h-4 w-4 sm:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            退出登录
+          </button>
         </div>
       )}
     </div>

@@ -59,24 +59,45 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
       {/* <div className="absolute -bottom-4 -left-4 h-24 w-24 rounded-full bg-white/5" /> */}
 
       <div className="relative space-y-4 sm:space-y-6">
-        <div>
-          <div className="flex flex-wrap items-end gap-2 sm:gap-3">
-            <span className="text-3xl font-extrabold tracking-tight text-white drop-shadow-sm sm:text-5xl">
+        {/* Mobile: two-row header */}
+        <div className="sm:hidden">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
+              <span className="text-2xl font-extrabold tracking-tight text-white">
+                {isLow ? '低碳日' : '高碳日'}
+              </span>
+              <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-xs font-bold text-white">
+                {getCycleProgressLabel(day.cycleDayIndex, day.cycleLength)}
+              </span>
+            </div>
+            <p className="shrink-0 pt-0.5 text-right text-base font-bold leading-snug text-white/85">
+              {formatDisplayDate(day.date)}
+            </p>
+          </div>
+          <p className="mt-2 text-base font-bold text-white">{day.workout}</p>
+          {day.isDelayed && (
+            <p className="mt-2 text-sm font-medium text-white/90">
+              今日已标记暂停，明天继续当前循环日
+            </p>
+          )}
+        </div>
+
+        {/* Desktop */}
+        <div className="hidden sm:block">
+          <div className="flex flex-wrap items-end gap-3">
+            <span className="text-5xl font-extrabold tracking-tight text-white drop-shadow-sm">
               {isLow ? '低碳日' : '高碳日'}
             </span>
-            <span className="rounded-full bg-white/25 px-3 py-0.5 text-lg font-extrabold text-white sm:px-4 sm:py-1 sm:text-2xl">
+            <span className="rounded-full bg-white/25 px-4 py-1 text-2xl font-extrabold text-white">
               {getCycleProgressLabel(day.cycleDayIndex, day.cycleLength)}
             </span>
-            <span className="ml-auto text-lg font-extrabold tracking-tight text-white drop-shadow-sm sm:text-3xl">
+            <span className="ml-auto text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
               {formatDisplayDate(day.date)}
             </span>
           </div>
-          <p className="mt-2 text-base font-bold text-white sm:mt-3 sm:text-2xl">{day.workout}</p>
-          {/* {day.weight && (
-            <p className="mt-1.5 text-base font-semibold text-white">今日体重 {day.weight} kg</p>
-          )} */}
+          <p className="mt-3 text-2xl font-bold text-white">{day.workout}</p>
           {day.isDelayed && (
-            <p className="mt-2 text-sm font-semibold text-white/90">
+            <p className="mt-2 text-lg font-bold text-white/90">
               今日已标记暂停，明天继续当前循环日
             </p>
           )}
