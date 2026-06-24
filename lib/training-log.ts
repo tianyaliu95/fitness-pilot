@@ -4,6 +4,7 @@ import type {
   TrainingLogEntry,
   TrainingStatus,
 } from './types';
+import { addDays, isOnOrAfterCycleStart, todayISO } from './cycle';
 import { buildDayInfo } from './day-info';
 
 export interface RecordedTraining {
@@ -72,46 +73,99 @@ export function normalizeTrainingLog(raw: TrainingLog | undefined): TrainingLog 
   return result;
 }
 
-export function getRecordedTrainings(
+function eachDateInclusive(from: string, to: string): string[] {
+  if (!from || from > to) return [];
+  const dates: string[] = [];
+  let cur = from;
+  while (cur <= to) {
+    dates.push(cur);
+    cur = addDays(cur, 1);
+  }
+  return dates;
+}
+
+function collectListedEntries(
   trainingLog: TrainingLog,
   state: AppState
-): RecordedTraining[] {
-  return Object.entries(trainingLog)
-    .filter(([, entry]) => isRecordedEntry(entry))
-    .map(([date, entry]) => {
+): Array<{ date: string; entry: TrainingLogEntry }> {
+  const today = todayISO();
+  const rangeStart = state.cycleStartDate || state.anchorDate;
+  const dates = new Set<string>(Object.keys(trainingLog));
+
+  if (rangeStart) {
+    for (const date of eachDateInclusive(rangeStart, today)) {
+      if (isOnOrAfterCycleStart(date, state.cycleStartDate)) {
+        dates.add(date);
+      }
+    }
+  }
+
+  return [...dates]
+    .map((date) => ({
+      date,
+      entry: trainingLog[date] ?? { completed: 'unknown' as TrainingStatus, notes: '' },
+    }))
+    .filter(({ date }) => {
       const day = buildDayInfo(date, state);
-      return {
-        date,
-        entry,
-        plannedWorkout: day.workout,
-        label: day.label,
-      };
+      return trainingLog[date] !== undefined || day.isCycleActive;
     })
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function getTrainingStats(trainingLog: TrainingLog): TrainingStats {
-  const entries = Object.entries(trainingLog).filter(([, e]) => isRecordedEntry(e));
-  const totalRecorded = entries.length;
-  const completedCount = entries.filter(([, e]) => isCompletedYes(e)).length;
-  const missedCount = entries.filter(([, e]) => isCompletedNo(e)).length;
-  const withNotesCount = entries.filter(([, e]) => e.notes.trim().length > 0).length;
+export function getListedTrainings(
+  trainingLog: TrainingLog,
+  state: AppState
+): RecordedTraining[] {
+  return collectListedEntries(trainingLog, state).map(({ date, entry }) => {
+    const day = buildDayInfo(date, state);
+    return {
+      date,
+      entry,
+      plannedWorkout: day.workout,
+      label: day.label,
+    };
+  });
+}
+
+/** @deprecated Use getListedTrainings */
+export function getRecordedTrainings(
+  trainingLog: TrainingLog,
+  state: AppState
+): RecordedTraining[] {
+  return getListedTrainings(trainingLog, state).filter((r) =>
+    isRecordedEntry(r.entry)
+  );
+}
+
+export function getTrainingStats(trainingLog: TrainingLog, state: AppState): TrainingStats {
+  const listed = collectListedEntries(trainingLog, state);
+  const markedEntries = listed.filter(({ entry }) => isRecordedEntry(entry));
+  const totalRecorded = listed.length;
+  const completedCount = markedEntries.filter(({ entry }) => isCompletedYes(entry)).length;
+  const missedCount = markedEntries.filter(({ entry }) => isCompletedNo(entry)).length;
+  const withNotesCount = listed.filter(({ entry }) => entry.notes.trim().length > 0).length;
 
   const completionRate =
-    totalRecorded > 0 ? Math.round((completedCount / totalRecorded) * 100) : null;
+    markedEntries.length > 0
+      ? Math.round((completedCount / markedEntries.length) * 100)
+      : null;
 
-  const sortedDates = entries.map(([d]) => d).sort((a, b) => b.localeCompare(a));
+  const sortedDates = listed.map(({ date }) => date);
   const recent7 = sortedDates.slice(0, 7);
-  const recent7Completed = recent7.filter((d) =>
-    isCompletedYes(trainingLog[d])
+  const recent7Marked = recent7.filter((d) => {
+    const entry = trainingLog[d] ?? { completed: 'unknown' as TrainingStatus, notes: '' };
+    return isRecordedEntry(entry);
+  });
+  const recent7Completed = recent7Marked.filter((d) =>
+    isCompletedYes(trainingLog[d] ?? { completed: 'unknown', notes: '' })
   ).length;
-  const recent7Total = recent7.length;
+  const recent7Total = recent7Marked.length;
   const recent7Rate =
     recent7Total > 0 ? Math.round((recent7Completed / recent7Total) * 100) : null;
 
   let currentCompleteStreak = 0;
-  for (const date of sortedDates) {
-    if (isCompletedYes(trainingLog[date])) {
+  for (const { date, entry } of listed) {
+    if (isCompletedYes(entry)) {
       currentCompleteStreak++;
     } else {
       break;

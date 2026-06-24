@@ -37,9 +37,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 function googleProvider() {
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
-  return provider;
+  return new GoogleAuthProvider();
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -52,18 +50,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!isConfigured) return;
 
     const auth = getFirebaseAuth();
+    let unsub = () => {};
 
-    getRedirectResult(auth).catch((err) => {
-      setAuthError(formatAuthError(err));
-    });
+    void (async () => {
+      try {
+        await getRedirectResult(auth);
+      } catch (err) {
+        setAuthError(formatAuthError(err));
+      }
 
-    const unsub = onAuthStateChanged(auth, (nextUser) => {
-      setUser(nextUser);
+      // Wait for persisted session to restore before showing login UI.
+      await auth.authStateReady();
+      setUser(auth.currentUser);
       setAuthReady(true);
-      if (nextUser) setAuthError(null);
-    });
+      if (auth.currentUser) setAuthError(null);
 
-    return unsub;
+      unsub = onAuthStateChanged(auth, (nextUser) => {
+        setUser(nextUser);
+        if (nextUser) setAuthError(null);
+      });
+    })();
+
+    return () => unsub();
   }, [isConfigured]);
 
   const clearAuthError = useCallback(() => setAuthError(null), []);

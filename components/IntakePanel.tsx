@@ -116,9 +116,10 @@ export function IntakePanel({
 
       <TabBar
         aria-label="摄入日类型"
+        variant="carb"
         tabs={[
-          { id: 'low', label: '低碳日', dirty: lowDirty },
-          { id: 'high', label: '高碳日', dirty: highDirty },
+          { id: 'low', label: '低碳日', dirty: lowDirty, tone: 'low' },
+          { id: 'high', label: '高碳日', dirty: highDirty, tone: 'high' },
         ]}
         activeId={tab}
         onChange={(id) => setTab(id as IntakeTab)}

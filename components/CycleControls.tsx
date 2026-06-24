@@ -36,7 +36,7 @@ export function CycleControls({
 
         <Link
           href={`/day/${todayISO()}`}
-          className="flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-2xl border border-ink/10 px-3 py-2.5 text-sm font-bold text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98] sm:w-auto sm:justify-start sm:px-4"
+          className="flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-2xl border border-ink/10 px-3 py-2.5 text-sm font-bold text-ink-muted transition hover:bg-ink/5 hover:text-ink hover:text-ink active:scale-[0.98] sm:w-auto sm:justify-start sm:px-4"
         >
           <span className="mt-0">📝</span>
           记录训练
@@ -44,7 +44,7 @@ export function CycleControls({
 
         <Link
           href="/profile"
-          className="flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-2xl border border-ink/10 px-3 py-2.5 text-sm font-bold text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98] sm:w-auto sm:justify-start sm:px-4"
+          className="flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-2xl border border-ink/10 px-3 py-2.5 text-sm font-bold text-ink-muted transition hover:bg-ink/5 hover:text-ink active:scale-[0.98] sm:w-auto sm:justify-start sm:px-4"
         >
           <span className="mt-0">📊</span>
           体重记录
@@ -63,7 +63,7 @@ export function CycleControls({
           <button
             type="button"
             onClick={onDelay}
-            className="flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-2xl border border-ink/10 px-3 py-2.5 text-sm font-bold text-ink-muted transition hover:bg-ink/5 active:scale-[0.98] sm:w-auto sm:justify-start sm:px-4"
+            className="flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-2xl border border-ink/10 px-3 py-2.5 text-sm font-bold text-ink-muted transition hover:bg-ink/5 hover:text-ink active:scale-[0.98] sm:w-auto sm:justify-start sm:px-4"
           >
             <span className="mt-0.5">⏸️</span>
             暂停一天
@@ -76,7 +76,7 @@ export function CycleControls({
             setResetOpen(!resetOpen);
             setPendingDay(null);
           }}
-          className="flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-2xl border border-ink/10 px-3 py-2.5 text-sm font-bold text-ink-muted transition hover:border-ink/20 hover:text-ink active:scale-[0.98] sm:w-auto sm:justify-start sm:px-4"
+          className="flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-2xl border border-ink/10 px-3 py-2.5 text-sm font-bold text-ink-muted transition hover:bg-ink/5 hover:text-ink active:scale-[0.98] sm:w-auto sm:justify-start sm:px-4"
         >
           <span className="mt-0.5">🔄</span>
           重置循环

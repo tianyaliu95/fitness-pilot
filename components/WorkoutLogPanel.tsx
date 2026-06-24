@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import type { AppState } from '@/lib/types';
 import { formatDisplayDate } from '@/lib/day-info';
-import { getRecordedTrainings, getTrainingStats, isCompletedYes } from '@/lib/training-log';
+import { getListedTrainings, getTrainingStats, isCompletedNo, isCompletedYes } from '@/lib/training-log';
 
 interface WorkoutLogPanelProps {
   state: AppState;
@@ -33,20 +33,33 @@ function StatCard({
 }
 
 export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
-  const stats = useMemo(() => getTrainingStats(state.trainingLog), [state.trainingLog]);
-  const records = useMemo(
-    () => getRecordedTrainings(state.trainingLog, state),
+  const stats = useMemo(
+    () => getTrainingStats(state.trainingLog, state),
     [state]
   );
+  const records = useMemo(
+    () => getListedTrainings(state.trainingLog, state),
+    [state]
+  );
+
+  function statusBadge(entry: (typeof records)[number]['entry']) {
+    if (isCompletedYes(entry)) {
+      return { label: '已完成', className: 'bg-emerald-50 text-emerald-700' };
+    }
+    if (isCompletedNo(entry)) {
+      return { label: '未完成', className: 'bg-pink-50 text-pink-700' };
+    }
+    return { label: '未记录', className: 'bg-surface-muted text-ink-muted' };
+  }
 
   return (
     <div className="space-y-5">
       <header>
         <h2 className="text-xl font-bold text-ink sm:text-2xl">训练记录</h2>
-        <p className="mt-1 text-sm text-ink-muted">汇总已标记完成 / 未完成的训练日</p>
+        <p className="mt-1 text-sm text-ink-muted">汇总所有训练日，含未标记完成状态的天</p>
       </header>
 
-      {stats.totalRecorded > 0 ? (
+      {records.length > 0 ? (
         <>
           <div className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-ink">训练总结</h3>
@@ -84,7 +97,9 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
           <div className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-ink">全部记录</h3>
             <ul className="space-y-3">
-              {records.map(({ date, entry, plannedWorkout, label }) => (
+              {records.map(({ date, entry, plannedWorkout, label }) => {
+                const badge = statusBadge(entry);
+                return (
                 <li key={date}>
                   <Link
                     href={`/day/${date}`}
@@ -100,13 +115,9 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
                         </p>
                       </div>
                       <span
-                        className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold sm:px-6 sm:py-2 sm:text-sm ${
-                          isCompletedYes(entry)
-                            ? 'bg-emerald-50 text-emerald-700'
-                            : 'bg-pink-50 text-pink-700'
-                        }`}
+                        className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold sm:px-6 sm:py-2 sm:text-sm ${badge.className}`}
                       >
-                        {isCompletedYes(entry) ? '已完成' : '未完成'}
+                        {badge.label}
                       </span>
                     </div>
                     {entry.notes.trim() && (
@@ -116,7 +127,8 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
                     )}
                   </Link>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </div>
         </>

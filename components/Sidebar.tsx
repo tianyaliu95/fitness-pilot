@@ -102,7 +102,11 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
     <>
       <aside className="hidden md:sticky md:top-0 md:flex md:h-screen md:w-60 md:flex-col md:border-r md:border-ink/5 md:bg-surface-muted/80 md:px-4 md:py-8 md:backdrop-blur-sm">
         <div className="mb-8 px-2">
-          <h1 className="text-3xl font-bold tracking-tight text-ink mb-2 mt-4">Fitness Pilot</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-ink mb-2 mt-4">
+            <Link href="/">
+              Fitness Pilot
+            </Link>
+          </h1>
           <p className="mt-0.5 text-xl font-bold text-ink-muted mb-6">碳循环训练助手</p>
           {isConfigured && user && (
             <p className="mt-2 text-lg font-medium text-ink-faint">
