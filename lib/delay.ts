@@ -1,4 +1,5 @@
 import type { AppState } from './types';
+import { freezeCycleHistoryBefore } from './cycle';
 import { isCompletedNo, parseTrainingStatus } from './training-log';
 
 export function setDateDelayed(
@@ -6,25 +7,31 @@ export function setDateDelayed(
   date: string,
   delayed: boolean
 ): AppState {
+  const historicalDays = freezeCycleHistoryBefore(state, date);
+  const base = { ...state, historicalDays };
+
   if (delayed) {
-    const delayedDates = state.delayedDates.includes(date)
-      ? state.delayedDates
-      : [...state.delayedDates, date];
+    const delayedDates = base.delayedDates.includes(date)
+      ? base.delayedDates
+      : [...base.delayedDates, date];
+    const existing = base.trainingLog[date];
+    const notes = existing?.notes ?? '';
+    const completed =
+      existing?.completed === 'yes' || existing?.completed === 'no'
+        ? existing.completed
+        : 'no';
     return {
-      ...state,
+      ...base,
       delayedDates,
       trainingLog: {
-        ...state.trainingLog,
-        [date]: {
-          completed: 'no',
-          notes: state.trainingLog[date]?.notes ?? '',
-        },
+        ...base.trainingLog,
+        [date]: { completed, notes },
       },
     };
   }
 
-  const nextLog = { ...state.trainingLog };
-  const entry = state.trainingLog[date];
+  const nextLog = { ...base.trainingLog };
+  const entry = base.trainingLog[date];
   if (
     entry &&
     parseTrainingStatus(entry.completed) === 'unknown' &&
@@ -36,8 +43,8 @@ export function setDateDelayed(
   }
 
   return {
-    ...state,
-    delayedDates: state.delayedDates.filter((d) => d !== date),
+    ...base,
+    delayedDates: base.delayedDates.filter((d) => d !== date),
     trainingLog: nextLog,
   };
 }

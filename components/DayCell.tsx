@@ -15,11 +15,9 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
     ? 'ring-2 ring-inset ring-ink shadow-card sm:scale-[1.02] sm:ring-offset-0'
     : 'hover:shadow-soft sm:hover:scale-[1.05]';
 
-  const notComplete = day.isDelayed || day.trainingIncomplete;
-
   const status = day.trainingComplete ? (
     <StatusBadge variant="complete" label="训练已完成" />
-  ) : notComplete ? (
+  ) : day.trainingIncomplete ? (
     <StatusBadge variant="incomplete" label="训练未完成" />
   ) : null;
 

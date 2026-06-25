@@ -1,11 +1,5 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
-import {
-  browserLocalPersistence,
-  getAuth,
-  indexedDBLocalPersistence,
-  initializeAuth,
-  type Auth,
-} from 'firebase/auth';
+import { getAuth, type Auth } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 
 function getFirebaseConfig() {
@@ -51,14 +45,7 @@ export function getFirebaseAuth(): Auth {
     throw new Error('getFirebaseAuth must only be called on the client');
   }
   if (!auth) {
-    const app = getFirebaseApp();
-    try {
-      auth = initializeAuth(app, {
-        persistence: [indexedDBLocalPersistence, browserLocalPersistence],
-      });
-    } catch {
-      auth = getAuth(app);
-    }
+    auth = getAuth(getFirebaseApp());
   }
   return auth;
 }

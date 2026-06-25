@@ -156,6 +156,33 @@ export function resolveLiveCycleTemplate(
   return { cycleDayIndex, template };
 }
 
+/** Lock cycle assignment for dates strictly before `beforeDate` (current delays/anchor). */
+export function freezeCycleHistoryBefore(
+  state: AppState,
+  beforeDate: string
+): AppState['historicalDays'] {
+  const result = { ...state.historicalDays };
+  const rangeStart = state.cycleStartDate || state.anchorDate;
+  if (!rangeStart || beforeDate <= rangeStart) return result;
+
+  const last = subtractDays(beforeDate, 1);
+  let date = rangeStart;
+  while (date <= last) {
+    if (!result[date]) {
+      const { cycleDayIndex, template } = resolveLiveCycleTemplate(date, state);
+      result[date] = {
+        cycleDayIndex,
+        carbType: template.carbType,
+        workout: template.workout,
+        label: template.label,
+        isDelayed: state.delayedDates.includes(date),
+      };
+    }
+    date = addDays(date, 1);
+  }
+  return result;
+}
+
 /** Snapshot cycle assignments for dates before `today` so resets only affect today+. */
 export function snapshotHistoryThroughYesterday(
   state: AppState,

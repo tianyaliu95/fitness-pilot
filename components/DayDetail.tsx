@@ -75,7 +75,7 @@ export function DayDetail({
     });
   }
 
-  const canReset = hasCompletionChoice(savedTraining ?? undefined) && !day.isDelayed;
+  const canReset = hasCompletionChoice(savedTraining ?? undefined);
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -129,13 +129,13 @@ export function DayDetail({
               {day.isToday ? '今日暂停？' : '这天暂停？'}
             </span>
             <p className="mt-0.5 text-xs text-ink-faint">
-              勾选后循环顺延一天，训练记为未完成
+              勾选后当天训练计划顺延到明天（默认记为「否」）；仍可手动改是/否，不影响顺延
             </p>
           </div>
         </label>
 
         <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-surface px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
-          <span className="text-sm font-medium text-ink">今天训练是否按计划完成？</span>
+          <span className="text-sm font-medium text-ink">今天训练/饮食是否按计划完成？</span>
           <div className="flex shrink-0 gap-2">
             <button
               type="button"

@@ -17,7 +17,8 @@ export function formatAuthError(err: unknown): string {
         return '已有登录窗口在进行中，请稍候或刷新页面后重试。';
       case 'auth/network-request-failed':
         return '网络错误，请检查网络连接后重试。';
-      case 'auth/invalid-email':
+      case 'auth/argument-error':
+        return '登录配置异常，请刷新页面后重试。若仍失败，请确认 Firebase 环境变量与 Authorized domains 已正确配置。';
         return '邮箱格式不正确。';
       case 'auth/wrong-password':
       case 'auth/invalid-credential':

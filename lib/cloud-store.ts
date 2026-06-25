@@ -78,6 +78,9 @@ export async function saveUserState(
     toWrite = {
       ...state,
       trainingLog: { ...existing.state.trainingLog, ...state.trainingLog },
+      delayedDates: [
+        ...new Set([...existing.state.delayedDates, ...state.delayedDates]),
+      ].sort(),
     };
   }
 
