@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { AppState } from '@/lib/types';
 import {
   buildDayInfo,
@@ -9,6 +9,8 @@ import {
   getWeekdayLabels,
   formatDateISO,
 } from '@/lib/day-info';
+import { pacificDateParts } from '@/lib/pacific-date';
+import { useTodayISO } from '@/lib/today-context';
 import { DayCell } from './DayCell';
 
 interface CalendarProps {
@@ -16,9 +18,15 @@ interface CalendarProps {
 }
 
 export function Calendar({ state }: CalendarProps) {
-  const today = new Date();
-  const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth());
+  const todayIso = useTodayISO();
+  const todayParts = useMemo(() => pacificDateParts(todayIso), [todayIso]);
+  const [viewYear, setViewYear] = useState(todayParts.year);
+  const [viewMonth, setViewMonth] = useState(todayParts.month);
+
+  useEffect(() => {
+    setViewYear(todayParts.year);
+    setViewMonth(todayParts.month);
+  }, [todayParts.year, todayParts.month]);
 
   const grid = useMemo(
     () => getCalendarGrid(viewYear, viewMonth),
@@ -46,8 +54,8 @@ export function Calendar({ state }: CalendarProps) {
   }
 
   function goToday() {
-    setViewYear(today.getFullYear());
-    setViewMonth(today.getMonth());
+    setViewYear(todayParts.year);
+    setViewMonth(todayParts.month);
   }
 
   return (

@@ -5,6 +5,7 @@ import type {
   UserProfile,
 } from './types';
 import { normalizeTrainingLog } from './training-log';
+import { pacificTodayISO } from './pacific-date';
 import {
   DEFAULT_MEAL_HIGH,
   DEFAULT_MEAL_LOW,
@@ -21,8 +22,7 @@ export const DEFAULT_CYCLE_DAYS: CycleDayTemplate[] = [
 ];
 
 export function todayISO(): string {
-  const d = new Date();
-  return formatDateISO(d);
+  return pacificTodayISO();
 }
 
 export function formatDateISO(d: Date): string {

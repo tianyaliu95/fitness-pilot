@@ -4,9 +4,11 @@ import { AuthForm } from './AuthForm';
 import { Sidebar } from './Sidebar';
 import { AuthProvider, useAuth } from '@/lib/auth-context';
 import { AppStateProvider, useAppState } from '@/lib/storage';
+import { TodayProvider, useTodayISO } from '@/lib/today-context';
 
 function ShellContent({ children }: { children: React.ReactNode }) {
   const { cloudSyncing } = useAppState();
+  useTodayISO();
 
   return (
     <div className="min-h-screen md:grid md:grid-cols-[15rem_minmax(0,1fr)]">
@@ -49,7 +51,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
       <AppStateProvider>
-        <ShellGate>{children}</ShellGate>
+        <TodayProvider>
+          <ShellGate>{children}</ShellGate>
+        </TodayProvider>
       </AppStateProvider>
     </AuthProvider>
   );
