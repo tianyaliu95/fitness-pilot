@@ -53,6 +53,7 @@ export function WeightChart({ data }: WeightChartProps) {
 
   if (data.length === 0 || !domain) return null;
 
+  const { startIso, daySpan, markers } = domain;
   const W = 400;
   const H = 200;
   const pad = { top: 16, right: 12, bottom: 36, left: 28 };
@@ -66,10 +67,10 @@ export function WeightChart({ data }: WeightChartProps) {
   const ySpan = yMax - yMin;
 
   function xForDate(iso: string): number {
-    if (data.length === 1 || domain.daySpan <= 0) {
+    if (data.length === 1 || daySpan <= 0) {
       return pad.left + innerW / 2;
     }
-    const t = diffDays(domain.startIso, iso) / domain.daySpan;
+    const t = diffDays(startIso, iso) / daySpan;
     return pad.left + Math.min(1, Math.max(0, t)) * innerW;
   }
 
@@ -176,10 +177,10 @@ export function WeightChart({ data }: WeightChartProps) {
           );
         })}
 
-        {domain.markers.map((iso, i) => {
+        {markers.map((iso, i) => {
           const x = xForDate(iso);
           const isFirst = i === 0;
-          const isLast = i === domain.markers.length - 1;
+          const isLast = i === markers.length - 1;
           return (
             <text
               key={iso}
