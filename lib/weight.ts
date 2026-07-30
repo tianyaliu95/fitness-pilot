@@ -23,6 +23,48 @@ export function formatShortDate(iso: string): string {
   return `${Number(m)}/${Number(d)}`;
 }
 
+/** Calendar tick dates (day 1 / 10 / 20) within [startIso, endIso]. */
+export function monthThirdMarkers(startIso: string, endIso: string): string[] {
+  if (!startIso || !endIso || startIso > endIso) return [];
+
+  const markers: string[] = [];
+  const [sy, sm] = startIso.split('-').map(Number);
+  const [ey, em] = endIso.split('-').map(Number);
+
+  let y = sy;
+  let m = sm;
+  while (y < ey || (y === ey && m <= em)) {
+    for (const day of [1, 10, 20]) {
+      const iso = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      if (iso >= startIso && iso <= endIso) markers.push(iso);
+    }
+    m += 1;
+    if (m > 12) {
+      m = 1;
+      y += 1;
+    }
+  }
+  return markers;
+}
+
+/** Keep first/last; thin middle markers when too many. Prefer month starts. */
+export function thinDateMarkers(markers: string[], maxLabels: number): string[] {
+  if (markers.length <= maxLabels) return markers;
+  if (maxLabels <= 2) return [markers[0], markers[markers.length - 1]];
+
+  const firsts = markers.filter((d) => d.endsWith('-01'));
+  if (firsts.length >= 2 && firsts.length <= maxLabels) {
+    return firsts;
+  }
+
+  const picked: string[] = [];
+  for (let i = 0; i < maxLabels; i++) {
+    const idx = Math.round((i / (maxLabels - 1)) * (markers.length - 1));
+    picked.push(markers[idx]);
+  }
+  return [...new Set(picked)];
+}
+
 /** Pick a 1/2/5 × 10^n step for chart axes. */
 function niceStep(rough: number): number {
   const safe = Math.max(rough, 1e-6);
