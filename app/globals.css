@@ -10,6 +10,15 @@
   body {
     @apply bg-surface text-ink antialiased;
   }
+
+  /* iOS Safari zooms focused inputs when font-size < 16px; keep 16px on mobile. */
+  @media screen and (max-width: 639px) {
+    input,
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
 }
 
 @layer utilities {
