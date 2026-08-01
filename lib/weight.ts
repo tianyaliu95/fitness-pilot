@@ -1,4 +1,5 @@
 import type { WeightLog } from './types';
+import { addDays, diffDays } from './cycle';
 
 export interface WeightPoint {
   date: string;
@@ -63,6 +64,89 @@ export function thinDateMarkers(markers: string[], maxLabels: number): string[] 
     picked.push(markers[idx]);
   }
   return [...new Set(picked)];
+}
+
+function niceDayStep(roughDays: number): number {
+  const steps = [1, 2, 3, 4, 5, 7, 10, 14, 15, 20, 30, 45, 60];
+  const rough = Math.max(roughDays, 0.5);
+  for (const s of steps) {
+    if (s >= rough * 0.9) return s;
+  }
+  return 60;
+}
+
+/**
+ * X-axis labels that stay roughly `targetCount` dense for any zoom level.
+ * Zoomed-in → daily/few-day ticks; zoomed-out → 1/10/20 or thinned.
+ */
+export function dynamicXMarkers(
+  startIso: string,
+  endIso: string,
+  targetCount: number
+): string[] {
+  if (!startIso || !endIso || startIso > endIso) return [];
+  if (startIso === endIso) return [startIso];
+
+  const span = Math.max(diffDays(startIso, endIso), 1);
+  const target = Math.max(4, Math.min(targetCount, 10));
+
+  // Wide window: calendar thirds keep labels readable
+  if (span >= 75) {
+    const calendar = monthThirdMarkers(startIso, endIso);
+    const base =
+      calendar.length >= 2 ? calendar : [startIso, ...calendar, endIso];
+    return thinDateMarkers([...new Set(base)].sort(), target);
+  }
+
+  const step = niceDayStep(span / (target - 1));
+  const markers: string[] = [];
+  for (let d = 0; d <= span; d += step) {
+    markers.push(addDays(startIso, d));
+  }
+
+  const last = markers[markers.length - 1];
+  const gapToEnd = diffDays(last, endIso);
+  if (gapToEnd > 0) {
+    // Snap/replace last tick with end if close; otherwise append end
+    if (gapToEnd <= step * 0.45 && markers.length > 1) {
+      markers[markers.length - 1] = endIso;
+    } else {
+      markers.push(endIso);
+    }
+  }
+
+  if (markers.length > target + 1) {
+    return thinDateMarkers(markers, target);
+  }
+
+  // Too sparse (e.g. awkward step) — fill with a finer step
+  if (markers.length < Math.min(4, target) && step > 1) {
+    const finer = niceDayStep(span / Math.max(target, 5));
+    if (finer < step) {
+      return dynamicXMarkersWithStep(startIso, endIso, finer, target);
+    }
+  }
+
+  return markers;
+}
+
+function dynamicXMarkersWithStep(
+  startIso: string,
+  endIso: string,
+  step: number,
+  target: number
+): string[] {
+  const span = Math.max(diffDays(startIso, endIso), 1);
+  const markers: string[] = [];
+  for (let d = 0; d <= span; d += step) {
+    markers.push(addDays(startIso, d));
+  }
+  if (markers[markers.length - 1] !== endIso) {
+    markers.push(endIso);
+  }
+  return markers.length > target + 1
+    ? thinDateMarkers(markers, target)
+    : markers;
 }
 
 /** Pick a 1/2/5 × 10^n step for chart axes. */
