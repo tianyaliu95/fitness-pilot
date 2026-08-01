@@ -286,9 +286,9 @@ export function ProfilePanel({
         </p>
       </div>
 
-      {/* Recent history + weight log */}
+      {/* Weight log + recent history + chart */}
       <div className="grid gap-4 md:grid-cols-5 md:gap-5">
-        <div className="flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:col-span-2 sm:p-6">
+        <div className="order-1 flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:col-span-2 sm:p-6">
           <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-ink">体重记录</h3>
             {selectedDate === today && (
@@ -321,7 +321,7 @@ export function ProfilePanel({
           />
         </div>
 
-        <div className="flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:col-span-3 sm:p-6">
+        <div className="order-3 flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:order-2 md:col-span-3 sm:p-6">
           <h3 className="mb-3 shrink-0 text-sm font-semibold text-ink">近期体重</h3>
           <div className="min-h-0 flex-1 overflow-y-auto pr-1">
             {history.length > 0 ? (
@@ -363,14 +363,13 @@ export function ProfilePanel({
           </div>
         </div>
 
+        {chartData.length > 0 && (
+          <div className="order-2 rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:order-3 md:col-span-5 sm:p-6">
+            <h3 className="mb-4 text-sm font-semibold text-ink">体重变化</h3>
+            <WeightChart data={chartData} />
+          </div>
+        )}
       </div>
-
-      {chartData.length > 0 && (
-        <div className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
-          <h3 className="mb-4 text-sm font-semibold text-ink">体重变化</h3>
-          <WeightChart data={chartData} />
-        </div>
-      )}
 
       {isConfigured && user && (
         <div className="flex justify-center">

@@ -32,11 +32,11 @@ const PLOT_WIDTH = INNER_W - POINT_INSET * 2;
 const MIN_VIEW_DAYS = 5;
 
 function useMaxXLabels(): number {
-  const [max, setMax] = useState(5);
+  const [max, setMax] = useState(6);
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 640px)');
-  const apply = () => setMax(mq.matches ? 8 : 6);
+    const apply = () => setMax(mq.matches ? 8 : 6);
     apply();
     mq.addEventListener('change', apply);
     return () => mq.removeEventListener('change', apply);
