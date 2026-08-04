@@ -26,3 +26,7 @@ yarn-error.log*
 
 # Mac
 *.DS_Store
+
+# icon generator assets
+scripts/fonts/
+scripts/icon-source.html

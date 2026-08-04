@@ -371,6 +371,10 @@ export function ProfilePanel({
         )}
       </div>
 
+      <p className="px-1 text-center text-xs leading-relaxed text-ink-faint sm:hidden">
+        想从主屏幕打开？Safari 点分享 →「添加到主屏幕」
+      </p>
+
       {isConfigured && user && (
         <div className="flex justify-center">
           <button

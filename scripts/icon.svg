@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#f7f6f4"/>
+  
+  <path d="M 311.01 86.71 A 178 178 0 0 1 334.03 415.99" fill="none" stroke="#5b8def"
+        stroke-width="28" stroke-linecap="round"/>
+  <path d="M 309.1 425.91 L 333.49 445.95 L 317.05 395.35 Z" fill="#5b8def" stroke="#5b8def" stroke-width="12"
+        stroke-linejoin="round" stroke-linecap="round"/>
+  
+  <path d="M 200.99 425.29 A 178 178 0 0 1 177.97 96.01" fill="none" stroke="#f59e42"
+        stroke-width="28" stroke-linecap="round"/>
+  <path d="M 202.9 86.09 L 178.51 66.05 L 194.95 116.65 Z" fill="#f59e42" stroke="#f59e42" stroke-width="12"
+        stroke-linejoin="round" stroke-linecap="round"/>
+  
+  <g transform="translate(256 256) rotate(-32) scale(0.95)" fill="#1a1a2e">
+    <rect x="-48" y="-8" width="96" height="16" rx="8"/>
+    <rect x="-100" y="-38" width="24" height="76" rx="11"/>
+    <rect x="-80" y="-28" width="16" height="56" rx="7"/>
+    <rect x="-68" y="-14" width="12" height="28" rx="5"/>
+    <rect x="76" y="-38" width="24" height="76" rx="11"/>
+    <rect x="64" y="-28" width="16" height="56" rx="7"/>
+    <rect x="56" y="-14" width="12" height="28" rx="5"/>
+  </g>
+</svg>
