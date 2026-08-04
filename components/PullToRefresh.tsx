@@ -3,15 +3,16 @@
 import { useEffect, useRef, useState } from 'react';
 
 const THRESHOLD = 72;
-const MAX_PULL = 112;
-const RESISTANCE = 0.45;
+const MAX_PULL = 128;
+const RESISTANCE = 0.55;
 
 function isStandalonePwa() {
   if (typeof window === 'undefined') return false;
   const mq =
     window.matchMedia('(display-mode: standalone)').matches ||
     window.matchMedia('(display-mode: fullscreen)').matches;
-  const ios = 'standalone' in navigator && (navigator as Navigator & { standalone?: boolean }).standalone === true;
+  const ios =
+    'standalone' in navigator && (navigator as Navigator & { standalone?: boolean }).standalone === true;
   return mq || ios;
 }
 
@@ -19,7 +20,6 @@ function pageScrollTop() {
   return window.scrollY || document.documentElement.scrollTop || 0;
 }
 
-/** False when a nested scroller above the page is not at its top. */
 function nestedScrollBlocksPull(target: EventTarget | null) {
   let el = target instanceof Element ? target : null;
   while (el && el !== document.documentElement) {
@@ -37,10 +37,42 @@ function nestedScrollBlocksPull(target: EventTarget | null) {
   return false;
 }
 
-export function PullToRefresh() {
+function SafariSpinner({ progress, spinning }: { progress: number; spinning: boolean }) {
+  const p = Math.max(0, Math.min(1, progress));
+  const r = 9;
+  const c = 2 * Math.PI * r;
+  const dash = Math.max(0.01, p) * c * 0.85;
+
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      className={spinning ? 'animate-spin' : undefined}
+      aria-hidden
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r={r}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeDasharray={`${dash} ${c}`}
+        strokeDashoffset="0"
+        transform="rotate(-90 12 12)"
+        opacity={spinning ? 1 : 0.35 + p * 0.65}
+      />
+    </svg>
+  );
+}
+
+export function PullToRefresh({ children }: { children: React.ReactNode }) {
   const [enabled, setEnabled] = useState(false);
   const [pull, setPull] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   const startY = useRef(0);
   const pulling = useRef(false);
@@ -70,6 +102,7 @@ export function PullToRefresh() {
         pulling.current = false;
         pullRef.current = 0;
         setPull(0);
+        setDragging(false);
         return;
       }
 
@@ -78,30 +111,34 @@ export function PullToRefresh() {
         if (pullRef.current !== 0) {
           pullRef.current = 0;
           setPull(0);
+          setDragging(false);
         }
         return;
       }
 
-      // Own the overscroll so iOS rubber-band doesn't eat the gesture.
       e.preventDefault();
       const next = Math.min(MAX_PULL, dy * RESISTANCE);
       pullRef.current = next;
+      setDragging(true);
       setPull(next);
     };
 
     const onEnd = () => {
       if (!pulling.current) return;
       pulling.current = false;
+      setDragging(false);
       const dist = pullRef.current;
-      pullRef.current = 0;
 
       if (dist >= THRESHOLD && !refreshingRef.current) {
         refreshingRef.current = true;
+        pullRef.current = THRESHOLD;
         setRefreshing(true);
         setPull(THRESHOLD);
-        window.location.reload();
+        window.setTimeout(() => window.location.reload(), 180);
         return;
       }
+
+      pullRef.current = 0;
       setPull(0);
     };
 
@@ -118,49 +155,36 @@ export function PullToRefresh() {
     };
   }, [enabled]);
 
-  if (!enabled) return null;
+  if (!enabled) return <>{children}</>;
 
-  const visible = pull > 4 || refreshing;
   const progress = Math.min(1, pull / THRESHOLD);
-  const ready = pull >= THRESHOLD || refreshing;
+  const showSpinner = pull > 8 || refreshing;
+  // Spinner sits in the revealed band above the sliding page
+  const spinnerY = Math.max(0, pull * 0.5 - 4);
 
   return (
-    <div
-      className="pointer-events-none fixed inset-x-0 z-[60] flex justify-center"
-      style={{
-        top: 'max(0.5rem, env(safe-area-inset-top, 0px))',
-        opacity: visible ? 1 : 0,
-        transform: `translateY(${Math.max(0, pull - 12)}px)`,
-        transition: pull > 0 || refreshing ? 'none' : 'opacity 0.2s ease',
-      }}
-      aria-hidden={!visible}
-    >
+    <div className="relative">
       <div
-        className={`flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-card ring-1 ring-ink/5 ${
-          ready ? 'text-low' : 'text-ink/40'
-        }`}
+        className="pointer-events-none fixed inset-x-0 z-[60] flex justify-center text-ink/45"
+        style={{
+          top: 'max(0.35rem, env(safe-area-inset-top, 0px))',
+          opacity: showSpinner ? 1 : 0,
+          transform: `translateY(${spinnerY}px)`,
+          transition: dragging || refreshing ? 'none' : 'opacity 0.22s ease, transform 0.22s ease',
+        }}
+        aria-hidden={!showSpinner}
       >
-        {refreshing ? (
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-ink/15 border-t-low" />
-        ) : (
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.25"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              transform: `rotate(${progress * 180}deg)`,
-              transition: 'transform 0.05s linear',
-            }}
-          >
-            <path d="M12 5v14" />
-            <path d="M6 11l6-6 6 6" />
-          </svg>
-        )}
+        <SafariSpinner progress={refreshing ? 1 : progress} spinning={refreshing} />
+      </div>
+
+      <div
+        style={{
+          transform: `translateY(${pull}px)`,
+          transition: dragging || refreshing ? 'none' : 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)',
+          willChange: pull > 0 ? 'transform' : undefined,
+        }}
+      >
+        {children}
       </div>
     </div>
   );

@@ -53,8 +53,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <AuthProvider>
       <AppStateProvider>
         <TodayProvider>
-          <PullToRefresh />
-          <ShellGate>{children}</ShellGate>
+          <PullToRefresh>
+            <ShellGate>{children}</ShellGate>
+          </PullToRefresh>
         </TodayProvider>
       </AppStateProvider>
     </AuthProvider>
