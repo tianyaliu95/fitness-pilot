@@ -177,11 +177,14 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
         <SafariSpinner progress={refreshing ? 1 : progress} spinning={refreshing} />
       </div>
 
+      {/*
+        Use padding (not transform) so position:fixed chrome (bottom tab bar)
+        stays viewport-pinned. Transform on an ancestor would re-root fixed.
+      */}
       <div
         style={{
-          transform: `translateY(${pull}px)`,
-          transition: dragging || refreshing ? 'none' : 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)',
-          willChange: pull > 0 ? 'transform' : undefined,
+          paddingTop: pull > 0 || refreshing ? pull : undefined,
+          transition: dragging || refreshing ? 'none' : 'padding-top 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)',
         }}
       >
         {children}
