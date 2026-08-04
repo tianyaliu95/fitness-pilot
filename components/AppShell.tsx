@@ -1,6 +1,7 @@
 'use client';
 
 import { AuthForm } from './AuthForm';
+import { PullToRefresh } from './PullToRefresh';
 import { Sidebar } from './Sidebar';
 import { AuthProvider, useAuth } from '@/lib/auth-context';
 import { AppStateProvider, useAppState } from '@/lib/storage';
@@ -52,6 +53,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <AuthProvider>
       <AppStateProvider>
         <TodayProvider>
+          <PullToRefresh />
           <ShellGate>{children}</ShellGate>
         </TodayProvider>
       </AppStateProvider>
