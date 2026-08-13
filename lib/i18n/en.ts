@@ -3,7 +3,7 @@ export const en = {
   'brand.tagline': 'Carb-Cycling Training Helper',
   'brand.syncing': 'Syncing…',
   'brand.synced': 'Cloud Sync On',
-  'brand.demoMode': 'Demo Mode · Signed Out',
+  'brand.demoMode': 'Demo Mode',
 
   // Nav
   'nav.calendar': 'Calendar',

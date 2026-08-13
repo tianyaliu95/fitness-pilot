@@ -37,47 +37,26 @@ function nestedScrollBlocksPull(target: EventTarget | null) {
   return false;
 }
 
-function SafariSpinner({ progress, spinning }: { progress: number; spinning: boolean }) {
-  const p = Math.max(0, Math.min(1, progress));
-  const r = 9;
-  const c = 2 * Math.PI * r;
-  const dash = Math.max(0.01, p) * c * 0.85;
-
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      className={spinning ? 'animate-spin' : undefined}
-      aria-hidden
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r={r}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeDasharray={`${dash} ${c}`}
-        strokeDashoffset="0"
-        transform="rotate(-90 12 12)"
-        opacity={spinning ? 1 : 0.35 + p * 0.65}
-      />
-    </svg>
-  );
-}
-
+/**
+ * Jank cause (before): every touchmove called setPull → React re-rendered the
+ * entire app shell, and paddingTop forced full-document layout each frame.
+ * Fix: drive pull distance via refs + direct DOM writes during the gesture;
+ * only use React state when refresh starts (spinner spin + reload).
+ */
 export function PullToRefresh({ children }: { children: React.ReactNode }) {
   const [enabled, setEnabled] = useState(false);
-  const [pull, setPull] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
-  const [dragging, setDragging] = useState(false);
 
   const startY = useRef(0);
   const pulling = useRef(false);
   const pullRef = useRef(0);
   const refreshingRef = useRef(false);
+  const rafRef = useRef(0);
+  const pendingPull = useRef<number | null>(null);
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const spinnerWrapRef = useRef<HTMLDivElement>(null);
+  const spinnerCircleRef = useRef<SVGCircleElement>(null);
 
   useEffect(() => {
     setEnabled(isStandalonePwa());
@@ -85,6 +64,49 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!enabled) return;
+
+    const r = 9;
+    const c = 2 * Math.PI * r;
+
+    const paint = (pull: number, opts?: { transitioning?: boolean }) => {
+      const content = contentRef.current;
+      const wrap = spinnerWrapRef.current;
+      const circle = spinnerCircleRef.current;
+      if (!content || !wrap) return;
+
+      const transitioning = opts?.transitioning ?? false;
+      content.style.transition = transitioning
+        ? 'padding-top 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)'
+        : 'none';
+      content.style.paddingTop = pull > 0 ? `${pull}px` : '';
+
+      const progress = Math.min(1, pull / THRESHOLD);
+      const show = pull > 8 || refreshingRef.current;
+      const spinnerY = Math.max(0, pull * 0.5 - 4);
+      wrap.style.transition = transitioning
+        ? 'opacity 0.22s ease, transform 0.22s ease'
+        : 'none';
+      wrap.style.opacity = show ? '1' : '0';
+      wrap.style.transform = `translateY(${spinnerY}px)`;
+
+      if (circle && !refreshingRef.current) {
+        const dash = Math.max(0.01, progress) * c * 0.85;
+        circle.setAttribute('stroke-dasharray', `${dash} ${c}`);
+        circle.setAttribute('opacity', String(0.35 + progress * 0.65));
+      }
+    };
+
+    const schedulePaint = (pull: number) => {
+      pendingPull.current = pull;
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = 0;
+        const next = pendingPull.current;
+        if (next === null) return;
+        pendingPull.current = null;
+        paint(next);
+      });
+    };
 
     const onStart = (e: TouchEvent) => {
       if (refreshingRef.current || e.touches.length !== 1) return;
@@ -101,8 +123,7 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
       if (pageScrollTop() > 0) {
         pulling.current = false;
         pullRef.current = 0;
-        setPull(0);
-        setDragging(false);
+        schedulePaint(0);
         return;
       }
 
@@ -110,8 +131,7 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
       if (dy <= 0) {
         if (pullRef.current !== 0) {
           pullRef.current = 0;
-          setPull(0);
-          setDragging(false);
+          schedulePaint(0);
         }
         return;
       }
@@ -119,27 +139,25 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
       e.preventDefault();
       const next = Math.min(MAX_PULL, dy * RESISTANCE);
       pullRef.current = next;
-      setDragging(true);
-      setPull(next);
+      schedulePaint(next);
     };
 
     const onEnd = () => {
       if (!pulling.current) return;
       pulling.current = false;
-      setDragging(false);
       const dist = pullRef.current;
 
       if (dist >= THRESHOLD && !refreshingRef.current) {
         refreshingRef.current = true;
         pullRef.current = THRESHOLD;
+        paint(THRESHOLD);
         setRefreshing(true);
-        setPull(THRESHOLD);
         window.setTimeout(() => window.location.reload(), 180);
         return;
       }
 
       pullRef.current = 0;
-      setPull(0);
+      paint(0, { transitioning: true });
     };
 
     document.addEventListener('touchstart', onStart, { passive: true });
@@ -147,7 +165,11 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
     document.addEventListener('touchend', onEnd);
     document.addEventListener('touchcancel', onEnd);
 
+    // Initial spinner hidden state (not via React style — paint owns opacity/transform).
+    paint(0);
+
     return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       document.removeEventListener('touchstart', onStart);
       document.removeEventListener('touchmove', onMove);
       document.removeEventListener('touchend', onEnd);
@@ -155,40 +177,62 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
     };
   }, [enabled]);
 
+  // After React marks refreshing, re-apply pull paint so spinner stays visible.
+  useEffect(() => {
+    if (!enabled || !refreshing) return;
+    const content = contentRef.current;
+    const wrap = spinnerWrapRef.current;
+    if (content) content.style.paddingTop = `${THRESHOLD}px`;
+    if (wrap) {
+      wrap.style.opacity = '1';
+      wrap.style.transform = `translateY(${Math.max(0, THRESHOLD * 0.5 - 4)}px)`;
+      wrap.style.transition = 'none';
+    }
+  }, [enabled, refreshing]);
+
   if (!enabled) return <>{children}</>;
 
-  const progress = Math.min(1, pull / THRESHOLD);
-  const showSpinner = pull > 8 || refreshing;
-  // Spinner sits in the revealed band above the sliding page
-  const spinnerY = Math.max(0, pull * 0.5 - 4);
+  const r = 9;
+  const c = 2 * Math.PI * r;
 
   return (
     <div className="relative">
       <div
+        ref={spinnerWrapRef}
         className="pointer-events-none fixed inset-x-0 z-[60] flex justify-center text-ink/45"
-        style={{
-          top: 'max(0.35rem, env(safe-area-inset-top, 0px))',
-          opacity: showSpinner ? 1 : 0,
-          transform: `translateY(${spinnerY}px)`,
-          transition: dragging || refreshing ? 'none' : 'opacity 0.22s ease, transform 0.22s ease',
-        }}
-        aria-hidden={!showSpinner}
+        style={{ top: 'max(0.35rem, env(safe-area-inset-top, 0px))' }}
+        aria-hidden
       >
-        <SafariSpinner progress={refreshing ? 1 : progress} spinning={refreshing} />
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          className={refreshing ? 'animate-spin' : undefined}
+          aria-hidden
+        >
+          <circle
+            ref={spinnerCircleRef}
+            cx="12"
+            cy="12"
+            r={r}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeDasharray={refreshing ? `${c * 0.85} ${c}` : `${0.01 * c * 0.85} ${c}`}
+            strokeDashoffset="0"
+            transform="rotate(-90 12 12)"
+            opacity={refreshing ? 1 : 0.35}
+          />
+        </svg>
       </div>
 
       {/*
         Use padding (not transform) so position:fixed chrome (bottom tab bar)
         stays viewport-pinned. Transform on an ancestor would re-root fixed.
+        Pull distance is applied via contentRef during the gesture (no React).
       */}
-      <div
-        style={{
-          paddingTop: pull > 0 || refreshing ? pull : undefined,
-          transition: dragging || refreshing ? 'none' : 'padding-top 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)',
-        }}
-      >
-        {children}
-      </div>
+      <div ref={contentRef}>{children}</div>
     </div>
   );
 }
