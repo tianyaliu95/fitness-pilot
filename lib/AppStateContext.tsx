@@ -32,15 +32,18 @@ import {
   trainingLogNeedsRepair,
 } from './canonical-restore';
 import { setDateDelayed } from './delay';
+import { getGuestPlaceholderState } from './guest-state';
 
 interface AppStateContextValue {
   state: AppState;
   hydrated: boolean;
+  /** Firebase on, no signed-in user — demo data, never persisted. */
+  isGuest: boolean;
   cloudSyncing: boolean;
   lastSavedAt: Date | null;
   cloudSaveError: string | null;
   updateState: (updater: (prev: AppState) => AppState) => void;
-  persistStateNow: (nextState?: AppState) => Promise<void>;
+  persistStateNow: (nextState?: AppState) => Promise<boolean>;
   resetCycle: (cycleDayIndex: number) => void;
   delayToday: () => void;
   undoDelayToday: () => void;
@@ -52,6 +55,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const { isConfigured, authReady, user } = useAuth();
   const [state, setState] = useState<AppState>(getDefaultState);
   const [hydrated, setHydrated] = useState(false);
+  /** Only true after a logged-in (or offline) session is ready to write storage/cloud. */
+  const [persistReady, setPersistReady] = useState(false);
   const [cloudSyncing, setCloudSyncing] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [cloudSaveError, setCloudSaveError] = useState<string | null>(null);
@@ -64,28 +69,39 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     () => (userId ? { uid: userId, email: userEmail } : null),
     [userId, userEmail]
   );
+  const isGuest = Boolean(isConfigured && authReady && !userIdentity);
   const storageUid =
     userIdentity ? userDocId(userIdentity) : isConfigured ? null : OFFLINE_UID;
 
   useEffect(() => {
     if (!authReady) return;
 
+    // No Firebase: classic offline local mode.
     if (!isConfigured) {
       setState(resolveInitialState({ uid: OFFLINE_UID, email: null }));
+      skipCloudSave.current = true;
+      setPersistReady(true);
       setHydrated(true);
       return;
     }
 
+    // Guest browse: placeholder only — never persist, never touch cloud.
     if (!userIdentity) {
-      setState(getDefaultState());
-      setHydrated(false);
+      skipCloudSave.current = true;
+      setPersistReady(false);
+      setState(getGuestPlaceholderState());
+      setHydrated(true);
       setLastSavedAt(null);
       setCloudSaveError(null);
+      setCloudSyncing(false);
       return;
     }
 
     let cancelled = false;
+    // Block any write until this user's cloud hydrate finishes.
+    setPersistReady(false);
     setHydrated(false);
+    skipCloudSave.current = true;
 
     (async () => {
       try {
@@ -107,6 +123,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
             ? applyCanonicalFloor(rawCloudState)
             : rawCloudState;
 
+        // Cloud (or empty defaults) only — guest in-memory state is discarded.
         const initial = resolveHydratedState(localSettings, cloudState);
 
         setState(initial);
@@ -122,6 +139,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       } finally {
         if (!cancelled) {
           skipCloudSave.current = true;
+          setPersistReady(true);
           setHydrated(true);
         }
       }
@@ -133,7 +151,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   }, [authReady, isConfigured, userIdentity]);
 
   useEffect(() => {
-    if (!hydrated || !storageUid) return;
+    // Guests never write. Offline/user only after persistReady.
+    if (!hydrated || !persistReady || !storageUid) return;
+    if (isConfigured && !userIdentity) return;
 
     saveToStorage(storageUid, state);
     setLastSavedAt(new Date());
@@ -161,21 +181,23 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     }, 400);
 
     return () => clearTimeout(timer);
-  }, [state, hydrated, isConfigured, userIdentity, storageUid]);
+  }, [state, hydrated, persistReady, isConfigured, userIdentity, storageUid]);
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
     setState(updater);
   }, []);
 
   const persistStateNow = useCallback(
-    async (nextState?: AppState) => {
+    async (nextState?: AppState): Promise<boolean> => {
       const snapshot = nextState ?? stateRef.current;
-      if (!storageUid) return;
+      // Hard block: guest / not ready must never write cloud or user local.
+      if (!persistReady || !storageUid) return false;
+      if (isConfigured && !userIdentity) return false;
 
       saveToStorage(storageUid, snapshot);
       setLastSavedAt(new Date());
 
-      if (!isConfigured || !userIdentity) return;
+      if (!isConfigured || !userIdentity) return true;
 
       setCloudSyncing(true);
       setCloudSaveError(null);
@@ -186,16 +208,18 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         });
         if (!saved) {
           setCloudSaveError('保存被跳过，请重试');
-        } else {
-          setLastSavedAt(new Date());
+          return false;
         }
+        setLastSavedAt(new Date());
+        return true;
       } catch (err) {
         setCloudSaveError(formatCloudError(err));
+        return false;
       } finally {
         setCloudSyncing(false);
       }
     },
-    [isConfigured, storageUid, userIdentity]
+    [isConfigured, persistReady, storageUid, userIdentity]
   );
 
   const resetCycle = useCallback((cycleDayIndex: number) => {
@@ -224,6 +248,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       value={{
         state,
         hydrated,
+        isGuest,
         cloudSyncing,
         lastSavedAt,
         cloudSaveError,

@@ -78,23 +78,23 @@ export interface CloudSnapshot {
 }
 
 /**
- * Hydrate app state: settings from local cache, trainingLog ONLY from Firebase.
+ * Hydrate logged-in user state.
+ * Cloud wins entirely when present — never merge guest / unrelated local over it.
+ * Local cache is only a fallback when cloud is empty (same user, settings-only).
  */
 export function resolveHydratedState(
   localSettings: AppState | null,
   cloudState: AppState | null
 ): AppState {
-  const base = mergeState(localSettings ?? {});
-
-  if (!cloudState) {
-    return { ...base, trainingLog: {} };
+  if (cloudState) {
+    return mergeState({ ...cloudState, trainingLog: cloudState.trainingLog });
   }
 
-  return mergeState({
-    ...base,
-    ...cloudState,
-    trainingLog: cloudState.trainingLog,
-  });
+  if (localSettings) {
+    return { ...mergeState(localSettings), trainingLog: {} };
+  }
+
+  return mergeState({});
 }
 
 /** Guard settings-only downgrades (training changes are always allowed). */

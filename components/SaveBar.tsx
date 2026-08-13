@@ -1,5 +1,8 @@
 'use client';
 
+import { useAppState } from '@/lib/storage';
+import { useLoginPrompt } from '@/lib/login-prompt';
+
 interface SaveBarProps {
   dirty: boolean;
   saving: boolean;
@@ -17,9 +20,29 @@ export function SaveBar({
   onSave,
   embedded = false,
 }: SaveBarProps) {
+  const { isGuest } = useAppState();
+  const { openLogin } = useLoginPrompt();
+
   const shell = embedded
     ? 'space-y-2 border-t border-ink/5 pt-3'
     : 'space-y-3 glass-panel rounded-3xl p-5 sm:p-6 animate-enter';
+
+  if (isGuest) {
+    return (
+      <div className={shell}>
+        <p className="text-center text-xs text-ink-muted">
+          演示模式可浏览，登录后才能保存到云端
+        </p>
+        <button
+          type="button"
+          onClick={openLogin}
+          className="w-full rounded-2xl bg-ink px-4 py-3 text-sm font-extrabold text-white transition hover:bg-ink/90"
+        >
+          登录后保存
+        </button>
+      </div>
+    );
+  }
 
   if (!dirty && !saveError) {
     return (

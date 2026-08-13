@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import { useLoginPrompt } from '@/lib/login-prompt';
 
 const NAV_ITEMS = [
   {
@@ -102,6 +103,7 @@ function NavLink({
 export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
   const pathname = usePathname();
   const { isConfigured, user, logOut } = useAuth();
+  const { openLogin } = useLoginPrompt();
 
   return (
     <>
@@ -117,6 +119,9 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
             <p className="mt-2 text-lg font-medium text-ink-faint">
               {cloudSyncing ? '正在同步...' : '已自动云同步'}
             </p>
+          )}
+          {isConfigured && !user && (
+            <p className="mt-2 text-lg font-medium text-ink-faint">演示模式 · 未登录</p>
           )}
         </div>
 
@@ -143,6 +148,15 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             退出登录
+          </button>
+        )}
+        {isConfigured && !user && (
+          <button
+            type="button"
+            onClick={openLogin}
+            className="mt-auto flex items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-lg font-medium text-white transition hover:bg-ink/90"
+          >
+            登录 / 注册
           </button>
         )}
       </aside>

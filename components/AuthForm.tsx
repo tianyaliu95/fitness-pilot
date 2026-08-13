@@ -27,7 +27,12 @@ function GoogleIcon() {
   );
 }
 
-export function AuthForm() {
+interface AuthFormProps {
+  /** Shown as “继续浏览” — return to the app without signing in. */
+  onDismiss?: () => void;
+}
+
+export function AuthForm({ onDismiss }: AuthFormProps) {
   const { signIn, signUp, signInWithGoogle, authError, clearAuthError } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
@@ -70,7 +75,9 @@ export function AuthForm() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
       <div className="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8" aria-busy={busy}>
-        <h1 className="font-display text-2xl font-bold tracking-tight text-ink">Fitness Pilot</h1>
+        <h1 className="font-display text-2xl font-bold tracking-tight text-ink">
+          Fitness Pilot
+        </h1>
         <p className="mt-2 text-sm text-ink-muted">
           登录后数据会自动保存到云端，电脑和手机打开都是最新内容。
         </p>
@@ -86,7 +93,11 @@ export function AuthForm() {
         </button>
 
         {error && (
-          <p className="mt-3 rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-text" role="alert" aria-live="assertive">
+          <p
+            className="mt-3 rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-text"
+            role="alert"
+            aria-live="assertive"
+          >
             {error}
           </p>
         )}
@@ -139,6 +150,16 @@ export function AuthForm() {
         >
           {mode === 'signin' ? '没有账号？注册' : '已有账号？登录'}
         </button>
+
+        {onDismiss && (
+          <button
+            type="button"
+            onClick={onDismiss}
+            className="mt-3 w-full text-center text-sm text-ink-faint hover:text-ink-muted"
+          >
+            先继续浏览演示
+          </button>
+        )}
       </div>
     </div>
   );

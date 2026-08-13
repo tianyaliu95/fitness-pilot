@@ -10,11 +10,11 @@ export function formatAuthError(err: unknown): string {
       case 'auth/unauthorized-domain':
         return '当前网站域名未授权。请到 Firebase Console → Authentication → Settings → Authorized domains 添加当前域名（本地开发用 localhost）。';
       case 'auth/popup-closed-by-user':
-        return '登录窗口已关闭，请再试一次。';
+        return '登录窗口已关闭。无痕模式建议用下方邮箱登录，或允许弹窗后重试 Google。';
       case 'auth/popup-blocked':
-        return '浏览器阻止了弹窗，已改为页面跳转登录。';
+        return '浏览器拦截了登录弹窗，正在跳转 Google 登录页…';
       case 'auth/cancelled-popup-request':
-        return '已有登录窗口在进行中，请稍候或刷新页面后重试。';
+        return '登录弹窗被取消。无痕模式请改用邮箱登录，或允许本站弹窗。';
       case 'auth/network-request-failed':
         return '网络错误，请检查网络连接后重试。';
       case 'auth/argument-error':

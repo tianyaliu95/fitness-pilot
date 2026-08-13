@@ -92,14 +92,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await signInWithPopup(auth, provider);
     } catch (err) {
       if (err instanceof FirebaseError) {
-        const useRedirect =
-          err.code === 'auth/popup-blocked' ||
-          err.code === 'auth/popup-closed-by-user' ||
-          err.code === 'auth/cancelled-popup-request';
-
-        if (useRedirect) {
+        // Incognito / mobile often block popups — fall back to full-page redirect.
+        if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
           await signInWithRedirect(auth, provider);
           return;
+        }
+        // User closed the popup: show a message instead of a silent redirect.
+        if (err.code === 'auth/popup-closed-by-user') {
+          throw err;
         }
       }
       throw err;
