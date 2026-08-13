@@ -41,7 +41,7 @@ export const en = {
 
   // Guest
   'guest.banner':
-    'You’re browsing demo data. Sign in to save to the cloud (demo edits won’t sync).',
+    "You're browsing demo data. Sign in to save to the cloud (demo edits won't sync).",
   'guest.bannerCta': 'Sign In',
   'guest.continueBrowsing': 'Continue browsing demo',
 
@@ -66,7 +66,7 @@ export const en = {
   'carb.highDay': 'High-Carb Day',
   'cycle.paused': 'Paused',
   'cycle.dayOf': 'Day {current} of {total}',
-  'cycle.summary': '{days}-day cycle: {low} low-carb + {high} high-carb',
+  'cycle.summary': '{days}-Day Cycle: {low} Low + {high} High',
   'cycle.originalPlan': 'Planned: {label} · {workout}',
   'cycle.deferredNote': 'Planned {workout} · Moved to tomorrow',
   'cycle.deferredBadge': 'Workout deferred to the next day',
@@ -82,7 +82,7 @@ export const en = {
   'controls.logWorkout': 'Log Workout',
   'controls.weightLog': 'Weight Log',
   'controls.pauseDay': 'Pause a Day',
-  'controls.undoPause': 'Undo Today’s Pause',
+  'controls.undoPause': "Undo Today's Pause",
   'controls.resetCycle': 'Reset Cycle',
   'controls.resetPrompt': 'Set today as which cycle day?',
   'controls.resetConfirm':
@@ -104,10 +104,10 @@ export const en = {
   'macro.fatPh': 'e.g. 50–65g',
 
   // Save bar
-  'save.hint': 'Save when you’re done editing',
+  'save.hint': "Save when you're done editing",
   'save.saved': 'Saved · {time}',
   'save.dirty': 'You have unsaved changes',
-  'save.failed': 'Couldn’t save: {error}',
+  'save.failed': "Couldn't save: {error}",
   'save.guestHint': 'Demo mode is browse-only. Sign in to save to the cloud.',
   'save.guestCta': 'Sign in to save',
 
@@ -126,11 +126,11 @@ export const en = {
   'day.pauseTodayQ': 'Pause today?',
   'day.pauseDayQ': 'Pause this day?',
   'day.pauseHint':
-    'When checked, today’s plan moves to tomorrow (defaults to “No”); you can still change Yes/No without undoing the deferral.',
-  'day.completionQ': 'Did you follow today’s training and nutrition plan?',
+    "When checked, today's plan moves to tomorrow (defaults to “No”); you can still change Yes/No without undoing the deferral.",
+  'day.completionQ': "Did you follow today's training and nutrition plan?",
   'day.notesLabel': 'Session details',
   'day.notesDetailPh': 'What you did, sets, weights, how it felt…',
-  'day.weightLinkBefore': 'You can log today’s weight in',
+  'day.weightLinkBefore': "You can log today's weight in",
   'day.resetTitle': 'Clear Yes/No',
 
   // Profile
@@ -143,7 +143,7 @@ export const en = {
   'profile.heightShort': 'Height',
   'profile.saveProfile': 'Save Profile',
   'profile.editProfile': 'Edit',
-  'profile.weightTitle': 'Today’s Weight',
+  'profile.weightTitle': "Today's Weight",
   'profile.weightDate': 'Date',
   'profile.weightKg': 'Weight (kg)',
   'profile.weightPlaceholder': 'e.g. 78.5',
@@ -183,7 +183,7 @@ export const en = {
   'planning.tabTraining': 'Workouts',
   'planning.tabCycle': 'Carb Cycle',
   'training.title': 'Workouts',
-  'training.hint': '{summary}. Save when you’re done.',
+  'training.hint': "{summary}. Save when you're done.",
   'training.placeholder': 'Workout focus…',
   'settings.title': 'Carb Cycle',
   'settings.subtitle': 'Cycle length and start date',

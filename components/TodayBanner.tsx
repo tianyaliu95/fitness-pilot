@@ -3,7 +3,7 @@
 import type { DayInfo } from '@/lib/types';
 import { MEAL_FIELDS, MACRO_FIELDS } from '@/lib/intake';
 import { macroPerKgLabel } from '@/lib/macros';
-import { formatDisplayDate } from '@/lib/day-info';
+import { formatDisplayDate, formatDisplayDateShort } from '@/lib/day-info';
 import { useLocale, useT } from '@/lib/i18n';
 
 interface TodayBannerProps {
@@ -58,6 +58,11 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
     total: day.cycleLength,
   });
   const deferredNote = t('cycle.deferredNote', { workout: day.scheduledWorkout });
+  const mobileDate =
+    locale === 'en'
+      ? formatDisplayDateShort(day.date, bcp47)
+      : formatDisplayDate(day.date, bcp47);
+  const desktopDate = formatDisplayDate(day.date, bcp47);
 
   return (
     <div
@@ -72,23 +77,21 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
       `}
     >
       <div className="relative space-y-4 sm:space-y-5">
-        {/* Mobile: two-row header */}
+        {/* Mobile: title + compact date on one row; progress on next */}
         <div className="sm:hidden">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 flex-wrap items-center gap-2">
-              <span className="text-2xl font-extrabold tracking-tight text-white">
-                {carbDayLabel}
-              </span>
-              {!day.isDelayed && (
-                <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-xs font-bold text-white">
-                  {progressLabel}
-                </span>
-              )}
-            </div>
-            <p className="shrink-0 pt-0.5 text-right text-base font-bold leading-snug text-white/85">
-              {formatDisplayDate(day.date, bcp47)}
+          <div className="flex items-center justify-between gap-3">
+            <span className="min-w-0 text-2xl font-extrabold tracking-tight text-white whitespace-nowrap">
+              {carbDayLabel}
+            </span>
+            <p className="shrink-0 text-right text-sm font-bold leading-none text-white/85">
+              {mobileDate}
             </p>
           </div>
+          {!day.isDelayed && (
+            <span className="mt-2 inline-block rounded-full bg-white/25 px-2.5 py-0.5 text-xs font-bold text-white">
+              {progressLabel}
+            </span>
+          )}
           <p className="mt-2 text-base font-bold text-white">
             {day.isDelayed ? deferredNote : day.workout}
           </p>
@@ -106,7 +109,7 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
               </span>
             )}
             <span className="ml-auto text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
-              {formatDisplayDate(day.date, bcp47)}
+              {desktopDate}
             </span>
           </div>
           <p className="mt-3 text-2xl font-bold text-white">
@@ -119,7 +122,7 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
             {meals.map(({ key, labelKey }, i) => (
               <div
                 key={key}
-                className={`grid gap-x-2 py-2.5 text-base sm:gap-x-3 sm:py-3 sm:text-lg ${
+                className={`grid items-center gap-x-2 py-2.5 text-base sm:gap-x-3 sm:py-3 sm:text-lg ${
                   locale === 'en'
                     ? 'grid-cols-[6.5rem_1fr] sm:grid-cols-[8rem_1fr] sm:gap-x-4'
                     : 'grid-cols-[4rem_1fr] sm:grid-cols-[5.5rem_1fr]'

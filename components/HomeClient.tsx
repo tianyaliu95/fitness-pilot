@@ -8,10 +8,11 @@ import { buildDayInfo } from '@/lib/day-info';
 import { todayISO } from '@/lib/cycle';
 import { getLatestWeight } from '@/lib/weight';
 import { useAppState } from '@/lib/storage';
-import { useT } from '@/lib/i18n';
+import { useLocale, useT } from '@/lib/i18n';
 
 export function HomeClient() {
   const t = useT();
+  const { locale } = useLocale();
   const { state, resetCycle, delayToday, undoDelayToday } = useAppState();
   const low = state.cycleDays.filter((d) => d.carbType === 'low').length;
   const high = state.cycleDays.length - low;
@@ -34,9 +35,17 @@ export function HomeClient() {
     <div className="space-y-5">
       <header className="md:hidden">
         <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Fitness Pilot</h1>
-        <p className="mt-1 text-sm text-ink-muted">
-          {t('brand.tagline')} · {cycleSummary}
-        </p>
+        {locale === 'en' ? (
+          <p className="mt-1 text-sm text-ink-muted">
+            {t('brand.tagline')}
+            <br />
+            {cycleSummary}
+          </p>
+        ) : (
+          <p className="mt-1 text-sm text-ink-muted">
+            {t('brand.tagline')} · {cycleSummary}
+          </p>
+        )}
       </header>
 
       <TodayBanner day={today} weightKg={weightKg} />

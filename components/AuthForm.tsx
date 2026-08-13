@@ -121,7 +121,7 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
+              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-xs text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               placeholder="you@example.com"
             />
           </label>
@@ -134,7 +134,7 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
+              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-xs text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               placeholder={t('auth.passwordPlaceholder')}
             />
           </label>

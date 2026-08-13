@@ -198,7 +198,7 @@ export function DayDetail({
             onChange={(e) => setDraftNotes(e.target.value)}
             placeholder={t('day.notesDetailPh')}
             rows={5}
-            className="w-full resize-none rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus-visible:ring-2 focus-visible:ring-low/40"
+            className="w-full resize-none rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-xs text-ink outline-none transition focus-visible:ring-2 focus-visible:ring-low/40"
           />
         </label>
 
