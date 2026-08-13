@@ -69,8 +69,8 @@ export function AuthForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8">
-        <h1 className="text-2xl font-bold text-ink">Fitness Pilot</h1>
+      <div className="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8" aria-busy={busy}>
+        <h1 className="font-display text-2xl font-bold tracking-tight text-ink">Fitness Pilot</h1>
         <p className="mt-2 text-sm text-ink-muted">
           登录后数据会自动保存到云端，电脑和手机打开都是最新内容。
         </p>
@@ -86,7 +86,9 @@ export function AuthForm() {
         </button>
 
         {error && (
-          <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+          <p className="mt-3 rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-text" role="alert" aria-live="assertive">
+            {error}
+          </p>
         )}
 
         <div className="my-5 flex items-center gap-3">
@@ -124,7 +126,7 @@ export function AuthForm() {
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-2xl bg-low-dark px-4 py-3 text-sm font-semibold text-white transition hover:bg-low-dark/90 disabled:opacity-60"
+            className="w-full rounded-2xl bg-ink px-4 py-3 text-sm font-semibold text-white transition hover:bg-ink/90 disabled:opacity-60"
           >
             {busy ? '处理中...' : mode === 'signin' ? '邮箱登录' : '邮箱注册'}
           </button>

@@ -20,6 +20,46 @@ const pillIdle =
 const pillActive =
   `${pillBase} border-low/25 bg-low-light text-low-dark shadow-soft hover:border-low/40 hover:bg-low-light/80`;
 
+function IconLog() {
+  return (
+    <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+  );
+}
+
+function IconChart() {
+  return (
+    <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    </svg>
+  );
+}
+
+function IconPause() {
+  return (
+    <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function IconUndo() {
+  return (
+    <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+    </svg>
+  );
+}
+
+function IconReset() {
+  return (
+    <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+    </svg>
+  );
+}
+
 export function CycleControls({
   cycleDays,
   onReset,
@@ -41,23 +81,23 @@ export function CycleControls({
     <div className="space-y-3">
       <div className="mx-auto grid max-w-md grid-cols-2 justify-items-center gap-2 sm:mx-0 sm:flex sm:max-w-none sm:flex-wrap sm:justify-start sm:gap-3">
         <Link href={`/day/${todayISO()}`} className={pillIdle}>
-          <span className="mt-0">📝</span>
+          <IconLog />
           记录训练
         </Link>
 
         <Link href="/profile" className={pillIdle}>
-          <span className="mt-0">📊</span>
+          <IconChart />
           体重记录
         </Link>
 
         {isTodayDelayed ? (
           <button type="button" onClick={onUndoDelay} className={pillActive}>
-            <span className="mt-1.5">↩</span>
+            <IconUndo />
             取消今日暂停
           </button>
         ) : (
           <button type="button" onClick={onDelay} className={pillIdle}>
-            <span className="mt-0.5">⏸️</span>
+            <IconPause />
             暂停一天
           </button>
         )}
@@ -70,13 +110,13 @@ export function CycleControls({
           }}
           className={pillIdle}
         >
-          <span className="mt-0.5">🔄</span>
+          <IconReset />
           重置循环
         </button>
       </div>
 
       {resetOpen && pendingDay === null && (
-        <div className="glass-panel rounded-3xl p-4 sm:p-5">
+        <div className="glass-panel rounded-3xl p-5 sm:p-6">
           <div className="mb-3 flex items-center justify-between gap-3">
             <p className="text-sm font-medium text-ink">今天设为哪个循环日？</p>
             <button

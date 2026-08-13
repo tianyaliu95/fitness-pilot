@@ -123,7 +123,7 @@ export function DatePicker({ value, max, onChange, label = '日期' }: DatePicke
               type="button"
               onClick={goPrevMonth}
               aria-label="上个月"
-              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink"
+              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink"
             >
               <ChevronLeft />
             </button>
@@ -135,7 +135,7 @@ export function DatePicker({ value, max, onChange, label = '日期' }: DatePicke
               onClick={goNextMonth}
               disabled={!canGoNext}
               aria-label="下个月"
-              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
             >
               <ChevronRight />
             </button>
@@ -145,7 +145,7 @@ export function DatePicker({ value, max, onChange, label = '日期' }: DatePicke
             {weekdays.map((wd) => (
               <div
                 key={wd}
-                className="py-1 text-center text-[11px] font-medium text-ink-faint"
+                className="py-1 text-center text-xs font-medium text-ink-faint"
               >
                 {wd}
               </div>

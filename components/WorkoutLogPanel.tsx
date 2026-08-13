@@ -44,10 +44,10 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
 
   function statusBadge(entry: (typeof records)[number]['entry']) {
     if (isCompletedYes(entry)) {
-      return { label: '已完成', className: 'bg-emerald-50 text-emerald-700' };
+      return { label: '已完成', className: 'bg-success-soft text-success-text' };
     }
     if (isCompletedNo(entry)) {
-      return { label: '未完成', className: 'bg-pink-50 text-pink-700' };
+      return { label: '未完成', className: 'bg-danger-soft text-danger-text' };
     }
     return { label: '未记录', className: 'bg-surface-muted text-ink-muted' };
   }
@@ -69,7 +69,7 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
                 label="完成率"
                 value={stats.completionRate !== null ? `${stats.completionRate}%` : '—'}
                 hint={`${stats.completedCount} 天完成 · ${stats.missedCount} 天未完成`}
-                accent="text-emerald-600"
+                accent="text-success-text"
               />
               <StatCard
                 label="近 7 天"

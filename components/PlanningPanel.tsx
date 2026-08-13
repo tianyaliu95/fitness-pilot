@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { AppState } from '@/lib/types';
 import { TrainingPanel } from './TrainingPanel';
 import { SettingsPanel } from './SettingsPanel';
-import { TabBar } from './TabBar';
+import { TabBar, tabPanelProps } from './TabBar';
 
 interface PlanningPanelProps {
   state: AppState;
@@ -37,6 +37,7 @@ export function PlanningPanel({
       </header>
 
       <TabBar
+        idPrefix="planning"
         aria-label="训练规划分类"
         tabs={[
           { id: 'training', label: '训练安排', dirty: trainingDirty },
@@ -46,7 +47,7 @@ export function PlanningPanel({
         onChange={(id) => setTab(id as PlanningTab)}
       />
 
-      <div className={tab === 'training' ? undefined : 'hidden'} role="tabpanel">
+      <div {...tabPanelProps('planning', 'training', tab)}>
         <TrainingPanel
           tabbed
           state={state}
@@ -58,7 +59,7 @@ export function PlanningPanel({
         />
       </div>
 
-      <div className={tab === 'cycle' ? undefined : 'hidden'} role="tabpanel">
+      <div {...tabPanelProps('planning', 'cycle', tab)}>
         <SettingsPanel
           tabbed
           state={state}

@@ -64,7 +64,7 @@ export function Calendar({ state }: CalendarProps) {
         <button
           type="button"
           onClick={prevMonth}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95 sm:h-10 sm:w-10 sm:rounded-2xl"
+          className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95 sm:h-10 sm:w-10 sm:rounded-2xl"
           aria-label="上个月"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -88,7 +88,7 @@ export function Calendar({ state }: CalendarProps) {
         <button
           type="button"
           onClick={nextMonth}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95 sm:h-10 sm:w-10 sm:rounded-2xl"
+          className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95 sm:h-10 sm:w-10 sm:rounded-2xl"
           aria-label="下个月"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -101,7 +101,7 @@ export function Calendar({ state }: CalendarProps) {
         {weekdays.map((wd) => (
           <div
             key={wd}
-            className="py-0.5 text-center text-[10px] font-medium text-ink-faint sm:py-1 sm:text-sm"
+            className="py-0.5 text-center text-xs font-medium text-ink-faint sm:py-1 sm:text-sm"
           >
             {wd}
           </div>

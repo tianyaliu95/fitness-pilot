@@ -101,7 +101,7 @@ function StatusBadge({
   label: string;
 }) {
   const styles =
-    variant === 'complete' ? 'bg-emerald-500 text-white' : 'bg-rose-600 text-white';
+    variant === 'complete' ? 'bg-success text-white' : 'bg-danger text-white';
 
   return (
     <span

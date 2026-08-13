@@ -13,7 +13,7 @@ export function MacroPerKgHint({
 }) {
   if (!weightKg) {
     return (
-      <p className="mt-2 text-[11px] text-ink-faint">
+      <p className="mt-2 text-xs text-ink-faint">
         在「个人信息」记录体重后，可显示 g/kg 倍数
       </p>
     );
@@ -27,7 +27,7 @@ export function MacroPerKgHint({
         return (
           <span
             key={key}
-            className="rounded-full bg-surface-muted px-2.5 py-1 text-[11px] text-ink-muted"
+            className="rounded-full bg-surface-muted px-2.5 py-1 text-xs text-ink-muted"
           >
             {label} {perKg}
           </span>

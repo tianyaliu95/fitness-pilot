@@ -6,6 +6,8 @@ export interface BmiCategory {
   label: string;
   description: string;
   color: string;
+  /** Darker ink for text on light backgrounds (AA) */
+  labelColor: string;
 }
 
 export const BMI_GAUGE_MIN = 15;
@@ -18,6 +20,7 @@ const CATEGORIES: Array<{
   label: string;
   description: string;
   color: string;
+  labelColor: string;
 }> = [
   {
     id: 'underweight',
@@ -26,6 +29,7 @@ const CATEGORIES: Array<{
     label: '偏瘦',
     description: 'BMI 低于正常范围',
     color: '#5b8def',
+    labelColor: '#3d6fd4',
   },
   {
     id: 'normal',
@@ -34,6 +38,7 @@ const CATEGORIES: Array<{
     label: '正常',
     description: '体重在健康范围内',
     color: '#34d399',
+    labelColor: '#047857',
   },
   {
     id: 'overweight',
@@ -42,6 +47,7 @@ const CATEGORIES: Array<{
     label: '超重',
     description: '略高于健康范围',
     color: '#f59e42',
+    labelColor: '#c45f0f',
   },
   {
     id: 'obese',
@@ -50,6 +56,7 @@ const CATEGORIES: Array<{
     label: '肥胖',
     description: '明显高于健康范围',
     color: '#ef4444',
+    labelColor: '#be123c',
   },
 ];
 
@@ -75,6 +82,7 @@ export function getBmiCategory(bmi: number): BmiCategory {
     label: match.label,
     description: match.description,
     color: match.color,
+    labelColor: match.labelColor,
   };
 }
 

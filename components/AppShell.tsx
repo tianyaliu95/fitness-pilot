@@ -28,7 +28,13 @@ function ShellGate({ children }: { children: React.ReactNode }) {
 
   if (isConfigured && !authReady) {
     return (
-      <div className="relative z-[1] flex min-h-screen items-center justify-center">
+      <div
+        className="relative z-[1] flex min-h-screen items-center justify-center"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <span className="sr-only">加载中</span>
         <div className="h-8 w-8 animate-pulse rounded-full bg-low/30" />
       </div>
     );
@@ -44,7 +50,13 @@ function ShellGate({ children }: { children: React.ReactNode }) {
 
   if (!hydrated) {
     return (
-      <div className="relative z-[1] flex min-h-screen items-center justify-center">
+      <div
+        className="relative z-[1] flex min-h-screen items-center justify-center"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <span className="sr-only">加载中</span>
         <div className="h-8 w-8 animate-pulse rounded-full bg-low/30" />
       </div>
     );

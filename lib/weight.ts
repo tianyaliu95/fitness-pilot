@@ -24,125 +24,25 @@ export function formatShortDate(iso: string): string {
   return `${Number(m)}/${Number(d)}`;
 }
 
-/** Calendar tick dates (day 1 / 10 / 20) within [startIso, endIso]. */
-export function monthThirdMarkers(startIso: string, endIso: string): string[] {
-  if (!startIso || !endIso || startIso > endIso) return [];
-
-  const markers: string[] = [];
-  const [sy, sm] = startIso.split('-').map(Number);
-  const [ey, em] = endIso.split('-').map(Number);
-
-  let y = sy;
-  let m = sm;
-  while (y < ey || (y === ey && m <= em)) {
-    for (const day of [1, 10, 20]) {
-      const iso = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      if (iso >= startIso && iso <= endIso) markers.push(iso);
-    }
-    m += 1;
-    if (m > 12) {
-      m = 1;
-      y += 1;
-    }
-  }
-  return markers;
-}
-
-/** Keep first/last; thin middle markers when too many. */
-export function thinDateMarkers(markers: string[], maxLabels: number): string[] {
-  if (markers.length <= maxLabels) return markers;
-  if (maxLabels <= 2) return [markers[0], markers[markers.length - 1]];
-
-  // Prefer month starts only when they already look dense enough
-  const firsts = markers.filter((d) => d.endsWith('-01'));
-  const minDense = Math.max(4, Math.ceil(maxLabels * 0.65));
-  if (firsts.length >= minDense && firsts.length <= maxLabels) {
-    return firsts;
-  }
-
-  const picked: string[] = [];
-  for (let i = 0; i < maxLabels; i++) {
-    const idx = Math.round((i / (maxLabels - 1)) * (markers.length - 1));
-    picked.push(markers[idx]);
-  }
-  return [...new Set(picked)];
-}
-
-function niceDayStep(roughDays: number): number {
-  const steps = [1, 2, 3, 4, 5, 7, 10, 14, 15, 20, 30, 45, 60];
-  const rough = Math.max(roughDays, 0.5);
-  for (const s of steps) {
-    if (s >= rough * 0.9) return s;
-  }
-  return 60;
-}
-
 /**
- * X-axis labels that stay roughly `targetCount` dense for any zoom level.
- * Zoomed-in → daily/few-day ticks; zoomed-out → 1/10/20 or evenly spaced.
+ * Evenly spaced date labels across [startIso, endIso] (inclusive).
+ * Count is chosen by the caller from available width; dates are uniform in day-space
+ * so they sit evenly on a linear time axis.
  */
-export function dynamicXMarkers(
-  startIso: string,
-  endIso: string,
-  targetCount: number
-): string[] {
+export function evenDateMarkers(startIso: string, endIso: string, count: number): string[] {
   if (!startIso || !endIso || startIso > endIso) return [];
-  if (startIso === endIso) return [startIso];
+  if (startIso === endIso || count <= 1) return [startIso];
 
   const span = Math.max(diffDays(startIso, endIso), 1);
-  // Aim for a decent count on both phone and desktop
-  const target = Math.max(5, Math.min(targetCount, 10));
-
-  // Wide window: use 1/10/20, then thin evenly (don't collapse to month-starts only)
-  if (span >= 60) {
-    const calendar = monthThirdMarkers(startIso, endIso);
-    let base = calendar.length >= 2 ? [...calendar] : [];
-    if (!base.includes(startIso)) base.unshift(startIso);
-    if (!base.includes(endIso)) base.push(endIso);
-    base = [...new Set(base)].sort();
-    if (base.length >= target) return thinDateMarkers(base, target);
-    // Not enough calendar ticks — fall through to uniform day steps
-  }
-
-  const step = niceDayStep(span / (target - 1));
-  return dynamicXMarkersWithStep(startIso, endIso, step, target);
-}
-
-function dynamicXMarkersWithStep(
-  startIso: string,
-  endIso: string,
-  step: number,
-  target: number
-): string[] {
-  const span = Math.max(diffDays(startIso, endIso), 1);
+  const n = Math.max(2, Math.min(count, span + 1));
   const markers: string[] = [];
-  for (let d = 0; d <= span; d += step) {
-    markers.push(addDays(startIso, d));
+
+  for (let i = 0; i < n; i++) {
+    const day = Math.round((i / (n - 1)) * span);
+    markers.push(addDays(startIso, day));
   }
 
-  const last = markers[markers.length - 1];
-  const gapToEnd = diffDays(last, endIso);
-  if (gapToEnd > 0) {
-    if (gapToEnd <= step * 0.45 && markers.length > 1) {
-      markers[markers.length - 1] = endIso;
-    } else {
-      markers.push(endIso);
-    }
-  }
-
-  if (markers.length > target + 1) {
-    return thinDateMarkers(markers, target);
-  }
-
-  // Too sparse — retry with a finer step once
-  if (markers.length < Math.min(5, target) && step > 1) {
-    const finer = niceDayStep(span / Math.max(target, 6));
-    if (finer < step) {
-      return dynamicXMarkersWithStep(startIso, endIso, finer, target);
-    }
-  }
-
-  return markers;
+  return [...new Set(markers)];
 }
 
 /** Pick a 1/2/5 × 10^n step for chart axes. */

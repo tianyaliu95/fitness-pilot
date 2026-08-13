@@ -8,9 +8,9 @@ module.exports = {
     extend: {
       colors: {
         surface: {
-          DEFAULT: '#f4f6fa',
+          DEFAULT: '#e8eef5',
           card: 'rgba(255, 255, 255, 0.78)',
-          muted: 'rgba(243, 246, 250, 0.72)',
+          muted: 'rgba(236, 242, 248, 0.72)',
         },
         low: {
           DEFAULT: '#5b8def',
@@ -22,6 +22,16 @@ module.exports = {
           light: '#fef3e6',
           /** Dark enough for white text (~4.5:1+) */
           dark: '#c45f0f',
+        },
+        success: {
+          DEFAULT: '#059669',
+          soft: '#ecfdf5',
+          text: '#047857',
+        },
+        danger: {
+          DEFAULT: '#e11d48',
+          soft: '#fff1f2',
+          text: '#be123c',
         },
         ink: {
           DEFAULT: '#1a1a2e',

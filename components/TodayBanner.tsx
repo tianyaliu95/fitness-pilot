@@ -24,7 +24,7 @@ function MacroHighlight({
 
   return (
     <div className="flex-1 rounded-2xl bg-white/20 px-2.5 py-3 sm:px-4 sm:py-4">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-white sm:text-sm">
+      <p className="text-xs font-bold tracking-wide text-white sm:text-sm">
         {label}
       </p>
       <p className="mt-1 text-xl font-extrabold leading-tight text-white drop-shadow-sm sm:mt-1.5 sm:text-3xl">
@@ -48,17 +48,14 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
   return (
     <div
       className={`
-        relative overflow-hidden rounded-2xl p-4 shadow-card sm:rounded-3xl sm:p-10
+        relative overflow-hidden rounded-3xl p-5 shadow-card animate-enter sm:p-8
         ${isLow
           ? 'bg-gradient-to-br from-low-dark to-[#2f5bb8]'
           : 'bg-gradient-to-br from-high-dark to-[#a84f0a]'
         }
       `}
     >
-      {/* <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10" /> */}
-      {/* <div className="absolute -bottom-4 -left-4 h-24 w-24 rounded-full bg-white/5" /> */}
-
-      <div className="relative space-y-4 sm:space-y-6">
+      <div className="relative space-y-4 sm:space-y-5">
         {/* Mobile: two-row header */}
         <div className="sm:hidden">
           <div className="flex items-start justify-between gap-3">

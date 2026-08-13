@@ -6,7 +6,7 @@ import { MEAL_FIELDS, mealPlanEquals } from '@/lib/intake';
 import { MealMacroFields } from '@/components/MacroDisplay';
 import { getLatestWeight } from '@/lib/weight';
 import { SaveBar } from './SaveBar';
-import { TabBar } from './TabBar';
+import { TabBar, tabPanelProps } from './TabBar';
 
 interface IntakePanelProps {
   state: AppState;
@@ -115,6 +115,7 @@ export function IntakePanel({
       </header>
 
       <TabBar
+        idPrefix="intake"
         aria-label="摄入日类型"
         variant="carb"
         tabs={[
@@ -125,7 +126,7 @@ export function IntakePanel({
         onChange={(id) => setTab(id as IntakeTab)}
       />
 
-      <div className={tab === 'low' ? 'space-y-5' : 'hidden'} role="tabpanel">
+      <div {...tabPanelProps('intake', 'low', tab, 'space-y-5')}>
         <MealPlanForm
           color="low"
           plan={draftLow}
@@ -141,7 +142,7 @@ export function IntakePanel({
         />
       </div>
 
-      <div className={tab === 'high' ? 'space-y-5' : 'hidden'} role="tabpanel">
+      <div {...tabPanelProps('intake', 'high', tab, 'space-y-5')}>
         <MealPlanForm
           color="high"
           plan={draftHigh}

@@ -5,7 +5,7 @@ import { addDays, diffDays } from '@/lib/cycle';
 import { formatDisplayDate } from '@/lib/day-info';
 import type { WeightPoint } from '@/lib/weight';
 import {
-  dynamicXMarkers,
+  evenDateMarkers,
   formatShortDate,
   niceWeightYDomain,
 } from '@/lib/weight';
@@ -30,13 +30,15 @@ const POINT_INSET = 10;
 const PLOT_LEFT = PAD.left + POINT_INSET;
 const PLOT_WIDTH = INNER_W - POINT_INSET * 2;
 const MIN_VIEW_DAYS = 5;
+/** Min SVG px between X label centers so "M/D" dates stay readable. */
+const MIN_X_LABEL_GAP = 48;
 
 function useMaxXLabels(): number {
-  const [max, setMax] = useState(6);
+  const [max, setMax] = useState(5);
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 640px)');
-    const apply = () => setMax(mq.matches ? 8 : 6);
+    const apply = () => setMax(mq.matches ? 7 : 5);
     apply();
     mq.addEventListener('change', apply);
     return () => mq.removeEventListener('change', apply);
@@ -111,10 +113,11 @@ export function WeightChart({ data }: WeightChartProps) {
   const viewSpan = Math.max(view.hi - view.lo, 1);
   const isZoomed = view.lo > 0 || view.hi < fullSpan;
 
-  const markers = useMemo(
-    () => dynamicXMarkers(viewStart, viewEnd, maxLabels),
-    [viewStart, viewEnd, maxLabels]
-  );
+  const markers = useMemo(() => {
+    const fit = Math.floor(PLOT_WIDTH / MIN_X_LABEL_GAP) + 1;
+    const count = Math.max(2, Math.min(maxLabels, fit));
+    return evenDateMarkers(viewStart, viewEnd, count);
+  }, [viewStart, viewEnd, maxLabels]);
 
   const visibleData = useMemo(() => {
     if (!data.length) return [];
@@ -145,6 +148,15 @@ export function WeightChart({ data }: WeightChartProps) {
   const xForDate = useCallback(
     (iso: string) => xForDay(diffDays(fullStart, iso)),
     [fullStart, xForDay]
+  );
+
+  const xLabels = useMemo(
+    () =>
+      markers.map((iso) => ({
+        iso,
+        x: Math.min(W - 16, Math.max(16, xForDate(iso))),
+      })),
+    [markers, xForDate]
   );
 
   const points: ChartPoint[] = useMemo(
@@ -421,14 +433,14 @@ export function WeightChart({ data }: WeightChartProps) {
   return (
     <div className="relative w-full overflow-visible">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-[11px] text-ink-faint sm:text-xs">
+        <p className="min-w-0 flex-1 text-xs text-ink-faint sm:text-xs">
           移动查看 · 滚轮缩放时间轴 · 放大后可拖拽平移
         </p>
         {isZoomed && (
           <button
             type="button"
             onClick={resetZoom}
-            className="text-[11px] font-medium text-low-dark hover:underline sm:text-xs"
+            className="shrink-0 whitespace-nowrap text-xs font-medium text-low-dark hover:underline sm:text-xs"
           >
             重置缩放
           </button>
@@ -482,9 +494,9 @@ export function WeightChart({ data }: WeightChartProps) {
                 />
                 <text
                   x={0}
-                  y={y + 4}
+                  y={y + 3.5}
                   textAnchor="start"
-                  className="fill-ink-faint text-[16px] sm:text-[9px]"
+                  className="fill-ink-faint text-[10px] sm:text-[9px]"
                 >
                   {Number.isInteger(tick) ? String(tick) : tick.toFixed(1)}
                 </text>
@@ -546,22 +558,17 @@ export function WeightChart({ data }: WeightChartProps) {
             fill="transparent"
           />
 
-          {markers.map((iso, i) => {
-            const x = xForDate(iso);
-            const isFirst = i === 0;
-            const isLast = i === markers.length - 1;
-            return (
+          {xLabels.map(({ iso, x }) => (
               <text
                 key={iso}
                 x={x}
                 y={H - 10}
-                textAnchor={isFirst ? 'start' : isLast ? 'end' : 'middle'}
-                className="pointer-events-none fill-ink-faint text-[16px] sm:text-[9px]"
+                textAnchor="middle"
+                className="pointer-events-none fill-ink-faint text-[10px] sm:text-[9px]"
               >
                 {formatShortDate(iso)}
               </text>
-            );
-          })}
+          ))}
         </svg>
 
         {active && (
@@ -574,7 +581,7 @@ export function WeightChart({ data }: WeightChartProps) {
             }}
           >
             <div className="rounded-2xl border border-ink/5 bg-white/95 px-3.5 py-2.5 shadow-card backdrop-blur-sm">
-              <p className="text-[11px] font-medium leading-snug text-ink-muted sm:text-xs">
+              <p className="text-xs font-medium leading-snug text-ink-muted sm:text-xs">
                 {formatDisplayDate(active.date)}
               </p>
               <p className="mt-1 flex items-baseline gap-1">

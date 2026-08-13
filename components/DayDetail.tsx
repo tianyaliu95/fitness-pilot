@@ -91,7 +91,7 @@ export function DayDetail({
 
       <div
         className={`
-          relative overflow-hidden rounded-3xl p-6 shadow-card
+          relative overflow-hidden rounded-3xl p-5 shadow-card sm:p-6
           ${isLow
             ? 'bg-gradient-to-br from-low-dark to-[#2f5bb8]'
             : 'bg-gradient-to-br from-high-dark to-[#a84f0a]'
@@ -140,10 +140,10 @@ export function DayDetail({
             <button
               type="button"
               onClick={() => handleChoice(true)}
-              className={`cursor-pointer rounded-xl px-4 py-1.5 text-sm font-semibold transition ${
+              className={`min-h-10 cursor-pointer rounded-xl px-4 text-sm font-semibold transition ${
                 selectedCompleted === true
-                  ? 'bg-emerald-500 text-white shadow-soft'
-                  : 'border border-ink/10 bg-surface-card text-ink-muted hover:border-emerald-300 hover:text-emerald-700'
+                  ? 'bg-success text-white shadow-soft'
+                  : 'border border-ink/10 bg-white text-ink-muted hover:border-success/40 hover:text-success-text'
               }`}
             >
               是
@@ -151,10 +151,10 @@ export function DayDetail({
             <button
               type="button"
               onClick={() => handleChoice(false)}
-              className={`cursor-pointer rounded-xl px-4 py-1.5 text-sm font-semibold transition ${
+              className={`min-h-10 cursor-pointer rounded-xl px-4 text-sm font-semibold transition ${
                 selectedCompleted === false
-                  ? 'bg-rose-800 text-white shadow-soft'
-                  : 'border border-ink/10 bg-surface-card text-ink-muted hover:border-rose-300 hover:text-rose-700'
+                  ? 'bg-danger text-white shadow-soft'
+                  : 'border border-ink/10 bg-white text-ink-muted hover:border-danger/40 hover:text-danger-text'
               }`}
             >
               否
@@ -164,10 +164,10 @@ export function DayDetail({
               onClick={handleReset}
               disabled={!canReset}
               title="清除是/否选择"
-              className={`rounded-xl px-3 py-1.5 text-sm font-medium transition ${
+              className={`min-h-10 rounded-xl px-3 text-sm font-medium transition ${
                 canReset
-                  ? 'cursor-pointer border border-ink/10 bg-surface-card text-ink-muted hover:border-ink/20 hover:text-ink'
-                  : 'cursor-not-allowed border border-ink/5 bg-surface-card/50 text-ink-faint'
+                  ? 'cursor-pointer border border-ink/10 bg-white text-ink-muted hover:border-ink/20 hover:text-ink'
+                  : 'cursor-not-allowed border border-ink/5 bg-surface/50 text-ink-faint'
               }`}
             >
               重置

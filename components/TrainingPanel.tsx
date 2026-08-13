@@ -68,7 +68,7 @@ export function TrainingPanel({
   const showHeader = !embedded && !tabbed;
 
   return (
-    <div className={embedded || tabbed ? 'space-y-4' : 'space-y-5'}>
+    <div className="space-y-5">
       {showHeader && (
         <header>
           <h2 className="text-xl font-bold text-ink sm:text-2xl">训练安排</h2>
@@ -93,13 +93,13 @@ export function TrainingPanel({
         </header>
       )}
 
-      <div className="space-y-3">
+      <div className="glass-panel space-y-2 rounded-3xl p-3 sm:p-4">
         {draftDays.map((day) => (
           <div
             key={day.dayIndex}
-            className="glass-panel rounded-3xl p-4 sm:p-5"
+            className="rounded-2xl border border-ink/5 bg-surface px-4 py-3"
           >
-            <div className="mb-3 flex flex-wrap items-center gap-2">
+            <div className="mb-2.5 flex flex-wrap items-center gap-2">
               <span className="text-sm font-semibold text-ink">{day.label}</span>
               <span
                 className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -116,7 +116,7 @@ export function TrainingPanel({
               value={day.workout}
               onChange={(e) => updateWorkout(day.dayIndex, e.target.value)}
               placeholder="训练内容..."
-              className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-2.5 text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-low/40"
+              className="w-full rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-low/40"
             />
           </div>
         ))}

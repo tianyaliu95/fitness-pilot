@@ -50,7 +50,7 @@ function ProfileField({
 
   return (
     <div className="rounded-2xl bg-surface px-3 py-2.5">
-      <dt className="text-[11px] font-medium text-ink-muted">{label}</dt>
+      <dt className="text-xs font-medium text-ink-muted">{label}</dt>
       <dd className={`mt-0.5 text-sm font-semibold ${hasValue ? 'text-ink' : 'text-ink-faint'}`}>
         {hasValue ? (
           <>
@@ -281,7 +281,7 @@ export function ProfilePanel({
           <BmiGauge bmi={bmi} category={bmiCategory} />
         </div>
 
-        <p className="mt-4 text-[11px] leading-relaxed text-ink-faint">
+        <p className="mt-4 text-xs leading-relaxed text-ink-faint">
           BMI 采用 WHO 标准：体重(kg) ÷ 身高(m)²。使用最新体重与所填身高计算，仅供参考。
         </p>
       </div>

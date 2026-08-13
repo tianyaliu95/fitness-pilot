@@ -81,16 +81,14 @@ export function BmiGauge({ bmi, category }: BmiGaugeProps) {
           role="img"
           aria-label={hasBmi ? `BMI ${formatBmi(bmi)}，${category.label}` : 'BMI 暂无数据'}
         >
-          {/* background track */}
           <path
             d={arcPath(180, 360, R)}
             fill="none"
-            stroke="#ebe8e3"
+            stroke="#e2e8f0"
             strokeWidth={STROKE}
             strokeLinecap="round"
           />
 
-          {/* colored zones */}
           {BMI_GAUGE_SEGMENTS.map((seg) => (
             <path
               key={`${seg.from}-${seg.to}`}
@@ -103,49 +101,38 @@ export function BmiGauge({ bmi, category }: BmiGaugeProps) {
             />
           ))}
 
-          {/* round caps on outer ends */}
           <circle cx={polar(180, R).x} cy={polar(180, R).y} r={STROKE / 2} fill="#5b8def" />
           <circle cx={polar(360, R).x} cy={polar(360, R).y} r={STROKE / 2} fill="#ef4444" />
 
-          {/* BMI marker — radial tick on the arc */}
           {markerDeg !== null && category && (
             <ArcMarker deg={markerDeg} color={category.color} />
           )}
         </svg>
 
-        {/* center readout — sits inside the arc */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 top-8 flex flex-col items-center justify-end pb-1">
           {hasBmi ? (
             <>
-              <p className="text-[2.75rem] font-extrabold leading-none tracking-tight text-ink mb-6">
+              <p className="mb-6 text-[2.75rem] font-extrabold leading-none tracking-tight text-ink">
                 {formatBmi(bmi)}
               </p>
-              {/* <p
-                className="mt-2 text-lg font-bold"
-                style={{ color: category.color }}
-              >
-                {category.label}
-              </p> */}
-              {/* <p className="mt-0.5 text-xs text-ink-muted">{category.description}</p> */}
             </>
           ) : (
             <>
               <p className="text-3xl font-bold text-ink-faint">—</p>
-              <p className="mt-2 mb-4 text-sm text-ink-muted">填写身高并记录体重</p>
+              <p className="mb-4 mt-2 text-sm text-ink-muted">填写身高并记录体重</p>
             </>
           )}
         </div>
       </div>
 
-      {/* scale labels */}
-      <div className="mt-1 flex justify-between px-8 text-sm font-medium text-ink-faint items-center">
+      <div className="mt-1 flex items-center justify-between px-8 text-sm font-medium text-ink-faint">
         {SCALE_LABELS.map(({ label }) => {
           const active = category?.label === label;
           return (
             <span
               key={label}
-              className={active ? 'font-extrabold text-xl' : undefined}
-              style={active ? { color: category.color } : undefined}
+              className={active ? 'text-base font-extrabold' : undefined}
+              style={active ? { color: category.labelColor } : undefined}
             >
               {label}
             </span>

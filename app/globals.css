@@ -57,6 +57,31 @@
     backdrop-filter: blur(18px) saturate(1.2);
     -webkit-backdrop-filter: blur(18px) saturate(1.2);
   }
+
+  .animate-enter {
+    animation: ui-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes ui-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-enter {
+    animation: none !important;
+  }
+
+  .ambient-orb {
+    animation: none !important;
+  }
 }
 
 /* —— Ambient field (personal-website style, brand-tinted) —— */
@@ -159,11 +184,5 @@
   .ambient-orb {
     filter: blur(48px);
     opacity: 0.42;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ambient-orb {
-    animation: none !important;
   }
 }

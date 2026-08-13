@@ -103,7 +103,7 @@ export function SettingsPanel({
   const showHeader = !embedded && !tabbed;
 
   return (
-    <div className={embedded || tabbed ? 'space-y-5' : 'space-y-6'}>
+    <div className="space-y-5">
       {showHeader && (
         <header>
           <h2 className="text-xl font-bold text-ink sm:text-2xl">设置</h2>
@@ -147,7 +147,7 @@ export function SettingsPanel({
               type="button"
               disabled={draftDays.length <= 2}
               onClick={() => setLength(draftDays.length - 1)}
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink/10 bg-surface text-lg font-bold text-ink transition hover:bg-surface-muted disabled:opacity-40"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-ink/10 bg-surface text-lg font-bold text-ink transition hover:bg-surface-muted disabled:opacity-40"
               aria-label="减少一天"
             >
               −
@@ -159,7 +159,7 @@ export function SettingsPanel({
               type="button"
               disabled={draftDays.length >= 7}
               onClick={() => setLength(draftDays.length + 1)}
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-ink/10 bg-surface text-lg font-bold text-ink transition hover:bg-surface-muted disabled:opacity-40"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-ink/10 bg-surface text-lg font-bold text-ink transition hover:bg-surface-muted disabled:opacity-40"
               aria-label="增加一天"
             >
               +
