@@ -8,9 +8,9 @@ module.exports = {
     extend: {
       colors: {
         surface: {
-          DEFAULT: '#faf9f7',
-          card: '#ffffff',
-          muted: '#f3f1ed',
+          DEFAULT: '#f4f6fa',
+          card: 'rgba(255, 255, 255, 0.78)',
+          muted: 'rgba(243, 246, 250, 0.72)',
         },
         low: {
           DEFAULT: '#5b8def',
@@ -20,7 +20,8 @@ module.exports = {
         high: {
           DEFAULT: '#f59e42',
           light: '#fef3e6',
-          dark: '#e07a1a',
+          /** Dark enough for white text (~4.5:1+) */
+          dark: '#c45f0f',
         },
         ink: {
           DEFAULT: '#1a1a2e',
@@ -33,11 +34,21 @@ module.exports = {
         '3xl': '1.5rem',
       },
       boxShadow: {
-        soft: '0 2px 16px rgba(0,0,0,0.06)',
-        card: '0 4px 24px rgba(0,0,0,0.08)',
+        soft: '0 10px 30px rgba(26, 26, 46, 0.06)',
+        card: '0 18px 50px rgba(26, 26, 46, 0.1)',
       },
       fontFamily: {
-        sans: ['var(--font-geist)', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: [
+          '"PingFang SC"',
+          '"Hiragino Sans GB"',
+          '"Noto Sans SC"',
+          '"Microsoft YaHei"',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'sans-serif',
+        ],
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
       },
     },
   },

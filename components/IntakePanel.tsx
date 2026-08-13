@@ -30,10 +30,10 @@ function MealPlanForm({
   onChange: (field: keyof MealPlan, value: string) => void;
 }) {
   const accent =
-    color === 'low' ? 'border-low/30 focus:ring-low/30' : 'border-high/30 focus:ring-high/30';
+    color === 'low' ? 'border-low/30 focus-visible:ring-low/40' : 'border-high/30 focus-visible:ring-high-dark/40';
 
   return (
-    <div className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
+    <div className="glass-panel rounded-3xl p-5 sm:p-6">
       <div className="space-y-3">
         {MEAL_FIELDS.map(({ key, label }) => (
           <label key={key} className="block">
@@ -42,7 +42,7 @@ function MealPlanForm({
               type="text"
               value={plan[key]}
               onChange={(e) => onChange(key, e.target.value)}
-              className={`w-full rounded-xl border bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus:ring-2 ${accent}`}
+              className={`w-full rounded-xl border bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus-visible:ring-2 ${accent}`}
             />
           </label>
         ))}
@@ -63,7 +63,7 @@ function MealPlanForm({
           onChange={(e) => onChange('notes', e.target.value)}
           placeholder="其他饮食注意事项..."
           rows={2}
-          className={`w-full resize-none rounded-xl border bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus:ring-2 ${accent}`}
+          className={`w-full resize-none rounded-xl border bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus-visible:ring-2 ${accent}`}
         />
       </label>
     </div>

@@ -97,7 +97,7 @@ export function TrainingPanel({
         {draftDays.map((day) => (
           <div
             key={day.dayIndex}
-            className="rounded-3xl border border-ink/5 bg-surface-card p-4 shadow-soft sm:p-5"
+            className="glass-panel rounded-3xl p-4 sm:p-5"
           >
             <div className="mb-3 flex flex-wrap items-center gap-2">
               <span className="text-sm font-semibold text-ink">{day.label}</span>
@@ -116,7 +116,7 @@ export function TrainingPanel({
               value={day.workout}
               onChange={(e) => updateWorkout(day.dayIndex, e.target.value)}
               placeholder="训练内容..."
-              className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-2.5 text-sm outline-none transition focus:ring-2 focus:ring-ink/10"
+              className="w-full rounded-xl border border-ink/10 bg-surface px-4 py-2.5 text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-low/40"
             />
           </div>
         ))}

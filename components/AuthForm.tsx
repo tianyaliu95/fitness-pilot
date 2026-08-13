@@ -69,7 +69,7 @@ export function AuthForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md rounded-3xl bg-surface-card p-6 shadow-card sm:p-8">
+      <div className="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8">
         <h1 className="text-2xl font-bold text-ink">Fitness Pilot</h1>
         <p className="mt-2 text-sm text-ink-muted">
           登录后数据会自动保存到云端，电脑和手机打开都是最新内容。
@@ -103,7 +103,7 @@ export function AuthForm() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-low/30"
+              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               placeholder="you@example.com"
             />
           </label>
@@ -116,7 +116,7 @@ export function AuthForm() {
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-low/30"
+              className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               placeholder="至少 6 位"
             />
           </label>
@@ -124,7 +124,7 @@ export function AuthForm() {
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-2xl bg-low px-4 py-3 text-sm font-semibold text-white transition hover:bg-low-dark disabled:opacity-60"
+            className="w-full rounded-2xl bg-low-dark px-4 py-3 text-sm font-semibold text-white transition hover:bg-low-dark/90 disabled:opacity-60"
           >
             {busy ? '处理中...' : mode === 'signin' ? '邮箱登录' : '邮箱注册'}
           </button>

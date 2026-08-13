@@ -22,7 +22,7 @@ export function SaveBar({
       className={
         embedded
           ? 'space-y-2 border-t border-ink/5 pt-3'
-          : 'space-y-3 rounded-3xl border border-ink/5 bg-surface-card p-4 shadow-soft sm:p-5'
+          : 'space-y-3 glass-panel rounded-3xl p-4 sm:p-5'
       }
     >
       {dirty && (

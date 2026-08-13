@@ -82,7 +82,7 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
         <span
           className={`
             inline-block rounded-full px-2 py-0.5 text-xs font-semibold
-            ${isLow ? 'bg-low text-white' : 'bg-high text-white'}
+            ${isLow ? 'bg-low-dark text-white' : 'bg-high-dark text-white'}
           `}
         >
           {isLow ? '低碳' : '高碳'}

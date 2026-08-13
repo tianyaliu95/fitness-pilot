@@ -1,6 +1,14 @@
 import type { Metadata, Viewport } from 'next';
+import { Outfit } from 'next/font/google';
 import { AppShell } from '@/components/AppShell';
 import './globals.css';
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['600', '700'],
+  variable: '--font-display',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Fitness Pilot — 碳循环训练助手',
@@ -32,12 +40,12 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#faf9f7',
+  themeColor: '#e8eef5',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" className={outfit.variable}>
       <body className="min-h-screen font-sans">
         <AppShell>{children}</AppShell>
       </body>

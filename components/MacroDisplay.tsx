@@ -71,7 +71,7 @@ export function MealMacroFields({
                 value={plan[key]}
                 onChange={(e) => onChange(key, e.target.value)}
                 placeholder={placeholder}
-                className={`w-full rounded-xl border bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus:ring-2 ${accent}`}
+                className={`w-full rounded-xl border bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus-visible:ring-2 ${accent}`}
               />
             </label>
           );

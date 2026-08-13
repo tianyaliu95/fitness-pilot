@@ -59,7 +59,7 @@ export function Calendar({ state }: CalendarProps) {
   }
 
   return (
-    <div className="rounded-2xl bg-surface-card px-2.5 pt-3 pb-5 shadow-soft sm:rounded-3xl sm:px-6 sm:pt-6 sm:pb-10">
+    <div className="glass-panel rounded-2xl px-2.5 pt-3 pb-5 sm:rounded-3xl sm:px-6 sm:pt-6 sm:pb-10">
       <div className="mb-3 flex items-center justify-between sm:mb-6">
         <button
           type="button"

@@ -93,8 +93,8 @@ export function DayDetail({
         className={`
           relative overflow-hidden rounded-3xl p-6 shadow-card
           ${isLow
-            ? 'bg-gradient-to-br from-low to-low-dark'
-            : 'bg-gradient-to-br from-high to-high-dark'
+            ? 'bg-gradient-to-br from-low-dark to-[#2f5bb8]'
+            : 'bg-gradient-to-br from-high-dark to-[#a84f0a]'
           }
         `}
       >
@@ -113,7 +113,7 @@ export function DayDetail({
         )}
       </div>
 
-      <div className="mt-6 rounded-3xl bg-surface-card p-5 shadow-soft sm:p-6">
+      <div className="mt-6 glass-panel rounded-3xl p-5 sm:p-6">
         <h2 className="font-semibold text-ink">训练记录</h2>
         <p className="mt-1 text-sm text-ink-muted">计划训练：{day.workout}</p>
 
@@ -122,7 +122,7 @@ export function DayDetail({
             type="checkbox"
             checked={day.isDelayed}
             onChange={(e) => onToggleDelay(e.target.checked)}
-            className="h-4 w-4 cursor-pointer rounded border-ink/20 text-ink focus:ring-ink/20"
+            className="h-4 w-4 cursor-pointer rounded border-ink/20 text-ink focus-visible:ring-2 focus-visible:ring-low/40"
           />
           <div>
             <span className="text-sm font-medium text-ink">
@@ -182,7 +182,7 @@ export function DayDetail({
             onChange={(e) => setDraftNotes(e.target.value)}
             placeholder="记录实际训练内容、组数、重量、感受等..."
             rows={5}
-            className="w-full resize-none rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus:ring-2 focus:ring-ink/10"
+            className="w-full resize-none rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus-visible:ring-2 focus-visible:ring-low/40"
           />
         </label>
 

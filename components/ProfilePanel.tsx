@@ -29,7 +29,7 @@ function ProfileAvatar({ name, email }: { name: string; email: string | null }) 
   const initial = name.trim().charAt(0) || email?.charAt(0)?.toUpperCase() || '?';
 
   return (
-    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-low to-low-dark text-xl font-extrabold text-white shadow-soft">
+    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-low-dark to-[#2f5bb8] text-xl font-extrabold text-white shadow-soft">
       {initial}
     </div>
   );
@@ -172,7 +172,7 @@ export function ProfilePanel({
       </header>
 
       {/* Profile + BMI */}
-      <div className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
+      <div className="glass-panel rounded-3xl p-5 sm:p-6">
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 flex-1 items-start gap-4">
             <ProfileAvatar
@@ -234,7 +234,7 @@ export function ProfilePanel({
                   setDraftProfile((p) => ({ ...p, name: e.target.value }))
                 }
                 placeholder="你的姓名"
-                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ink/10"
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
             <label className="block">
@@ -247,7 +247,7 @@ export function ProfilePanel({
                   setDraftProfile((p) => ({ ...p, age: e.target.value }))
                 }
                 placeholder="例如 28"
-                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ink/10"
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
             <label className="block sm:col-span-2">
@@ -260,7 +260,7 @@ export function ProfilePanel({
                   setDraftProfile((p) => ({ ...p, height: e.target.value }))
                 }
                 placeholder="例如 175"
-                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ink/10"
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
           </div>
@@ -288,7 +288,7 @@ export function ProfilePanel({
 
       {/* Weight log + recent history + chart */}
       <div className="grid gap-4 md:grid-cols-5 md:gap-5">
-        <div className="order-1 flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:col-span-2 sm:p-6">
+        <div className="order-1 flex h-96 flex-col glass-panel rounded-3xl p-5 md:col-span-2 sm:p-6">
           <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-ink">体重记录</h3>
             {selectedDate === today && (
@@ -306,7 +306,7 @@ export function ProfilePanel({
                 value={draftWeight}
                 onChange={(e) => setDraftWeight(e.target.value)}
                 placeholder="例如 72.5"
-                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ink/10"
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
           </div>
@@ -321,7 +321,7 @@ export function ProfilePanel({
           />
         </div>
 
-        <div className="order-3 flex h-96 flex-col rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:order-2 md:col-span-3 sm:p-6">
+        <div className="order-3 flex h-96 flex-col glass-panel rounded-3xl p-5 md:order-2 md:col-span-3 sm:p-6">
           <h3 className="mb-3 shrink-0 text-sm font-semibold text-ink">近期体重</h3>
           <div className="min-h-0 flex-1 overflow-y-auto pr-1">
             {history.length > 0 ? (
@@ -364,7 +364,7 @@ export function ProfilePanel({
         </div>
 
         {chartData.length > 0 && (
-          <div className="order-2 rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft md:order-3 md:col-span-5 sm:p-6">
+          <div className="order-2 glass-panel rounded-3xl p-5 md:order-3 md:col-span-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-ink">体重变化</h3>
             <WeightChart data={chartData} />
           </div>

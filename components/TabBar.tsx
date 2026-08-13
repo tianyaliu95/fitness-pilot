@@ -26,7 +26,7 @@ function tabButtonClasses(tab: Tab, active: boolean, variant: 'default' | 'carb'
   if (variant === 'carb' && tab.tone === 'low') {
     return `${base} ${
       active
-        ? 'bg-low text-white shadow-soft'
+        ? 'bg-low-dark text-white shadow-soft'
         : 'bg-low-light/60 text-low-dark hover:bg-low-light'
     }`;
   }
@@ -34,7 +34,7 @@ function tabButtonClasses(tab: Tab, active: boolean, variant: 'default' | 'carb'
   if (variant === 'carb' && tab.tone === 'high') {
     return `${base} ${
       active
-        ? 'bg-high text-white shadow-soft'
+        ? 'bg-high-dark text-white shadow-soft'
         : 'bg-high-light/60 text-high-dark hover:bg-high-light'
     }`;
   }

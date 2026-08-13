@@ -100,9 +100,9 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
 
   return (
     <>
-      <aside className="hidden md:sticky md:top-0 md:flex md:h-screen md:w-60 md:flex-col md:border-r md:border-ink/5 md:bg-surface-muted/80 md:px-4 md:py-8 md:backdrop-blur-sm">
+      <aside className="hidden md:sticky md:top-0 md:flex md:h-screen md:w-60 md:flex-col md:border-r md:border-white/50 md:bg-white/55 md:px-4 md:py-8 md:shadow-soft md:backdrop-blur-xl md:backdrop-saturate-150">
         <div className="mb-8 px-2">
-          <h1 className="text-3xl font-bold tracking-tight text-ink mb-2 mt-4">
+          <h1 className="mb-2 mt-4 font-display text-3xl font-bold tracking-tight text-ink">
             <Link href="/">
               Fitness Pilot
             </Link>
@@ -142,7 +142,7 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
         )}
       </aside>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 flex gap-0.5 border-t border-ink/5 bg-surface-card/95 px-1.5 py-1.5 backdrop-blur-md safe-bottom md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-50 flex gap-0.5 border-t border-white/50 bg-white/70 px-1.5 py-1.5 shadow-[0_-8px_30px_rgba(26,26,46,0.06)] backdrop-blur-xl backdrop-saturate-150 safe-bottom md:hidden">
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.href}

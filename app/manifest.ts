@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: '碳循环日程管理、摄入追踪与训练安排',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#faf9f7',
+    background_color: '#e8eef5',
+    theme_color: '#e8eef5',
     orientation: 'portrait-primary',
     icons: [
       {

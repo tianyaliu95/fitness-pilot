@@ -50,8 +50,8 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
       className={`
         relative overflow-hidden rounded-2xl p-4 shadow-card sm:rounded-3xl sm:p-10
         ${isLow
-          ? 'bg-gradient-to-br from-low to-low-dark'
-          : 'bg-gradient-to-br from-high to-high-dark'
+          ? 'bg-gradient-to-br from-low-dark to-[#2f5bb8]'
+          : 'bg-gradient-to-br from-high-dark to-[#a84f0a]'
         }
       `}
     >

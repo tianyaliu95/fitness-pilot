@@ -61,7 +61,7 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
 
       {records.length > 0 ? (
         <>
-          <div className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
+          <div className="glass-panel rounded-3xl p-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-ink">训练总结</h3>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <StatCard label="记录天数" value={String(stats.totalRecorded)} />
@@ -94,7 +94,7 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
+          <div className="glass-panel rounded-3xl p-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-ink">全部记录</h3>
             <ul className="space-y-3">
               {records.map(({ date, entry, plannedWorkout, label }) => {
@@ -133,7 +133,7 @@ export function WorkoutLogPanel({ state }: WorkoutLogPanelProps) {
           </div>
         </>
       ) : (
-        <div className="rounded-3xl border border-ink/5 bg-surface-card p-8 text-center shadow-soft sm:p-10">
+        <div className="glass-panel rounded-3xl p-8 text-center sm:p-10">
           <p className="text-sm text-ink-muted">还没有训练记录</p>
           <p className="mt-2 text-xs text-ink-faint">
             在日历或首页进入某日详情，选择「是 / 否」并保存即可开始记录

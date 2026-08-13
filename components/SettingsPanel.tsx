@@ -122,7 +122,7 @@ export function SettingsPanel({
         </header>
       )}
 
-      <section className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
+      <section className="glass-panel rounded-3xl p-5 sm:p-6">
         <h3 className="text-base font-bold text-ink">起始日期</h3>
         <p className="mt-1 text-sm text-ink-muted">
           日历从该日期起显示低碳 / 高碳与训练计划，之前的日期仅显示日期 · 选择后自动保存
@@ -136,7 +136,7 @@ export function SettingsPanel({
         </div>
       </section>
 
-      <section className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
+      <section className="glass-panel rounded-3xl p-5 sm:p-6">
         <h3 className="text-base font-bold text-ink">碳循环日程</h3>
         <p className="mt-1 text-sm text-ink-muted">{summary}</p>
 
@@ -215,7 +215,7 @@ export function SettingsPanel({
         />
       )}
 
-      <section className="rounded-3xl border border-ink/5 bg-surface-card p-5 shadow-soft sm:p-6">
+      <section className="glass-panel rounded-3xl p-5 sm:p-6">
         <h3 className="text-base font-bold text-ink">说明</h3>
         <ul className="mt-3 space-y-2 text-sm text-ink-muted">
           <li>· 日历按循环天数自动推算每天的低碳 / 高碳类型</li>
