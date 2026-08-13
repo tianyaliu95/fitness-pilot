@@ -11,6 +11,9 @@ import {
 } from './cycle';
 import { isCompletedNo, isCompletedYes, isRecordedEntry } from './training-log';
 
+/** Shown in place of the scheduled workout when a day is delayed. */
+export const DELAYED_WORKOUT_LABEL = '暂停';
+
 export function buildDayInfo(date: string, state: AppState): DayInfo {
   const cycleLength = getCycleLength(state.cycleDays);
   const weight = state.weightLog[date] ?? null;
@@ -29,17 +32,20 @@ export function buildDayInfo(date: string, state: AppState): DayInfo {
   if (snapshot) {
     const intake =
       snapshot.carbType === 'low' ? state.intakeLow : state.intakeHigh;
+    const isDelayed = snapshot.isDelayed;
+    const scheduledWorkout = snapshot.workout;
     return {
       date,
       cycleDayIndex: snapshot.cycleDayIndex,
       cycleLength,
       carbType: snapshot.carbType,
-      workout: snapshot.workout,
+      workout: isDelayed ? DELAYED_WORKOUT_LABEL : scheduledWorkout,
+      scheduledWorkout,
       label: snapshot.label,
       intake,
       weight,
       isToday: date === todayISO(),
-      isDelayed: snapshot.isDelayed,
+      isDelayed,
       isCycleActive,
       trainingIncomplete,
       trainingComplete,
@@ -49,18 +55,21 @@ export function buildDayInfo(date: string, state: AppState): DayInfo {
   const { cycleDayIndex, template } = resolveLiveCycleTemplate(date, state);
   const intake =
     template.carbType === 'low' ? state.intakeLow : state.intakeHigh;
+  const isDelayed = state.delayedDates.includes(date);
+  const scheduledWorkout = template.workout;
 
   return {
     date,
     cycleDayIndex,
     cycleLength,
     carbType: template.carbType,
-    workout: template.workout,
+    workout: isDelayed ? DELAYED_WORKOUT_LABEL : scheduledWorkout,
+    scheduledWorkout,
     label: template.label,
     intake,
     weight,
     isToday: date === todayISO(),
-    isDelayed: state.delayedDates.includes(date),
+    isDelayed,
     isCycleActive,
     trainingIncomplete,
     trainingComplete,

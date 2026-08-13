@@ -92,30 +92,40 @@ export function DayDetail({
       <div
         className={`
           relative overflow-hidden rounded-3xl p-5 shadow-card sm:p-6
-          ${isLow
-            ? 'bg-gradient-to-br from-low-dark to-[#2f5bb8]'
-            : 'bg-gradient-to-br from-high-dark to-[#a84f0a]'
+          ${day.isDelayed
+            ? 'bg-gradient-to-br from-[#3d4454] to-[#1a1a2e]'
+            : isLow
+              ? 'bg-gradient-to-br from-low-dark to-[#2f5bb8]'
+              : 'bg-gradient-to-br from-high-dark to-[#a84f0a]'
           }
         `}
       >
         <p className="text-sm font-medium text-white/80">{formatDisplayDate(day.date)}</p>
         <h1 className="mt-2 text-3xl font-bold text-white">
-          {isLow ? '低碳日' : '高碳日'}
+          {day.isDelayed ? '暂停' : isLow ? '低碳日' : '高碳日'}
         </h1>
-        <p className="mt-1 text-lg text-white/90">{day.label} · {day.workout}</p>
+        <p className="mt-1 text-lg text-white/90">
+          {day.isDelayed
+            ? `原计划 ${day.label} · ${day.scheduledWorkout}`
+            : `${day.label} · ${day.workout}`}
+        </p>
         {day.weight && (
           <p className="mt-2 text-sm text-white/80">体重 {day.weight} kg</p>
         )}
         {day.isDelayed && (
           <span className="mt-3 inline-block rounded-full bg-white/20 px-3 py-1 text-sm text-white">
-            已暂停
+            训练已顺延到下一天
           </span>
         )}
       </div>
 
       <div className="mt-6 glass-panel rounded-3xl p-5 sm:p-6">
         <h2 className="font-semibold text-ink">训练记录</h2>
-        <p className="mt-1 text-sm text-ink-muted">计划训练：{day.workout}</p>
+        <p className="mt-1 text-sm text-ink-muted">
+          {day.isDelayed
+            ? `今日暂停 · 原计划 ${day.scheduledWorkout}（已顺延）`
+            : `计划训练：${day.workout}`}
+        </p>
 
         <label className="mt-5 flex cursor-pointer items-center gap-3 rounded-2xl bg-surface px-4 py-3.5 transition hover:bg-surface-muted">
           <input

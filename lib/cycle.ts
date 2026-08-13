@@ -71,7 +71,12 @@ export function getCycleDayIndex(
 ): number {
   const len = Math.max(1, cycleLength);
   const rawDays = diffDays(anchorDate, targetDate);
-  const delaysBefore = delayedDates.filter((d) => d < targetDate).length;
+  // Only delays on/after the anchor shift the cycle. Pre-anchor pauses
+  // (e.g. left over after a reset, or merged from another device) must not
+  // subtract from rawDays — that off-by-one re-locks the prior workout.
+  const delaysBefore = delayedDates.filter(
+    (d) => d >= anchorDate && d < targetDate
+  ).length;
   const effective = rawDays - delaysBefore;
   return ((effective % len) + len) % len;
 }

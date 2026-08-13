@@ -49,9 +49,11 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
     <div
       className={`
         relative overflow-hidden rounded-3xl p-5 shadow-card animate-enter sm:p-8
-        ${isLow
-          ? 'bg-gradient-to-br from-low-dark to-[#2f5bb8]'
-          : 'bg-gradient-to-br from-high-dark to-[#a84f0a]'
+        ${day.isDelayed
+          ? 'bg-gradient-to-br from-[#3d4454] to-[#1a1a2e]'
+          : isLow
+            ? 'bg-gradient-to-br from-low-dark to-[#2f5bb8]'
+            : 'bg-gradient-to-br from-high-dark to-[#a84f0a]'
         }
       `}
     >
@@ -61,43 +63,45 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-wrap items-center gap-2">
               <span className="text-2xl font-extrabold tracking-tight text-white">
-                {isLow ? '低碳日' : '高碳日'}
+                {day.isDelayed ? '暂停' : isLow ? '低碳日' : '高碳日'}
               </span>
-              <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-xs font-bold text-white">
-                {getCycleProgressLabel(day.cycleDayIndex, day.cycleLength)}
-              </span>
+              {!day.isDelayed && (
+                <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-xs font-bold text-white">
+                  {getCycleProgressLabel(day.cycleDayIndex, day.cycleLength)}
+                </span>
+              )}
             </div>
             <p className="shrink-0 pt-0.5 text-right text-base font-bold leading-snug text-white/85">
               {formatDisplayDate(day.date)}
             </p>
           </div>
-          <p className="mt-2 text-base font-bold text-white">{day.workout}</p>
-          {day.isDelayed && (
-            <p className="mt-2 text-sm font-medium text-white/90">
-              今日已标记暂停，明天继续当前循环日
-            </p>
-          )}
+          <p className="mt-2 text-base font-bold text-white">
+            {day.isDelayed
+              ? `原计划 ${day.scheduledWorkout} · 已顺延到明天`
+              : day.workout}
+          </p>
         </div>
 
         {/* Desktop */}
         <div className="hidden sm:block">
           <div className="flex flex-wrap items-end gap-3">
             <span className="text-5xl font-extrabold tracking-tight text-white drop-shadow-sm">
-              {isLow ? '低碳日' : '高碳日'}
+              {day.isDelayed ? '暂停' : isLow ? '低碳日' : '高碳日'}
             </span>
-            <span className="rounded-full bg-white/25 px-4 py-1 text-2xl font-extrabold text-white">
-              {getCycleProgressLabel(day.cycleDayIndex, day.cycleLength)}
-            </span>
+            {!day.isDelayed && (
+              <span className="rounded-full bg-white/25 px-4 py-1 text-2xl font-extrabold text-white">
+                {getCycleProgressLabel(day.cycleDayIndex, day.cycleLength)}
+              </span>
+            )}
             <span className="ml-auto text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
               {formatDisplayDate(day.date)}
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-white">{day.workout}</p>
-          {day.isDelayed && (
-            <p className="mt-2 text-lg font-bold text-white/90">
-              今日已标记暂停，明天继续当前循环日
-            </p>
-          )}
+          <p className="mt-3 text-2xl font-bold text-white">
+            {day.isDelayed
+              ? `原计划 ${day.scheduledWorkout} · 已顺延到明天`
+              : day.workout}
+          </p>
         </div>
 
         <div className="border-t border-white/30 pt-4 sm:pt-5">

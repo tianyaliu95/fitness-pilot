@@ -10,6 +10,7 @@ interface DayCellProps {
 
 export function DayCell({ day, dayNumber }: DayCellProps) {
   const isLow = day.carbType === 'low';
+  const isPaused = day.isDelayed;
 
   const todayRing = day.isToday
     ? 'ring-2 ring-inset ring-ink shadow-card sm:scale-[1.02] sm:ring-offset-0'
@@ -40,37 +41,41 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
     );
   }
 
-  const bgClass = isLow ? 'bg-low-light' : 'bg-high-light';
-
   return (
     <Link
       href={`/day/${day.date}`}
       className={`
-        group relative flex min-h-[52px] flex-col rounded-xl p-1.5 transition-all duration-200
+        group relative flex min-h-[52px] flex-col rounded-xl border border-ink/5 bg-surface p-1.5 transition-all duration-200
         sm:min-h-[88px] sm:rounded-2xl sm:p-3
         ${todayRing}
-        ${bgClass}
       `}
     >
-      {/* Mobile: date row + status row, centered */}
+      {/* Mobile: date row + status / pause */}
       <div className="flex flex-col items-center gap-1 sm:hidden">
         <span
           className={`
             flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold
-            ${day.isToday ? 'bg-ink text-white' : 'bg-white/80 text-ink'}
+            ${day.isToday ? 'bg-ink text-white' : 'bg-surface-muted text-ink'}
           `}
         >
           {dayNumber}
         </span>
-        <div className="flex h-5 items-center justify-center">{status}</div>
+        <div className="flex h-5 items-center justify-center gap-1">
+          {isPaused && (
+            <span className="rounded-full bg-ink/10 px-1.5 py-0.5 text-[10px] font-semibold text-ink-muted">
+              暂停
+            </span>
+          )}
+          {status}
+        </div>
       </div>
 
-      {/* Desktop: original layout */}
+      {/* Desktop */}
       <div className="hidden sm:flex sm:items-start sm:justify-between">
         <span
           className={`
             flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold
-            ${day.isToday ? 'bg-ink text-white' : 'bg-white/80 text-ink'}
+            ${day.isToday ? 'bg-ink text-white' : 'bg-surface-muted text-ink'}
           `}
         >
           {dayNumber}
@@ -79,15 +84,23 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
       </div>
 
       <div className="mt-auto hidden sm:block">
-        <span
-          className={`
-            inline-block rounded-full px-2 py-0.5 text-xs font-semibold
-            ${isLow ? 'bg-low-dark text-white' : 'bg-high-dark text-white'}
-          `}
-        >
-          {isLow ? '低碳' : '高碳'}
-        </span>
-        <p className="mt-1 truncate text-xs text-ink-muted">{day.workout}</p>
+        {isPaused ? (
+          <span className="inline-block rounded-full bg-ink/10 px-2 py-0.5 text-xs font-semibold text-ink-muted">
+            暂停
+          </span>
+        ) : (
+          <>
+            <span
+              className={`
+                inline-block rounded-full px-2 py-0.5 text-xs font-semibold
+                ${isLow ? 'bg-low-dark text-white' : 'bg-high-dark text-white'}
+              `}
+            >
+              {isLow ? '低碳' : '高碳'}
+            </span>
+            <p className="mt-1 truncate text-xs text-ink-muted">{day.workout}</p>
+          </>
+        )}
       </div>
     </Link>
   );

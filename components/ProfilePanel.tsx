@@ -288,14 +288,14 @@ export function ProfilePanel({
 
       {/* Weight log + recent history + chart */}
       <div className="grid gap-4 md:grid-cols-5 md:gap-5">
-        <div className="order-1 flex h-96 flex-col glass-panel rounded-3xl p-5 md:col-span-2 sm:p-6">
+        <div className="relative z-20 order-1 flex h-96 flex-col overflow-visible glass-panel rounded-3xl p-5 md:col-span-2 sm:p-6">
           <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-ink">体重记录</h3>
             {selectedDate === today && (
               <span className="text-xs font-medium text-ink-faint">今天</span>
             )}
           </div>
-          <div className="flex min-h-0 flex-1 flex-col">
+          <div className="flex min-h-0 flex-1 flex-col overflow-visible">
             <DatePicker value={selectedDate} max={today} onChange={setSelectedDate} />
 
             <label className="mt-4 block">
@@ -321,7 +321,7 @@ export function ProfilePanel({
           />
         </div>
 
-        <div className="order-3 flex h-96 flex-col glass-panel rounded-3xl p-5 md:order-2 md:col-span-3 sm:p-6">
+        <div className="relative z-0 order-3 flex h-96 flex-col glass-panel rounded-3xl p-5 md:order-2 md:col-span-3 sm:p-6">
           <h3 className="mb-3 shrink-0 text-sm font-semibold text-ink">近期体重</h3>
           <div className="min-h-0 flex-1 overflow-y-auto pr-1">
             {history.length > 0 ? (
@@ -364,7 +364,7 @@ export function ProfilePanel({
         </div>
 
         {chartData.length > 0 && (
-          <div className="order-2 glass-panel rounded-3xl p-5 md:order-3 md:col-span-5 sm:p-6">
+          <div className="relative z-0 order-2 glass-panel rounded-3xl p-5 md:order-3 md:col-span-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-ink">体重变化</h3>
             <WeightChart data={chartData} />
           </div>

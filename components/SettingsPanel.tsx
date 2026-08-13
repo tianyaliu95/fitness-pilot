@@ -183,7 +183,7 @@ export function SettingsPanel({
           ))}
         </div>
 
-        <div className="mt-5 space-y-2">
+        <ul className="mt-5 divide-y divide-ink/8 border-t border-ink/8">
           {draftDays.map((day) => (
             <DayRow
               key={day.dayIndex}
@@ -191,7 +191,7 @@ export function SettingsPanel({
               onToggle={() => toggleCarb(day.dayIndex)}
             />
           ))}
-        </div>
+        </ul>
 
         {!tabbed && (
           <SaveBar
@@ -240,7 +240,7 @@ function DayRow({
   const isLow = day.carbType === 'low';
 
   return (
-    <div className="flex items-center justify-between rounded-2xl border border-ink/5 bg-surface px-4 py-3">
+    <li className="flex items-center justify-between gap-3 py-3.5">
       <span className="text-sm font-semibold text-ink">{day.label}</span>
       <button
         type="button"
@@ -253,6 +253,6 @@ function DayRow({
       >
         {getCarbLabel(day.carbType as CarbType)} · 点击切换
       </button>
-    </div>
+    </li>
   );
 }

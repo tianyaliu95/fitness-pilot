@@ -92,7 +92,7 @@ export function DatePicker({ value, max, onChange, label = '日期' }: DatePicke
   }
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className={`relative ${open ? 'z-[100]' : ''}`}>
       <span className="mb-1 block text-xs font-medium text-ink-muted">{label}</span>
       <button
         type="button"
@@ -116,7 +116,7 @@ export function DatePicker({ value, max, onChange, label = '日期' }: DatePicke
         <div
           role="dialog"
           aria-label="选择日期"
-          className="absolute left-0 right-0 z-50 mt-2 rounded-2xl border border-ink/5 bg-surface-card p-4 shadow-card"
+          className="absolute left-0 right-0 z-[100] mt-2 rounded-2xl border border-ink/10 bg-white p-4 shadow-card"
         >
           <div className="mb-3 flex items-center justify-between">
             <button

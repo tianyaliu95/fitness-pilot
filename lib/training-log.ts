@@ -121,7 +121,9 @@ export function getListedTrainings(
     return {
       date,
       entry,
-      plannedWorkout: day.workout,
+      plannedWorkout: day.isDelayed
+        ? `暂停 · 原 ${day.scheduledWorkout}`
+        : day.workout,
       label: day.label,
     };
   });

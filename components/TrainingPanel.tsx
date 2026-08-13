@@ -93,13 +93,10 @@ export function TrainingPanel({
         </header>
       )}
 
-      <div className="glass-panel space-y-2 rounded-3xl p-3 sm:p-4">
+      <div className="glass-panel space-y-4 rounded-3xl p-4 sm:p-5">
         {draftDays.map((day) => (
-          <div
-            key={day.dayIndex}
-            className="rounded-2xl border border-ink/5 bg-surface px-4 py-3"
-          >
-            <div className="mb-2.5 flex flex-wrap items-center gap-2">
+          <div key={day.dayIndex}>
+            <div className="mb-2 flex flex-wrap items-center gap-2">
               <span className="text-sm font-semibold text-ink">{day.label}</span>
               <span
                 className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -116,7 +113,7 @@ export function TrainingPanel({
               value={day.workout}
               onChange={(e) => updateWorkout(day.dayIndex, e.target.value)}
               placeholder="训练内容..."
-              className="w-full rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-low/40"
+              className="w-full rounded-xl border border-ink/10 bg-white/70 px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink-faint hover:border-ink/15 focus:border-low/40 focus-visible:ring-2 focus-visible:ring-low/30"
             />
           </div>
         ))}

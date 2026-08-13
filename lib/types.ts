@@ -71,7 +71,10 @@ export interface DayInfo {
   cycleDayIndex: number;
   cycleLength: number;
   carbType: CarbType;
+  /** Display workout — "暂停" when the day is delayed */
   workout: string;
+  /** Underlying cycle workout (unchanged when delayed) */
+  scheduledWorkout: string;
   label: string;
   intake: MealPlan;
   weight: string | null;
