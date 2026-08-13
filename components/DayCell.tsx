@@ -41,33 +41,33 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
     );
   }
 
+  const mobileBg = isPaused
+    ? 'bg-surface-muted/90'
+    : isLow
+      ? 'bg-low-light'
+      : 'bg-high-light';
+
   return (
     <Link
       href={`/day/${day.date}`}
       className={`
-        group relative flex min-h-[52px] flex-col rounded-xl border border-ink/5 bg-surface p-1.5 transition-all duration-200
-        sm:min-h-[88px] sm:rounded-2xl sm:p-3
+        group relative flex min-h-[52px] flex-col rounded-xl p-1.5 transition-all duration-200
+        sm:min-h-[88px] sm:rounded-2xl sm:border sm:border-ink/5 sm:bg-surface sm:p-3
+        ${mobileBg}
         ${todayRing}
       `}
     >
-      {/* Mobile: date row + status / pause */}
+      {/* Mobile: date + status; carb/pause shown via cell tint */}
       <div className="flex flex-col items-center gap-1 sm:hidden">
         <span
           className={`
             flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold
-            ${day.isToday ? 'bg-ink text-white' : 'bg-surface-muted text-ink'}
+            ${day.isToday ? 'bg-ink text-white' : 'bg-white/80 text-ink'}
           `}
         >
           {dayNumber}
         </span>
-        <div className="flex h-5 items-center justify-center gap-1">
-          {isPaused && (
-            <span className="rounded-full bg-ink/10 px-1.5 py-0.5 text-[10px] font-semibold text-ink-muted">
-              暂停
-            </span>
-          )}
-          {status}
-        </div>
+        {status}
       </div>
 
       {/* Desktop */}

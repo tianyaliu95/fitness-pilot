@@ -79,7 +79,7 @@ function NavLink({
   const base =
     layout === 'sidebar'
       ? 'flex items-center gap-3 rounded-2xl px-4 py-3 text-lg font-medium transition'
-      : 'flex min-h-[3.25rem] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1.5 text-xs font-medium leading-tight transition';
+      : 'flex min-h-[3.25rem] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 self-stretch rounded-none px-1 py-2.5 text-xs font-medium leading-tight transition';
 
   const activeClass =
     layout === 'sidebar'
@@ -89,7 +89,7 @@ function NavLink({
   const inactiveClass =
     layout === 'sidebar'
       ? 'text-ink-muted hover:bg-white/60 hover:text-ink'
-      : 'text-ink-faint hover:bg-surface-muted/80 hover:text-ink-muted';
+      : 'text-ink-faint hover:bg-surface-muted/60 hover:text-ink-muted';
 
   return (
     <Link href={href} className={`${base} ${active ? activeClass : inactiveClass}`}>
@@ -147,7 +147,7 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
         )}
       </aside>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 flex gap-0.5 border-t border-white/50 bg-white/70 px-1.5 py-1.5 shadow-[0_-8px_30px_rgba(26,26,46,0.06)] backdrop-blur-xl backdrop-saturate-150 safe-bottom md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-50 flex gap-0 bg-white/70 shadow-[0_-8px_30px_rgba(26,26,46,0.06)] backdrop-blur-xl backdrop-saturate-150 safe-bottom md:hidden">
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.href}
