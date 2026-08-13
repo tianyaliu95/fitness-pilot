@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 const THRESHOLD = 72;
 const MAX_PULL = 128;
 const RESISTANCE = 0.55;
+const SNAP_EASE = '0.28s cubic-bezier(0.2, 0.8, 0.2, 1)';
 
 function isStandalonePwa() {
   if (typeof window === 'undefined') return false;
@@ -38,10 +39,10 @@ function nestedScrollBlocksPull(target: EventTarget | null) {
 }
 
 /**
- * Jank cause (before): every touchmove called setPull → React re-rendered the
- * entire app shell, and paddingTop forced full-document layout each frame.
- * Fix: drive pull distance via refs + direct DOM writes during the gesture;
- * only use React state when refresh starts (spinner spin + reload).
+ * Pull-to-refresh for standalone PWA.
+ * - Gesture driven via refs + rAF (no React per-frame).
+ * - Uses translateY (compositor) not paddingTop (layout) — calendar has many cells.
+ * - Must wrap only scrollable main content; keep position:fixed tab bar outside.
  */
 export function PullToRefresh({ children }: { children: React.ReactNode }) {
   const [enabled, setEnabled] = useState(false);
@@ -68,6 +69,14 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
     const r = 9;
     const c = 2 * Math.PI * r;
 
+    const cancelPendingPaint = () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+      }
+      pendingPull.current = null;
+    };
+
     const paint = (pull: number, opts?: { transitioning?: boolean }) => {
       const content = contentRef.current;
       const wrap = spinnerWrapRef.current;
@@ -75,16 +84,15 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
       if (!content || !wrap) return;
 
       const transitioning = opts?.transitioning ?? false;
-      content.style.transition = transitioning
-        ? 'padding-top 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)'
-        : 'none';
-      content.style.paddingTop = pull > 0 ? `${pull}px` : '';
+      content.style.transition = transitioning ? `transform ${SNAP_EASE}` : 'none';
+      content.style.transform = pull > 0 ? `translateY(${pull}px)` : 'translateY(0)';
+      content.style.willChange = pull > 0 || refreshingRef.current ? 'transform' : '';
 
       const progress = Math.min(1, pull / THRESHOLD);
       const show = pull > 8 || refreshingRef.current;
       const spinnerY = Math.max(0, pull * 0.5 - 4);
       wrap.style.transition = transitioning
-        ? 'opacity 0.22s ease, transform 0.22s ease'
+        ? `opacity 0.22s ease, transform ${SNAP_EASE}`
         : 'none';
       wrap.style.opacity = show ? '1' : '0';
       wrap.style.transform = `translateY(${spinnerY}px)`;
@@ -123,7 +131,8 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
       if (pageScrollTop() > 0) {
         pulling.current = false;
         pullRef.current = 0;
-        schedulePaint(0);
+        cancelPendingPaint();
+        paint(0);
         return;
       }
 
@@ -145,6 +154,8 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
     const onEnd = () => {
       if (!pulling.current) return;
       pulling.current = false;
+      // Critical: flush any queued rAF so it cannot re-apply a mid-pull after snap-back.
+      cancelPendingPaint();
       const dist = pullRef.current;
 
       if (dist >= THRESHOLD && !refreshingRef.current) {
@@ -156,6 +167,15 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      // Snap back: keep current offset for one frame, then animate to 0.
+      if (dist > 0) {
+        const content = contentRef.current;
+        if (content) {
+          content.style.transition = 'none';
+          content.style.transform = `translateY(${dist}px)`;
+          void content.offsetHeight;
+        }
+      }
       pullRef.current = 0;
       paint(0, { transitioning: true });
     };
@@ -165,11 +185,10 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
     document.addEventListener('touchend', onEnd);
     document.addEventListener('touchcancel', onEnd);
 
-    // Initial spinner hidden state (not via React style — paint owns opacity/transform).
     paint(0);
 
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      cancelPendingPaint();
       document.removeEventListener('touchstart', onStart);
       document.removeEventListener('touchmove', onMove);
       document.removeEventListener('touchend', onEnd);
@@ -177,12 +196,15 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
     };
   }, [enabled]);
 
-  // After React marks refreshing, re-apply pull paint so spinner stays visible.
   useEffect(() => {
     if (!enabled || !refreshing) return;
     const content = contentRef.current;
     const wrap = spinnerWrapRef.current;
-    if (content) content.style.paddingTop = `${THRESHOLD}px`;
+    if (content) {
+      content.style.transition = 'none';
+      content.style.transform = `translateY(${THRESHOLD}px)`;
+      content.style.willChange = 'transform';
+    }
     if (wrap) {
       wrap.style.opacity = '1';
       wrap.style.transform = `translateY(${Math.max(0, THRESHOLD * 0.5 - 4)}px)`;
@@ -227,11 +249,6 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
         </svg>
       </div>
 
-      {/*
-        Use padding (not transform) so position:fixed chrome (bottom tab bar)
-        stays viewport-pinned. Transform on an ancestor would re-root fixed.
-        Pull distance is applied via contentRef during the gesture (no React).
-      */}
       <div ref={contentRef}>{children}</div>
     </div>
   );

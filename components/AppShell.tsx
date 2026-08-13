@@ -38,13 +38,16 @@ function ShellContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative z-[1] min-h-screen md:grid md:grid-cols-[15rem_minmax(0,1fr)]">
+      {/* Tab bar stays outside PullToRefresh so translateY does not re-root fixed. */}
       <Sidebar cloudSyncing={cloudSyncing} />
-      <main className="min-w-0 px-4 pb-mobile-nav pt-[max(2.25rem,env(safe-area-inset-top,0px))] sm:px-6 sm:pt-8 md:pb-10">
-        <div className="mx-auto w-full max-w-4xl">
-          <GuestBanner />
-          {children}
-        </div>
-      </main>
+      <PullToRefresh>
+        <main className="min-w-0 px-4 pb-mobile-nav pt-[max(2.25rem,env(safe-area-inset-top,0px))] sm:px-6 sm:pt-8 md:pb-10">
+          <div className="mx-auto w-full max-w-4xl">
+            <GuestBanner />
+            {children}
+          </div>
+        </main>
+      </PullToRefresh>
     </div>
   );
 }
@@ -99,9 +102,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <ScrollToTopOnNavigate />
           <TodayProvider>
             <AmbientField />
-            <PullToRefresh>
-              <ShellGate>{children}</ShellGate>
-            </PullToRefresh>
+            <ShellGate>{children}</ShellGate>
           </TodayProvider>
         </AppStateProvider>
       </AuthProvider>
