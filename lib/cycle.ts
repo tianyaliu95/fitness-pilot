@@ -11,6 +11,7 @@ import {
   DEFAULT_MEAL_LOW,
   migrateMealPlan,
 } from './intake';
+import { parseLocale } from './i18n/locale';
 
 export const DEFAULT_CYCLE_LENGTH = 4;
 
@@ -141,6 +142,11 @@ export function getCarbLabel(type: CarbType): string {
   return type === 'low' ? '低碳' : '高碳';
 }
 
+/** i18n-friendly carb label key */
+export function getCarbMessageKey(type: CarbType): 'carb.low' | 'carb.high' {
+  return type === 'low' ? 'carb.low' : 'carb.high';
+}
+
 export function isOnOrAfterCycleStart(date: string, cycleStartDate: string): boolean {
   return !cycleStartDate || date >= cycleStartDate;
 }
@@ -245,6 +251,7 @@ export function getDefaultState(): AppState {
     weightLog: {},
     trainingLog: {},
     profile: { name: '', age: '', height: '' },
+    locale: 'zh',
   };
 }
 
@@ -274,6 +281,7 @@ export function mergeState(partial: Partial<AppState>): AppState {
     weightLog: partial.weightLog ?? defaults.weightLog,
     trainingLog: normalizeTrainingLog(partial.trainingLog),
     profile: mergeProfile(partial.profile, defaults.profile),
+    locale: parseLocale(partial.locale) ?? defaults.locale,
   };
 }
 

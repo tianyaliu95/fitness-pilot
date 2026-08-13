@@ -3,6 +3,7 @@
 import type { MealPlan } from '@/lib/types';
 import { macroPerKgLabel } from '@/lib/macros';
 import { MACRO_FIELDS, MEAL_FIELDS } from '@/lib/intake';
+import { useT } from '@/lib/i18n';
 
 export function MacroPerKgHint({
   plan,
@@ -11,17 +12,17 @@ export function MacroPerKgHint({
   plan: MealPlan;
   weightKg: number | null;
 }) {
+  const t = useT();
+
   if (!weightKg) {
     return (
-      <p className="mt-2 text-xs text-ink-faint">
-        在「个人信息」记录体重后，可显示 g/kg 倍数
-      </p>
+      <p className="mt-2 text-xs text-ink-faint">{t('macro.needWeight')}</p>
     );
   }
 
   return (
     <div className="mt-3 flex flex-wrap gap-2">
-      {MACRO_FIELDS.map(({ key, label }) => {
+      {MACRO_FIELDS.map(({ key, labelKey }) => {
         const perKg = macroPerKgLabel(plan[key], weightKg);
         if (!perKg) return null;
         return (
@@ -29,7 +30,7 @@ export function MacroPerKgHint({
             key={key}
             className="rounded-full bg-surface-muted px-2.5 py-1 text-xs text-ink-muted"
           >
-            {label} {perKg}
+            {t(labelKey)} {perKg}
           </span>
         );
       })}
@@ -50,16 +51,18 @@ export function MealMacroFields({
   onChange: (field: keyof MealPlan, value: string) => void;
   color: 'low' | 'high';
 }) {
+  const t = useT();
+
   return (
     <div className="mt-5 border-t border-ink/5 pt-5">
-      <p className="mb-3 text-xs font-semibold text-ink-muted">宏量目标（参考范围）</p>
+      <p className="mb-3 text-xs font-semibold text-ink-muted">{t('macro.targets')}</p>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        {MACRO_FIELDS.map(({ key, label, placeholder }) => {
+        {MACRO_FIELDS.map(({ key, labelKey, placeholderKey }) => {
           const perKg = macroPerKgLabel(plan[key], weightKg);
           return (
             <label key={key} className="block">
               <div className="mb-1 flex items-baseline justify-between gap-2">
-                <span className="text-xs font-medium text-ink-muted">{label}</span>
+                <span className="text-xs font-medium text-ink-muted">{t(labelKey)}</span>
                 {perKg && (
                   <span className={`shrink-0 text-base font-extrabold rounded-full px-4 py-0.5 ${color === 'low' ? 'text-low-dark bg-low-light' : 'text-high-dark bg-high-light'}`}>
                     {perKg}
@@ -70,7 +73,7 @@ export function MealMacroFields({
                 type="text"
                 value={plan[key]}
                 onChange={(e) => onChange(key, e.target.value)}
-                placeholder={placeholder}
+                placeholder={t(placeholderKey)}
                 className={`w-full rounded-xl border bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus-visible:ring-2 ${accent}`}
               />
             </label>

@@ -33,6 +33,7 @@ import {
 } from './canonical-restore';
 import { setDateDelayed } from './delay';
 import { getGuestPlaceholderState } from './guest-state';
+import { readStoredLocale } from './i18n/locale';
 
 interface AppStateContextValue {
   state: AppState;
@@ -89,7 +90,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     if (!userIdentity) {
       skipCloudSave.current = true;
       setPersistReady(false);
-      setState(getGuestPlaceholderState());
+      setState(getGuestPlaceholderState(readStoredLocale() ?? 'en'));
       setHydrated(true);
       setLastSavedAt(null);
       setCloudSaveError(null);

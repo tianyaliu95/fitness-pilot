@@ -8,6 +8,7 @@ import {
   getCalendarGrid,
   getWeekdayLabels,
 } from '@/lib/day-info';
+import { useLocale, useT } from '@/lib/i18n';
 
 interface DatePickerProps {
   value: string;
@@ -16,7 +17,10 @@ interface DatePickerProps {
   label?: string;
 }
 
-export function DatePicker({ value, max, onChange, label = '日期' }: DatePickerProps) {
+export function DatePicker({ value, max, onChange, label }: DatePickerProps) {
+  const t = useT();
+  const { bcp47 } = useLocale();
+  const fieldLabel = label ?? t('datePicker.label');
   const maxDate = max ?? todayISO();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -57,7 +61,15 @@ export function DatePicker({ value, max, onChange, label = '日期' }: DatePicke
   }, [open]);
 
   const grid = getCalendarGrid(viewYear, viewMonth);
-  const weekdays = getWeekdayLabels();
+  const weekdays = getWeekdayLabels([
+    t('weekday.0'),
+    t('weekday.1'),
+    t('weekday.2'),
+    t('weekday.3'),
+    t('weekday.4'),
+    t('weekday.5'),
+    t('weekday.6'),
+  ]);
 
   const canGoNext =
     viewYear < maxParsed.getFullYear() ||
@@ -93,7 +105,7 @@ export function DatePicker({ value, max, onChange, label = '日期' }: DatePicke
 
   return (
     <div ref={rootRef} className={`relative ${open ? 'z-[100]' : ''}`}>
-      <span className="mb-1 block text-xs font-medium text-ink-muted">{label}</span>
+      <span className="mb-1 block text-xs font-medium text-ink-muted">{fieldLabel}</span>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -108,33 +120,33 @@ export function DatePicker({ value, max, onChange, label = '日期' }: DatePicke
           }
         `}
       >
-        <span className="font-medium text-ink">{formatDisplayDate(value)}</span>
+        <span className="font-medium text-ink">{formatDisplayDate(value, bcp47)}</span>
         <CalendarIcon className="shrink-0 text-ink-muted" />
       </button>
 
       {open && (
         <div
           role="dialog"
-          aria-label="选择日期"
+          aria-label={t('datePicker.select')}
           className="absolute left-0 right-0 z-[100] mt-2 rounded-2xl border border-ink/10 bg-white p-4 shadow-card"
         >
           <div className="mb-3 flex items-center justify-between">
             <button
               type="button"
               onClick={goPrevMonth}
-              aria-label="上个月"
+              aria-label={t('calendar.prevMonth')}
               className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink"
             >
               <ChevronLeft />
             </button>
             <span className="text-sm font-semibold text-ink">
-              {formatMonthYear(viewYear, viewMonth)}
+              {formatMonthYear(viewYear, viewMonth, bcp47)}
             </span>
             <button
               type="button"
               onClick={goNextMonth}
               disabled={!canGoNext}
-              aria-label="下个月"
+              aria-label={t('calendar.nextMonth')}
               className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
             >
               <ChevronRight />
@@ -142,9 +154,9 @@ export function DatePicker({ value, max, onChange, label = '日期' }: DatePicke
           </div>
 
           <div className="grid grid-cols-7 gap-1">
-            {weekdays.map((wd) => (
+            {weekdays.map((wd, i) => (
               <div
-                key={wd}
+                key={i}
                 className="py-1 text-center text-xs font-medium text-ink-faint"
               >
                 {wd}

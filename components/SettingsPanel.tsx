@@ -4,11 +4,11 @@ import { useEffect, useMemo, useState } from 'react';
 import type { AppState, CarbType, CycleDayTemplate } from '@/lib/types';
 import {
   applyCyclePreset,
-  getCarbLabel,
-  getCycleSummary,
+  getCarbMessageKey,
   rebuildCycleDays,
   todayISO,
 } from '@/lib/cycle';
+import { useT } from '@/lib/i18n';
 import { SaveBar } from './SaveBar';
 import { DatePicker } from './DatePicker';
 
@@ -24,10 +24,10 @@ interface SettingsPanelProps {
 }
 
 const PRESETS = [
-  { label: '3 低碳 + 1 高碳', low: 3, high: 1 },
-  { label: '2 低碳 + 1 高碳', low: 2, high: 1 },
-  { label: '5 低碳 + 2 高碳', low: 5, high: 2 },
-  { label: '4 低碳 + 1 高碳', low: 4, high: 1 },
+  { low: 3, high: 1 },
+  { low: 2, high: 1 },
+  { low: 5, high: 2 },
+  { low: 4, high: 1 },
 ] as const;
 
 function cycleDaysEqual(a: CycleDayTemplate[], b: CycleDayTemplate[]): boolean {
@@ -48,6 +48,7 @@ export function SettingsPanel({
   tabbed = false,
   onDirtyChange,
 }: SettingsPanelProps) {
+  const t = useT();
   const [draftDays, setDraftDays] = useState(state.cycleDays);
   const cycleDirty = !cycleDaysEqual(draftDays, state.cycleDays);
   const startDateValue = state.cycleStartDate || todayISO();
@@ -62,9 +63,17 @@ export function SettingsPanel({
     onDirtyChange?.(cycleDirty);
   }, [cycleDirty, onDirtyChange]);
 
-  const summary = useMemo(() => getCycleSummary(draftDays), [draftDays]);
   const lowCount = draftDays.filter((d) => d.carbType === 'low').length;
   const highCount = draftDays.length - lowCount;
+  const summary = useMemo(
+    () =>
+      t('cycle.summary', {
+        days: draftDays.length,
+        low: lowCount,
+        high: highCount,
+      }),
+    [draftDays.length, lowCount, highCount, t]
+  );
 
   function handleStartDateChange(date: string) {
     onUpdate((prev) => ({ ...prev, cycleStartDate: date }));
@@ -106,30 +115,24 @@ export function SettingsPanel({
     <div className="space-y-5">
       {showHeader && (
         <header>
-          <h2 className="text-xl font-bold text-ink sm:text-2xl">设置</h2>
-          <p className="mt-1 text-sm text-ink-muted">
-            配置碳循环日程与循环起始日期
-          </p>
+          <h2 className="text-xl font-bold text-ink sm:text-2xl">{t('settings.title')}</h2>
+          <p className="mt-1 text-sm text-ink-muted">{t('settings.subtitle')}</p>
         </header>
       )}
 
       {embedded && !tabbed && (
         <header>
-          <h3 className="text-base font-bold text-ink">碳循环设置</h3>
-          <p className="mt-1 text-sm text-ink-muted">
-            配置循环起始日与每日低碳 / 高碳安排
-          </p>
+          <h3 className="text-base font-bold text-ink">{t('settings.title')}</h3>
+          <p className="mt-1 text-sm text-ink-muted">{t('settings.subtitle')}</p>
         </header>
       )}
 
       <section className="glass-panel rounded-3xl p-5 sm:p-6">
-        <h3 className="text-base font-bold text-ink">起始日期</h3>
-        <p className="mt-1 text-sm text-ink-muted">
-          日历从该日期起显示低碳 / 高碳与训练计划，之前的日期仅显示日期 · 选择后自动保存
-        </p>
+        <h3 className="text-base font-bold text-ink">{t('settings.startDateTitle')}</h3>
+        <p className="mt-1 text-sm text-ink-muted">{t('settings.startDateHelp')}</p>
         <div className="mt-4">
           <DatePicker
-            label="循环起始日"
+            label={t('settings.startDate')}
             value={startDateValue}
             onChange={handleStartDateChange}
           />
@@ -137,18 +140,18 @@ export function SettingsPanel({
       </section>
 
       <section className="glass-panel rounded-3xl p-5 sm:p-6">
-        <h3 className="text-base font-bold text-ink">碳循环日程</h3>
+        <h3 className="text-base font-bold text-ink">{t('settings.schedule')}</h3>
         <p className="mt-1 text-sm text-ink-muted">{summary}</p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <span className="text-sm font-medium text-ink-muted">循环天数</span>
+          <span className="text-sm font-medium text-ink-muted">{t('settings.days')}</span>
           <div className="flex items-center gap-2">
             <button
               type="button"
               disabled={draftDays.length <= 2}
               onClick={() => setLength(draftDays.length - 1)}
               className="flex h-11 w-11 items-center justify-center rounded-xl border border-ink/10 bg-surface text-lg font-bold text-ink transition hover:bg-surface-muted disabled:opacity-40"
-              aria-label="减少一天"
+              aria-label={t('settings.decDay')}
             >
               −
             </button>
@@ -160,25 +163,25 @@ export function SettingsPanel({
               disabled={draftDays.length >= 7}
               onClick={() => setLength(draftDays.length + 1)}
               className="flex h-11 w-11 items-center justify-center rounded-xl border border-ink/10 bg-surface text-lg font-bold text-ink transition hover:bg-surface-muted disabled:opacity-40"
-              aria-label="增加一天"
+              aria-label={t('settings.incDay')}
             >
               +
             </button>
           </div>
           <span className="text-sm text-ink-faint">
-            {lowCount} 低碳 · {highCount} 高碳
+            {t('settings.daysCount', { low: lowCount, high: highCount })}
           </span>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
           {PRESETS.map((preset) => (
             <button
-              key={preset.label}
+              key={`${preset.low}-${preset.high}`}
               type="button"
               onClick={() => applyPreset(preset.low, preset.high)}
               className="rounded-full border border-ink/10 bg-surface px-3 py-1.5 text-xs font-medium text-ink-muted transition hover:border-ink/20 hover:text-ink"
             >
-              {preset.label}
+              {t('settings.preset', { low: preset.low, high: preset.high })}
             </button>
           ))}
         </div>
@@ -216,15 +219,15 @@ export function SettingsPanel({
       )}
 
       <section className="glass-panel rounded-3xl p-5 sm:p-6">
-        <h3 className="text-base font-bold text-ink">说明</h3>
+        <h3 className="text-base font-bold text-ink">{t('settings.helpTitle')}</h3>
         <ul className="mt-3 space-y-2 text-sm text-ink-muted">
-          <li>· 日历按循环天数自动推算每天的低碳 / 高碳类型</li>
-          <li>· 起始日期之前的格子不显示循环信息</li>
-          <li>· 「暂停今日」会让明天继续当前循环日，并标记训练未完成</li>
-          <li>· 重置循环可在日历页选择从哪一天开始</li>
-          <li>· 重置只影响今天及以后，过去的低碳 / 高碳保持不变</li>
-          <li>· 未登录可浏览演示数据；登录后才会保存到云端（游客改动不同步）</li>
-          <li>· 数据按登录账号独立保存，切换账号后互不影响</li>
+          <li>· {t('settings.help1')}</li>
+          <li>· {t('settings.help2')}</li>
+          <li>· {t('settings.help3')}</li>
+          <li>· {t('settings.help4')}</li>
+          <li>· {t('settings.help5')}</li>
+          <li>· {t('settings.help6')}</li>
+          <li>· {t('settings.help7')}</li>
         </ul>
       </section>
     </div>
@@ -238,6 +241,7 @@ function DayRow({
   day: CycleDayTemplate;
   onToggle: () => void;
 }) {
+  const t = useT();
   const isLow = day.carbType === 'low';
 
   return (
@@ -252,7 +256,9 @@ function DayRow({
             : 'bg-high-light text-high-dark hover:bg-high/30'
         }`}
       >
-        {getCarbLabel(day.carbType as CarbType)} · 点击切换
+        {t('settings.toggleCarb', {
+          carb: t(getCarbMessageKey(day.carbType as CarbType)),
+        })}
       </button>
     </li>
   );

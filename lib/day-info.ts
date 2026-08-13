@@ -98,24 +98,28 @@ export function getCalendarGrid(year: number, month: number): (Date | null)[] {
   return grid;
 }
 
-export function formatMonthYear(year: number, month: number): string {
-  return new Date(year, month, 1).toLocaleDateString('zh-CN', {
+export function formatMonthYear(
+  year: number,
+  month: number,
+  locale = 'zh-CN'
+): string {
+  return new Date(year, month, 1).toLocaleDateString(locale, {
     year: 'numeric',
     month: 'long',
   });
 }
 
-export function formatDisplayDate(iso: string): string {
+export function formatDisplayDate(iso: string, locale = 'zh-CN'): string {
   const d = parseDateISO(iso);
-  return d.toLocaleDateString('zh-CN', {
+  return d.toLocaleDateString(locale, {
     month: 'long',
     day: 'numeric',
     weekday: 'long',
   });
 }
 
-export function getWeekdayLabels(): string[] {
-  return ['日', '一', '二', '三', '四', '五', '六'];
+export function getWeekdayLabels(labels?: string[]): string[] {
+  return labels ?? ['日', '一', '二', '三', '四', '五', '六'];
 }
 
 export function getCycleProgressLabel(dayIndex: number, cycleLength: number): string {

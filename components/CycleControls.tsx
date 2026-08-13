@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import type { CycleDayTemplate } from '@/lib/types';
-import { getCarbLabel, todayISO } from '@/lib/cycle';
+import { getCarbMessageKey, todayISO } from '@/lib/cycle';
+import { useT } from '@/lib/i18n';
 
 interface CycleControlsProps {
   cycleDays: CycleDayTemplate[];
@@ -67,6 +68,7 @@ export function CycleControls({
   onUndoDelay,
   isTodayDelayed,
 }: CycleControlsProps) {
+  const t = useT();
   const [resetOpen, setResetOpen] = useState(false);
   const [pendingDay, setPendingDay] = useState<number | null>(null);
 
@@ -82,23 +84,23 @@ export function CycleControls({
       <div className="mx-auto grid max-w-md grid-cols-2 justify-items-center gap-2 sm:mx-0 sm:flex sm:max-w-none sm:flex-wrap sm:justify-start sm:gap-3">
         <Link href={`/day/${todayISO()}`} className={pillIdle}>
           <IconLog />
-          记录训练
+          {t('controls.logWorkout')}
         </Link>
 
         <Link href="/profile" className={pillIdle}>
           <IconChart />
-          体重记录
+          {t('controls.weightLog')}
         </Link>
 
         {isTodayDelayed ? (
           <button type="button" onClick={onUndoDelay} className={pillActive}>
             <IconUndo />
-            取消今日暂停
+            {t('controls.undoPause')}
           </button>
         ) : (
           <button type="button" onClick={onDelay} className={pillIdle}>
             <IconPause />
-            暂停一天
+            {t('controls.pauseDay')}
           </button>
         )}
 
@@ -111,20 +113,20 @@ export function CycleControls({
           className={pillIdle}
         >
           <IconReset />
-          重置循环
+          {t('controls.resetCycle')}
         </button>
       </div>
 
       {resetOpen && pendingDay === null && (
         <div className="glass-panel rounded-3xl p-5 sm:p-6">
           <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="text-sm font-medium text-ink">今天设为哪个循环日？</p>
+            <p className="text-sm font-medium text-ink">{t('controls.resetPrompt')}</p>
             <button
               type="button"
               onClick={closeReset}
               className="mr-0.5 shrink-0 text-sm text-ink-muted hover:text-ink"
             >
-              取消
+              {t('common.cancel')}
             </button>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -144,7 +146,7 @@ export function CycleControls({
                         : 'bg-high-light text-high-dark'
                     }`}
                   >
-                    {getCarbLabel(day.carbType)}
+                    {t(getCarbMessageKey(day.carbType))}
                   </span>
                 </div>
 
@@ -164,7 +166,11 @@ export function CycleControls({
           }`}
         >
           <span className="block text-sm sm:text-base">
-            确认今天设为 {pending.label}（{getCarbLabel(pending.carbType)} · {pending.workout}）?
+            {t('controls.resetConfirm', {
+              label: pending.label,
+              carb: t(getCarbMessageKey(pending.carbType)),
+              workout: pending.workout,
+            })}
           </span>
           <div className="mt-3 flex gap-2 sm:mt-0">
             <button
@@ -179,7 +185,7 @@ export function CycleControls({
                   : 'bg-high-dark text-high-light hover:bg-amber-700'
               }`}
             >
-              确认
+              {t('common.confirm')}
             </button>
             <button
               type="button"
@@ -188,7 +194,7 @@ export function CycleControls({
                 pending.carbType === 'low' ? '' : 'text-amber-900 hover:bg-amber-100'
               }`}
             >
-              返回
+              {t('controls.back')}
             </button>
           </div>
         </div>

@@ -1,5 +1,10 @@
 import type { AppState, MealPlan, TrainingLog } from './types';
 import { mergeState } from './cycle';
+import {
+  detectBrowserLocale,
+  parseLocale,
+  readStoredLocale,
+} from './i18n/locale';
 
 /** Heuristic: how much user data is in this state snapshot. */
 export function scoreAppState(state: AppState): number {
@@ -81,13 +86,26 @@ export interface CloudSnapshot {
  * Hydrate logged-in user state.
  * Cloud wins entirely when present — never merge guest / unrelated local over it.
  * Local cache is only a fallback when cloud is empty (same user, settings-only).
+ * Legacy cloud docs without `locale` keep the device language preference.
  */
 export function resolveHydratedState(
   localSettings: AppState | null,
   cloudState: AppState | null
 ): AppState {
   if (cloudState) {
-    return mergeState({ ...cloudState, trainingLog: cloudState.trainingLog });
+    const merged = mergeState({
+      ...cloudState,
+      trainingLog: cloudState.trainingLog,
+    });
+    // mergeState defaults missing locale to zh — restore device pref for legacy docs.
+    if (!parseLocale((cloudState as Partial<AppState>).locale)) {
+      const device =
+        parseLocale(localSettings?.locale) ??
+        readStoredLocale() ??
+        detectBrowserLocale();
+      return { ...merged, locale: device };
+    }
+    return merged;
   }
 
   if (localSettings) {

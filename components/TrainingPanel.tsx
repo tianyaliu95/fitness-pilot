@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import type { AppState, CycleDayTemplate } from '@/lib/types';
-import { getCarbLabel, getCycleSummary } from '@/lib/cycle';
+import { getCarbMessageKey } from '@/lib/cycle';
+import { useT } from '@/lib/i18n';
 import { SaveBar } from './SaveBar';
 
 interface TrainingPanelProps {
@@ -39,6 +40,7 @@ export function TrainingPanel({
   tabbed = false,
   onDirtyChange,
 }: TrainingPanelProps) {
+  const t = useT();
   const [draftDays, setDraftDays] = useState(state.cycleDays);
   const dirty = !cycleDaysEqual(draftDays, state.cycleDays);
 
@@ -65,31 +67,31 @@ export function TrainingPanel({
     }));
   }
 
+  const low = state.cycleDays.filter((d) => d.carbType === 'low').length;
+  const high = state.cycleDays.length - low;
+  const summary = t('cycle.summary', {
+    days: state.cycleDays.length,
+    low,
+    high,
+  });
+  const hint = t('training.hint', { summary });
   const showHeader = !embedded && !tabbed;
 
   return (
     <div className="space-y-5">
       {showHeader && (
         <header>
-          <h2 className="text-xl font-bold text-ink sm:text-2xl">训练安排</h2>
-          <p className="mt-1 text-sm text-ink-muted">
-            {getCycleSummary(state.cycleDays)}，修改后点击保存
-          </p>
+          <h2 className="text-xl font-bold text-ink sm:text-2xl">{t('training.title')}</h2>
+          <p className="mt-1 text-sm text-ink-muted">{hint}</p>
         </header>
       )}
 
-      {tabbed && (
-        <p className="text-sm text-ink-muted">
-          {getCycleSummary(state.cycleDays)}，修改后点击保存
-        </p>
-      )}
+      {tabbed && <p className="text-sm text-ink-muted">{hint}</p>}
 
       {embedded && !tabbed && (
         <header>
-          <h3 className="text-base font-bold text-ink">训练安排</h3>
-          <p className="mt-1 text-sm text-ink-muted">
-            {getCycleSummary(state.cycleDays)}，修改后点击保存
-          </p>
+          <h3 className="text-base font-bold text-ink">{t('training.title')}</h3>
+          <p className="mt-1 text-sm text-ink-muted">{hint}</p>
         </header>
       )}
 
@@ -105,14 +107,14 @@ export function TrainingPanel({
                     : 'bg-high-light text-high-dark'
                 }`}
               >
-                {getCarbLabel(day.carbType)}
+                {t(getCarbMessageKey(day.carbType))}
               </span>
             </div>
             <input
               type="text"
               value={day.workout}
               onChange={(e) => updateWorkout(day.dayIndex, e.target.value)}
-              placeholder="训练内容..."
+              placeholder={t('training.placeholder')}
               className="w-full rounded-xl border border-ink/10 bg-white/70 px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink-faint hover:border-ink/15 focus:border-low/40 focus-visible:ring-2 focus-visible:ring-low/30"
             />
           </div>

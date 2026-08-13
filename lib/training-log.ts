@@ -10,7 +10,9 @@ import { buildDayInfo } from './day-info';
 export interface RecordedTraining {
   date: string;
   entry: TrainingLogEntry;
+  /** User/schedule workout name (never localized). */
   plannedWorkout: string;
+  isDelayed: boolean;
   label: string;
 }
 
@@ -121,9 +123,8 @@ export function getListedTrainings(
     return {
       date,
       entry,
-      plannedWorkout: day.isDelayed
-        ? `暂停 · 原 ${day.scheduledWorkout}`
-        : day.workout,
+      plannedWorkout: day.scheduledWorkout,
+      isDelayed: day.isDelayed,
       label: day.label,
     };
   });

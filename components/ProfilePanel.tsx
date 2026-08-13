@@ -6,10 +6,12 @@ import { formatDisplayDate } from '@/lib/day-info';
 import { todayISO } from '@/lib/cycle';
 import { calculateBmi, getBmiCategory, parsePositiveNumber } from '@/lib/bmi';
 import { getLatestWeight, getWeightSeries } from '@/lib/weight';
+import { useLocale, useT } from '@/lib/i18n';
 import { WeightChart } from './WeightChart';
 import { BmiGauge } from './BmiGauge';
 import { DatePicker } from './DatePicker';
 import { SaveBar } from './SaveBar';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { useAuth } from '@/lib/auth-context';
 import { useLoginPrompt } from '@/lib/login-prompt';
 
@@ -74,6 +76,8 @@ export function ProfilePanel({
   cloudSaveError,
   onUpdate,
 }: ProfilePanelProps) {
+  const t = useT();
+  const { bcp47 } = useLocale();
   const today = todayISO();
   const [selectedDate, setSelectedDate] = useState(today);
   const [draftProfile, setDraftProfile] = useState(state.profile);
@@ -169,9 +173,16 @@ export function ProfilePanel({
   return (
     <div className="space-y-5">
       <header>
-        <h2 className="text-xl font-bold text-ink sm:text-2xl">个人信息</h2>
-        <p className="mt-1 text-sm text-ink-muted">基础资料、BMI 与每日体重记录</p>
+        <h2 className="text-xl font-bold text-ink sm:text-2xl">{t('profile.title')}</h2>
+        <p className="mt-1 text-sm text-ink-muted">{t('profile.subtitle')}</p>
       </header>
+
+      <section className="glass-panel rounded-3xl px-5 sm:px-6 py-3">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-sm font-semibold text-ink">{t('language.section')}</h3>
+          <LanguageSwitcher compact />
+        </div>
+      </section>
 
       {/* Profile + BMI */}
       <div className="glass-panel rounded-3xl p-5 sm:p-6">
@@ -184,7 +195,7 @@ export function ProfilePanel({
             <div className="min-w-0 flex-1">
               <p className="truncate text-lg font-bold text-ink">
                 {(editingProfile ? draftProfile.name : viewProfile.name).trim() ||
-                  '未设置姓名'}
+                  t('profile.nameUnset')}
               </p>
               {userEmail && (
                 <p className="mt-0.5 truncate text-sm text-ink-muted">{userEmail}</p>
@@ -203,7 +214,7 @@ export function ProfilePanel({
                 onClick={cancelProfileEdit}
                 className="rounded-xl px-3 py-1.5 text-sm font-medium text-ink-muted transition hover:bg-surface hover:text-ink"
               >
-                取消
+                {t('common.cancel')}
               </button>
               <button
                 type="button"
@@ -211,7 +222,7 @@ export function ProfilePanel({
                 disabled={!profileDirty || cloudSyncing}
                 className="rounded-xl bg-ink px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {cloudSyncing ? '保存中...' : '保存'}
+                {cloudSyncing ? t('common.saving') : t('common.save')}
               </button>
             </div>
           ) : (
@@ -220,7 +231,7 @@ export function ProfilePanel({
               onClick={startProfileEdit}
               className="shrink-0 rounded-xl border border-ink/10 bg-surface px-3 py-1.5 text-sm font-medium text-ink transition hover:border-ink/20 hover:bg-surface-muted"
             >
-              编辑
+              {t('profile.editProfile')}
             </button>
           )}
         </div>
@@ -228,19 +239,19 @@ export function ProfilePanel({
         {editingProfile ? (
           <div className="mt-5 grid gap-4 sm:grid-cols-3">
             <label className="block sm:col-span-3">
-              <span className="mb-1 block text-xs font-medium text-ink-muted">姓名</span>
+              <span className="mb-1 block text-xs font-medium text-ink-muted">{t('profile.name')}</span>
               <input
                 type="text"
                 value={draftProfile.name}
                 onChange={(e) =>
                   setDraftProfile((p) => ({ ...p, name: e.target.value }))
                 }
-                placeholder="你的姓名"
+                placeholder={t('profile.namePlaceholder')}
                 className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-xs font-medium text-ink-muted">年龄</span>
+              <span className="mb-1 block text-xs font-medium text-ink-muted">{t('profile.age')}</span>
               <input
                 type="text"
                 inputMode="numeric"
@@ -248,12 +259,12 @@ export function ProfilePanel({
                 onChange={(e) =>
                   setDraftProfile((p) => ({ ...p, age: e.target.value }))
                 }
-                placeholder="例如 28"
+                placeholder={t('profile.agePlaceholder')}
                 className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-xs font-medium text-ink-muted">身高 (cm)</span>
+              <span className="mb-1 block text-xs font-medium text-ink-muted">{t('profile.height')}</span>
               <input
                 type="text"
                 inputMode="decimal"
@@ -261,19 +272,28 @@ export function ProfilePanel({
                 onChange={(e) =>
                   setDraftProfile((p) => ({ ...p, height: e.target.value }))
                 }
-                placeholder="例如 175"
+                placeholder={t('profile.heightPlaceholder')}
                 className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
           </div>
         ) : (
           <dl className="mt-5 grid grid-cols-3 gap-3">
-            <ProfileField label="姓名" value={viewProfile.name} placeholder="未填写" />
-            <ProfileField label="年龄" value={viewProfile.age} placeholder="未填写" suffix="岁" />
             <ProfileField
-              label="身高"
+              label={t('profile.name')}
+              value={viewProfile.name}
+              placeholder={t('profile.empty')}
+            />
+            <ProfileField
+              label={t('profile.age')}
+              value={viewProfile.age}
+              placeholder={t('profile.empty')}
+              suffix={t('profile.ageSuffix')}
+            />
+            <ProfileField
+              label={t('profile.heightShort')}
               value={viewProfile.height}
-              placeholder="未填写"
+              placeholder={t('profile.empty')}
               suffix="cm"
             />
           </dl>
@@ -283,31 +303,29 @@ export function ProfilePanel({
           <BmiGauge bmi={bmi} category={bmiCategory} />
         </div>
 
-        <p className="mt-4 text-xs leading-relaxed text-ink-faint">
-          BMI 采用 WHO 标准：体重(kg) ÷ 身高(m)²。使用最新体重与所填身高计算，仅供参考。
-        </p>
+        <p className="mt-4 text-xs leading-relaxed text-ink-faint">{t('profile.bmiHint')}</p>
       </div>
 
       {/* Weight log + recent history + chart */}
       <div className="grid gap-4 md:grid-cols-5 md:gap-5">
         <div className="relative z-20 order-1 flex h-96 flex-col overflow-visible glass-panel rounded-3xl p-5 md:col-span-2 sm:p-6">
           <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-ink">体重记录</h3>
+            <h3 className="text-sm font-semibold text-ink">{t('controls.weightLog')}</h3>
             {selectedDate === today && (
-              <span className="text-xs font-medium text-ink-faint">今天</span>
+              <span className="text-xs font-medium text-ink-faint">{t('common.today')}</span>
             )}
           </div>
           <div className="flex min-h-0 flex-1 flex-col overflow-visible">
             <DatePicker value={selectedDate} max={today} onChange={setSelectedDate} />
 
             <label className="mt-4 block">
-              <span className="mb-1 block text-xs font-medium text-ink-muted">体重 (kg)</span>
+              <span className="mb-1 block text-xs font-medium text-ink-muted">{t('profile.weightKg')}</span>
               <input
                 type="text"
                 inputMode="decimal"
                 value={draftWeight}
                 onChange={(e) => setDraftWeight(e.target.value)}
-                placeholder="例如 72.5"
+                placeholder={t('profile.weightPlaceholder')}
                 className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
@@ -324,7 +342,7 @@ export function ProfilePanel({
         </div>
 
         <div className="relative z-0 order-3 flex h-96 flex-col glass-panel rounded-3xl p-5 md:order-2 md:col-span-3 sm:p-6">
-          <h3 className="mb-3 shrink-0 text-sm font-semibold text-ink">近期体重</h3>
+          <h3 className="mb-3 shrink-0 text-sm font-semibold text-ink">{t('profile.history')}</h3>
           <div className="min-h-0 flex-1 overflow-y-auto pr-1">
             {history.length > 0 ? (
               <ul className="space-y-2">
@@ -342,14 +360,16 @@ export function ProfilePanel({
                       className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-2 text-left transition hover:opacity-80"
                     >
                       <span className="truncate text-ink-muted">
-                        {formatDisplayDate(date)}
+                        {formatDisplayDate(date, bcp47)}
                       </span>
                       <span className="shrink-0 font-semibold text-ink">{weight} kg</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeleteEntry(date)}
-                      aria-label={`删除 ${formatDisplayDate(date)} 的记录`}
+                      aria-label={t('profile.deleteWeight', {
+                        date: formatDisplayDate(date, bcp47),
+                      })}
                       className="shrink-0 cursor-pointer rounded-lg p-1.5 text-ink-faint transition hover:bg-red-50 hover:text-red-600"
                     >
                       <TrashIcon />
@@ -359,7 +379,7 @@ export function ProfilePanel({
               </ul>
             ) : (
               <p className="flex h-full items-center justify-center text-sm text-ink-faint">
-                暂无记录
+                {t('profile.noHistory')}
               </p>
             )}
           </div>
@@ -367,14 +387,14 @@ export function ProfilePanel({
 
         {chartData.length > 0 && (
           <div className="relative z-0 order-2 glass-panel rounded-3xl p-5 md:order-3 md:col-span-5 sm:p-6">
-            <h3 className="mb-4 text-sm font-semibold text-ink">体重变化</h3>
+            <h3 className="mb-4 text-sm font-semibold text-ink">{t('profile.chart')}</h3>
             <WeightChart data={chartData} />
           </div>
         )}
       </div>
 
       <p className="px-1 text-center text-xs leading-relaxed text-ink-faint sm:hidden">
-        想从主屏幕打开？Safari 点分享 →「添加到主屏幕」
+        {t('profile.pwaHint')}
       </p>
 
       {isConfigured && user && (
@@ -387,7 +407,7 @@ export function ProfilePanel({
             <svg className="inline-block h-4 w-4 sm:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            退出登录
+            {t('nav.signOut')}
           </button>
         </div>
       )}
@@ -398,7 +418,7 @@ export function ProfilePanel({
             onClick={openLogin}
             className="rounded-2xl bg-ink px-5 py-2.5 text-sm font-bold text-white transition hover:bg-ink/90"
           >
-            登录 / 注册
+            {t('auth.signInRegister')}
           </button>
         </div>
       )}

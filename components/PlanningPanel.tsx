@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { AppState } from '@/lib/types';
+import { useT } from '@/lib/i18n';
 import { TrainingPanel } from './TrainingPanel';
 import { SettingsPanel } from './SettingsPanel';
 import { TabBar, tabPanelProps } from './TabBar';
@@ -23,6 +24,7 @@ export function PlanningPanel({
   cloudSaveError,
   onUpdate,
 }: PlanningPanelProps) {
+  const t = useT();
   const [tab, setTab] = useState<PlanningTab>('training');
   const [trainingDirty, setTrainingDirty] = useState(false);
   const [cycleDirty, setCycleDirty] = useState(false);
@@ -30,18 +32,16 @@ export function PlanningPanel({
   return (
     <div className="space-y-5">
       <header>
-        <h2 className="text-xl font-bold text-ink sm:text-2xl">训练规划</h2>
-        <p className="mt-1 text-sm text-ink-muted">
-          安排每日训练内容与碳循环日程，每个 tab 独立保存
-        </p>
+        <h2 className="text-xl font-bold text-ink sm:text-2xl">{t('planning.title')}</h2>
+        <p className="mt-1 text-sm text-ink-muted">{t('planning.subtitle')}</p>
       </header>
 
       <TabBar
         idPrefix="planning"
-        aria-label="训练规划分类"
+        aria-label={t('planning.ariaTabs')}
         tabs={[
-          { id: 'training', label: '训练安排', dirty: trainingDirty },
-          { id: 'cycle', label: '碳循环设置', dirty: cycleDirty },
+          { id: 'training', label: t('planning.tabTraining'), dirty: trainingDirty },
+          { id: 'cycle', label: t('planning.tabCycle'), dirty: cycleDirty },
         ]}
         activeId={tab}
         onChange={(id) => setTab(id as PlanningTab)}

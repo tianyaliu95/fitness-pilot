@@ -4,10 +4,13 @@ import {
   BMI_GAUGE_MAX,
   BMI_GAUGE_MIN,
   BMI_GAUGE_SEGMENTS,
+  bmiLabelKey,
   bmiToGaugeAngle,
   formatBmi,
   type BmiCategory,
+  type BmiCategoryId,
 } from '@/lib/bmi';
+import { useT } from '@/lib/i18n';
 
 interface BmiGaugeProps {
   bmi: number | null;
@@ -20,12 +23,12 @@ const R = 96;
 const STROKE = 16;
 const MARKER_OVERHANG = 5;
 
-const SCALE_LABELS = [
-  { label: '偏瘦', bmi: 16.5 },
-  { label: '正常', bmi: 21.5 },
-  { label: '超重', bmi: 27.5 },
-  { label: '肥胖', bmi: 32.5 },
-] as const;
+const SCALE_LABELS: { id: BmiCategoryId; bmi: number }[] = [
+  { id: 'underweight', bmi: 16.5 },
+  { id: 'normal', bmi: 21.5 },
+  { id: 'overweight', bmi: 27.5 },
+  { id: 'obese', bmi: 32.5 },
+];
 
 function polar(deg: number, radius: number) {
   const rad = (deg * Math.PI) / 180;
@@ -69,8 +72,10 @@ function ArcMarker({ deg, color }: { deg: number; color: string }) {
 }
 
 export function BmiGauge({ bmi, category }: BmiGaugeProps) {
+  const t = useT();
   const hasBmi = bmi !== null && category !== null;
   const markerDeg = hasBmi ? bmiToGaugeAngle(bmi) : null;
+  const categoryLabel = category ? t(bmiLabelKey(category.id)) : '';
 
   return (
     <div className="mx-auto w-full max-w-[300px]">
@@ -79,7 +84,11 @@ export function BmiGauge({ bmi, category }: BmiGaugeProps) {
           viewBox="0 0 280 150"
           className="w-full"
           role="img"
-          aria-label={hasBmi ? `BMI ${formatBmi(bmi)}，${category.label}` : 'BMI 暂无数据'}
+          aria-label={
+            hasBmi
+              ? `BMI ${formatBmi(bmi)}, ${categoryLabel}`
+              : t('bmi.noData')
+          }
         >
           <path
             d={arcPath(180, 360, R)}
@@ -119,19 +128,22 @@ export function BmiGauge({ bmi, category }: BmiGaugeProps) {
           ) : (
             <>
               <p className="text-3xl font-bold text-ink-faint">—</p>
-              <p className="mb-4 mt-2 text-sm text-ink-muted">填写身高并记录体重</p>
+              <p className="mb-4 mt-2 text-sm text-ink-muted">{t('bmi.needData')}</p>
             </>
           )}
         </div>
       </div>
 
-      <div className="mt-1 flex items-center justify-between px-8 text-sm font-medium text-ink-faint">
-        {SCALE_LABELS.map(({ label }) => {
-          const active = category?.label === label;
+      <div className="mt-2 grid grid-cols-4 items-center gap-x-1 px-1 text-center text-[10px] font-medium leading-snug text-ink-faint sm:gap-x-2 sm:px-2 sm:text-sm">
+        {SCALE_LABELS.map(({ id }) => {
+          const label = t(bmiLabelKey(id));
+          const active = category?.id === id;
           return (
             <span
-              key={label}
-              className={active ? 'text-base font-extrabold' : undefined}
+              key={id}
+              className={
+                active ? 'text-xs font-extrabold sm:text-lg' : undefined
+              }
               style={active ? { color: category.labelColor } : undefined}
             >
               {label}

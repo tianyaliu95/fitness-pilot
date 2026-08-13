@@ -64,6 +64,8 @@ export interface AppState {
   weightLog: WeightLog;
   trainingLog: TrainingLog;
   profile: UserProfile;
+  /** UI language preference — synced with the user account */
+  locale: 'en' | 'zh';
 }
 
 export interface DayInfo {

@@ -1,17 +1,22 @@
 import type { MealPlan } from './types';
+import type { MessageKey } from './i18n/en';
 
-export const MEAL_FIELDS: { key: keyof MealPlan; label: string }[] = [
-  { key: 'breakfast', label: '早餐' },
-  { key: 'lunch', label: '午餐' },
-  { key: 'dinner', label: '晚餐' },
-  { key: 'proteinPowder', label: '蛋白粉' },
-  { key: 'nuts', label: '坚果' },
+export const MEAL_FIELDS: { key: keyof MealPlan; labelKey: MessageKey }[] = [
+  { key: 'breakfast', labelKey: 'meal.breakfast' },
+  { key: 'lunch', labelKey: 'meal.lunch' },
+  { key: 'dinner', labelKey: 'meal.dinner' },
+  { key: 'proteinPowder', labelKey: 'meal.proteinPowder' },
+  { key: 'nuts', labelKey: 'meal.nuts' },
 ];
 
-export const MACRO_FIELDS: { key: keyof MealPlan; label: string; placeholder: string }[] = [
-  { key: 'protein', label: '蛋白质', placeholder: '例如 150-170g' },
-  { key: 'carbs', label: '碳水', placeholder: '例如 100-130g' },
-  { key: 'fat', label: '脂肪', placeholder: '例如 50-65g' },
+export const MACRO_FIELDS: {
+  key: keyof MealPlan;
+  labelKey: MessageKey;
+  placeholderKey: MessageKey;
+}[] = [
+  { key: 'protein', labelKey: 'macro.protein', placeholderKey: 'macro.proteinPh' },
+  { key: 'carbs', labelKey: 'macro.carbs', placeholderKey: 'macro.carbsPh' },
+  { key: 'fat', labelKey: 'macro.fat', placeholderKey: 'macro.fatPh' },
 ];
 
 export const DEFAULT_MEAL_LOW: MealPlan = {

@@ -2,6 +2,7 @@
 
 import { useAppState } from '@/lib/storage';
 import { useLoginPrompt } from '@/lib/login-prompt';
+import { useLocale, useT } from '@/lib/i18n';
 
 interface SaveBarProps {
   dirty: boolean;
@@ -22,6 +23,8 @@ export function SaveBar({
 }: SaveBarProps) {
   const { isGuest } = useAppState();
   const { openLogin } = useLoginPrompt();
+  const t = useT();
+  const { bcp47 } = useLocale();
 
   const shell = embedded
     ? 'space-y-2 border-t border-ink/5 pt-3'
@@ -30,15 +33,13 @@ export function SaveBar({
   if (isGuest) {
     return (
       <div className={shell}>
-        <p className="text-center text-xs text-ink-muted">
-          演示模式可浏览，登录后才能保存到云端
-        </p>
+        <p className="text-center text-xs text-ink-muted">{t('save.guestHint')}</p>
         <button
           type="button"
           onClick={openLogin}
           className="w-full rounded-2xl bg-ink px-4 py-3 text-sm font-extrabold text-white transition hover:bg-ink/90"
         >
-          登录后保存
+          {t('save.guestCta')}
         </button>
       </div>
     );
@@ -49,17 +50,18 @@ export function SaveBar({
       <div className={shell}>
         {lastSavedAt ? (
           <p className="rounded-xl bg-success-soft px-3 py-2 text-center text-xs font-bold text-success-text">
-            已保存 ·{' '}
-            {lastSavedAt.toLocaleString('zh-CN', {
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
+            {t('save.saved', {
+              time: lastSavedAt.toLocaleString(bcp47, {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
             })}
           </p>
         ) : (
-          <p className="text-center text-xs text-ink-muted">修改后点击「保存修改」确认</p>
+          <p className="text-center text-xs text-ink-muted">{t('save.hint')}</p>
         )}
       </div>
     );
@@ -67,7 +69,7 @@ export function SaveBar({
 
   return (
     <div className={shell}>
-      {dirty && <p className="text-xs font-medium text-amber-700">有未保存的修改</p>}
+      {dirty && <p className="text-xs font-medium text-amber-700">{t('save.dirty')}</p>}
 
       <button
         type="button"
@@ -75,12 +77,12 @@ export function SaveBar({
         disabled={!dirty || saving}
         className="w-full rounded-2xl bg-ink px-4 py-3 text-sm font-extrabold text-white transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {saving ? '保存中...' : '保存修改'}
+        {saving ? t('common.saving') : t('common.save')}
       </button>
 
       {saveError && (
         <p className="rounded-xl bg-danger-soft px-3 py-2 text-xs text-danger-text" role="alert">
-          保存失败：{saveError}
+          {t('save.failed', { error: saveError })}
         </p>
       )}
     </div>

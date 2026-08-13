@@ -9,6 +9,7 @@ import {
   formatShortDate,
   niceWeightYDomain,
 } from '@/lib/weight';
+import { useLocale, useT } from '@/lib/i18n';
 
 interface WeightChartProps {
   data: WeightPoint[];
@@ -76,6 +77,8 @@ function nearestPoint(points: ChartPoint[], svgX: number): ChartPoint | null {
 }
 
 export function WeightChart({ data }: WeightChartProps) {
+  const t = useT();
+  const { bcp47 } = useLocale();
   const maxLabels = useMaxXLabels();
   const svgRef = useRef<SVGSVGElement>(null);
   const pinchRef = useRef<{
@@ -434,7 +437,7 @@ export function WeightChart({ data }: WeightChartProps) {
     <div className="relative w-full overflow-visible">
       <div className="mb-2 flex items-center justify-between gap-2">
         <p className="min-w-0 flex-1 text-xs text-ink-faint sm:text-xs">
-          移动查看 · 滚轮缩放时间轴 · 放大后可拖拽平移
+          {t('chart.hint')}
         </p>
         {isZoomed && (
           <button
@@ -442,7 +445,7 @@ export function WeightChart({ data }: WeightChartProps) {
             onClick={resetZoom}
             className="shrink-0 whitespace-nowrap text-xs font-medium text-low-dark hover:underline sm:text-xs"
           >
-            重置缩放
+            {t('chart.resetZoom')}
           </button>
         )}
       </div>
@@ -455,7 +458,7 @@ export function WeightChart({ data }: WeightChartProps) {
             isZoomed ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : ''
           }`}
           role="img"
-          aria-label="体重变化折线图"
+          aria-label={t('chart.aria')}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -582,7 +585,7 @@ export function WeightChart({ data }: WeightChartProps) {
           >
             <div className="rounded-2xl border border-ink/5 bg-white/95 px-3.5 py-2.5 shadow-card backdrop-blur-sm">
               <p className="text-xs font-medium leading-snug text-ink-muted sm:text-xs">
-                {formatDisplayDate(active.date)}
+                {formatDisplayDate(active.date, bcp47)}
               </p>
               <p className="mt-1 flex items-baseline gap-1">
                 <span className="text-lg font-extrabold tracking-tight text-ink">

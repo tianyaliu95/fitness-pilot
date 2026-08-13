@@ -1,6 +1,8 @@
 'use client';
 
 import { useId, useRef } from 'react';
+import { useT } from '@/lib/i18n';
+import { scrollPageToTop } from './ScrollToTopOnNavigate';
 
 export type TabTone = 'default' | 'low' | 'high';
 
@@ -54,12 +56,19 @@ export function TabBar({
   onChange,
   className = '',
   variant = 'default',
-  'aria-label': ariaLabel = '内容分类',
+  'aria-label': ariaLabel,
   idPrefix,
 }: TabBarProps) {
+  const t = useT();
+  const resolvedAriaLabel = ariaLabel ?? t('common.tabs');
   const autoId = useId();
   const prefix = idPrefix ?? `tabs${autoId.replace(/:/g, '')}`;
   const listRef = useRef<HTMLDivElement>(null);
+
+  function selectTab(id: string) {
+    onChange(id);
+    scrollPageToTop();
+  }
 
   function focusTabAt(index: number) {
     const buttons = listRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
@@ -83,7 +92,7 @@ export function TabBar({
     } else {
       return;
     }
-    onChange(tabs[next].id);
+    selectTab(tabs[next].id);
     requestAnimationFrame(() => focusTabAt(next));
   }
 
@@ -91,7 +100,7 @@ export function TabBar({
     <div
       className={`rounded-2xl bg-surface-muted p-1 ${className}`}
       role="tablist"
-      aria-label={ariaLabel}
+      aria-label={resolvedAriaLabel}
       ref={listRef}
     >
       <div
@@ -111,7 +120,7 @@ export function TabBar({
               aria-selected={active}
               aria-controls={panelId}
               tabIndex={active ? 0 : -1}
-              onClick={() => onChange(tab.id)}
+              onClick={() => selectTab(tab.id)}
               onKeyDown={(e) => onKeyDown(e, index)}
               className={tabButtonClasses(tab, active, variant)}
             >
@@ -119,7 +128,7 @@ export function TabBar({
               {tab.dirty && (
                 <span
                   className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"
-                  aria-label="有未保存的修改"
+                  aria-label={t('save.dirty')}
                 />
               )}
             </button>

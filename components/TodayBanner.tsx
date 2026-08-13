@@ -1,10 +1,10 @@
 'use client';
 
 import type { DayInfo } from '@/lib/types';
-import { getCycleProgressLabel } from '@/lib/day-info';
 import { MEAL_FIELDS, MACRO_FIELDS } from '@/lib/intake';
 import { macroPerKgLabel } from '@/lib/macros';
 import { formatDisplayDate } from '@/lib/day-info';
+import { useLocale, useT } from '@/lib/i18n';
 
 interface TodayBannerProps {
   day: DayInfo;
@@ -15,10 +15,12 @@ function MacroHighlight({
   label,
   grams,
   perKg,
+  afterWeightLabel,
 }: {
   label: string;
   grams: string;
   perKg: string | null;
+  afterWeightLabel: string;
 }) {
   const hasGrams = grams.trim().length > 0;
 
@@ -33,17 +35,29 @@ function MacroHighlight({
       {perKg ? (
         <p className="mt-1 text-sm font-bold text-white drop-shadow-sm sm:mt-2 sm:text-xl">{perKg}</p>
       ) : (
-        <p className="mt-2 text-xs font-medium text-white/80">记录体重后显示 g/kg</p>
+        <p className="mt-2 text-xs font-medium text-white/80">{afterWeightLabel}</p>
       )}
     </div>
   );
 }
 
 export function TodayBanner({ day, weightKg }: TodayBannerProps) {
+  const t = useT();
+  const { locale, bcp47 } = useLocale();
   const isLow = day.carbType === 'low';
   const intake = day.intake;
 
   const meals = MEAL_FIELDS.filter(({ key }) => intake[key].trim().length > 0);
+  const carbDayLabel = day.isDelayed
+    ? t('cycle.paused')
+    : isLow
+      ? t('carb.lowDay')
+      : t('carb.highDay');
+  const progressLabel = t('cycle.dayOf', {
+    current: day.cycleDayIndex + 1,
+    total: day.cycleLength,
+  });
+  const deferredNote = t('cycle.deferredNote', { workout: day.scheduledWorkout });
 
   return (
     <div
@@ -63,22 +77,20 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-wrap items-center gap-2">
               <span className="text-2xl font-extrabold tracking-tight text-white">
-                {day.isDelayed ? '暂停' : isLow ? '低碳日' : '高碳日'}
+                {carbDayLabel}
               </span>
               {!day.isDelayed && (
                 <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-xs font-bold text-white">
-                  {getCycleProgressLabel(day.cycleDayIndex, day.cycleLength)}
+                  {progressLabel}
                 </span>
               )}
             </div>
             <p className="shrink-0 pt-0.5 text-right text-base font-bold leading-snug text-white/85">
-              {formatDisplayDate(day.date)}
+              {formatDisplayDate(day.date, bcp47)}
             </p>
           </div>
           <p className="mt-2 text-base font-bold text-white">
-            {day.isDelayed
-              ? `原计划 ${day.scheduledWorkout} · 已顺延到明天`
-              : day.workout}
+            {day.isDelayed ? deferredNote : day.workout}
           </p>
         </div>
 
@@ -86,35 +98,37 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
         <div className="hidden sm:block">
           <div className="flex flex-wrap items-end gap-3">
             <span className="text-5xl font-extrabold tracking-tight text-white drop-shadow-sm">
-              {day.isDelayed ? '暂停' : isLow ? '低碳日' : '高碳日'}
+              {carbDayLabel}
             </span>
             {!day.isDelayed && (
               <span className="rounded-full bg-white/25 px-4 py-1 text-2xl font-extrabold text-white">
-                {getCycleProgressLabel(day.cycleDayIndex, day.cycleLength)}
+                {progressLabel}
               </span>
             )}
             <span className="ml-auto text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
-              {formatDisplayDate(day.date)}
+              {formatDisplayDate(day.date, bcp47)}
             </span>
           </div>
           <p className="mt-3 text-2xl font-bold text-white">
-            {day.isDelayed
-              ? `原计划 ${day.scheduledWorkout} · 已顺延到明天`
-              : day.workout}
+            {day.isDelayed ? deferredNote : day.workout}
           </p>
         </div>
 
         <div className="border-t border-white/30 pt-4 sm:pt-5">
           <div className="overflow-hidden rounded-2xl bg-white/15 px-3 py-1 sm:px-4">
-            {meals.map(({ key, label }, i) => (
+            {meals.map(({ key, labelKey }, i) => (
               <div
                 key={key}
-                className={`flex gap-2 py-2.5 text-base sm:gap-3 sm:py-3 sm:text-lg ${
-                  i > 0 ? 'border-t border-white/20' : ''
-                }`}
+                className={`grid gap-x-2 py-2.5 text-base sm:gap-x-3 sm:py-3 sm:text-lg ${
+                  locale === 'en'
+                    ? 'grid-cols-[6.5rem_1fr] sm:grid-cols-[8rem_1fr] sm:gap-x-4'
+                    : 'grid-cols-[4rem_1fr] sm:grid-cols-[5.5rem_1fr]'
+                } ${i > 0 ? 'border-t border-white/20' : ''}`}
               >
-                <span className="w-16 shrink-0 font-bold text-white sm:w-28">{label}</span>
-                <span className="font-semibold leading-snug text-white">{intake[key]}</span>
+                <span className="font-bold leading-snug text-white">{t(labelKey)}</span>
+                <span className="min-w-0 font-semibold leading-snug text-white">
+                  {intake[key]}
+                </span>
               </div>
             ))}
           </div>
@@ -122,12 +136,13 @@ export function TodayBanner({ day, weightKg }: TodayBannerProps) {
 
         <div className="border-t border-white/30 pt-4 sm:pt-5">
           <div className="flex gap-2 sm:gap-3">
-            {MACRO_FIELDS.map(({ key, label }) => (
+            {MACRO_FIELDS.map(({ key, labelKey }) => (
               <MacroHighlight
                 key={key}
-                label={label}
+                label={t(labelKey)}
                 grams={intake[key]}
                 perKg={macroPerKgLabel(intake[key], weightKg)}
+                afterWeightLabel={t('macro.afterWeight')}
               />
             ))}
           </div>

@@ -5,6 +5,7 @@ import type { AppState, MealPlan } from '@/lib/types';
 import { MEAL_FIELDS, mealPlanEquals } from '@/lib/intake';
 import { MealMacroFields } from '@/components/MacroDisplay';
 import { getLatestWeight } from '@/lib/weight';
+import { useT } from '@/lib/i18n';
 import { SaveBar } from './SaveBar';
 import { TabBar, tabPanelProps } from './TabBar';
 
@@ -29,15 +30,16 @@ function MealPlanForm({
   weightKg: number | null;
   onChange: (field: keyof MealPlan, value: string) => void;
 }) {
+  const t = useT();
   const accent =
     color === 'low' ? 'border-low/30 focus-visible:ring-low/40' : 'border-high/30 focus-visible:ring-high-dark/40';
 
   return (
     <div className="glass-panel rounded-3xl p-5 sm:p-6">
       <div className="space-y-3">
-        {MEAL_FIELDS.map(({ key, label }) => (
+        {MEAL_FIELDS.map(({ key, labelKey }) => (
           <label key={key} className="block">
-            <span className="mb-1 block text-xs font-medium text-ink-muted">{label}</span>
+            <span className="mb-1 block text-xs font-medium text-ink-muted">{t(labelKey)}</span>
             <input
               type="text"
               value={plan[key]}
@@ -57,11 +59,11 @@ function MealPlanForm({
       />
 
       <label className="mt-4 block">
-        <span className="mb-1 block text-xs font-medium text-ink-muted">备注</span>
+        <span className="mb-1 block text-xs font-medium text-ink-muted">{t('intake.notes')}</span>
         <textarea
           value={plan.notes}
           onChange={(e) => onChange('notes', e.target.value)}
-          placeholder="其他饮食注意事项..."
+          placeholder={t('intake.notesPlaceholder')}
           rows={2}
           className={`w-full resize-none rounded-xl border bg-surface px-3 py-2.5 text-sm text-ink outline-none transition focus-visible:ring-2 ${accent}`}
         />
@@ -77,6 +79,7 @@ export function IntakePanel({
   cloudSaveError,
   onUpdate,
 }: IntakePanelProps) {
+  const t = useT();
   const [tab, setTab] = useState<IntakeTab>('low');
   const [draftLow, setDraftLow] = useState(state.intakeLow);
   const [draftHigh, setDraftHigh] = useState(state.intakeHigh);
@@ -105,22 +108,20 @@ export function IntakePanel({
   return (
     <div className="space-y-5">
       <header>
-        <h2 className="text-xl font-bold text-ink sm:text-2xl">摄入要求</h2>
+        <h2 className="text-xl font-bold text-ink sm:text-2xl">{t('intake.title')}</h2>
         <p className="mt-1 text-sm text-ink-muted">
-          按餐次填写吃什么、吃多少，每个 tab 独立保存。
-          {weightKg && (
-            <span className="text-ink-faint"> 按最近体重 {weightKg} kg 计算 g/kg</span>
-          )}
+          {t('intake.subtitle')}
+          {weightKg && t('intake.weightBasis', { weight: weightKg })}
         </p>
       </header>
 
       <TabBar
         idPrefix="intake"
-        aria-label="摄入日类型"
+        aria-label={t('intake.ariaTabs')}
         variant="carb"
         tabs={[
-          { id: 'low', label: '低碳日', dirty: lowDirty, tone: 'low' },
-          { id: 'high', label: '高碳日', dirty: highDirty, tone: 'high' },
+          { id: 'low', label: t('intake.tabLow'), dirty: lowDirty, tone: 'low' },
+          { id: 'high', label: t('intake.tabHigh'), dirty: highDirty, tone: 'high' },
         ]}
         activeId={tab}
         onChange={(id) => setTab(id as IntakeTab)}

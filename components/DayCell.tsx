@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import type { DayInfo } from '@/lib/types';
+import { useT } from '@/lib/i18n';
 
 interface DayCellProps {
   day: DayInfo;
@@ -9,6 +10,7 @@ interface DayCellProps {
 }
 
 export function DayCell({ day, dayNumber }: DayCellProps) {
+  const t = useT();
   const isLow = day.carbType === 'low';
   const isPaused = day.isDelayed;
 
@@ -17,9 +19,9 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
     : 'hover:shadow-soft sm:hover:scale-[1.05]';
 
   const status = day.trainingComplete ? (
-    <StatusBadge variant="complete" label="训练已完成" />
+    <StatusBadge variant="complete" label={t('day.trainingComplete')} />
   ) : day.trainingIncomplete ? (
-    <StatusBadge variant="incomplete" label="训练未完成" />
+    <StatusBadge variant="incomplete" label={t('day.trainingIncomplete')} />
   ) : null;
 
   if (!day.isCycleActive) {
@@ -86,7 +88,7 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
       <div className="mt-auto hidden sm:block">
         {isPaused ? (
           <span className="inline-block rounded-full bg-ink/10 px-2 py-0.5 text-xs font-semibold text-ink-muted">
-            暂停
+            {t('cycle.paused')}
           </span>
         ) : (
           <>
@@ -96,7 +98,7 @@ export function DayCell({ day, dayNumber }: DayCellProps) {
                 ${isLow ? 'bg-low-dark text-white' : 'bg-high-dark text-white'}
               `}
             >
-              {isLow ? '低碳' : '高碳'}
+              {isLow ? t('carb.low') : t('carb.high')}
             </span>
             <p className="mt-1 truncate text-xs text-ink-muted">{day.workout}</p>
           </>

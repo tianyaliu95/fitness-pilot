@@ -86,6 +86,22 @@ export function getBmiCategory(bmi: number): BmiCategory {
   };
 }
 
+export function bmiLabelKey(
+  id: BmiCategoryId
+): 'bmi.underweight' | 'bmi.normal' | 'bmi.overweight' | 'bmi.obese' {
+  return `bmi.${id}`;
+}
+
+export function bmiDescKey(
+  id: BmiCategoryId
+):
+  | 'bmi.underweightDesc'
+  | 'bmi.normalDesc'
+  | 'bmi.overweightDesc'
+  | 'bmi.obeseDesc' {
+  return `bmi.${id}Desc`;
+}
+
 export function formatBmi(bmi: number): string {
   return bmi.toFixed(1);
 }

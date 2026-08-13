@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { formatAuthError } from '@/lib/auth-errors';
+import { useT } from '@/lib/i18n';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 function GoogleIcon() {
   return (
@@ -28,11 +30,12 @@ function GoogleIcon() {
 }
 
 interface AuthFormProps {
-  /** Shown as “继续浏览” — return to the app without signing in. */
+  /** Shown as “continue browsing” — return to the app without signing in. */
   onDismiss?: () => void;
 }
 
 export function AuthForm({ onDismiss }: AuthFormProps) {
+  const t = useT();
   const { signIn, signUp, signInWithGoogle, authError, clearAuthError } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
@@ -75,12 +78,14 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
       <div className="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8" aria-busy={busy}>
-        <h1 className="font-display text-2xl font-bold tracking-tight text-ink">
+        <div className="flex justify-end">
+          <LanguageSwitcher compact />
+        </div>
+
+        <h1 className="mt-3 font-display text-2xl font-bold tracking-tight text-ink">
           Fitness Pilot
         </h1>
-        <p className="mt-2 text-sm text-ink-muted">
-          登录后数据会自动保存到云端，电脑和手机打开都是最新内容。
-        </p>
+        <p className="mt-2 text-sm text-ink-muted">{t('auth.subtitle')}</p>
 
         <button
           type="button"
@@ -89,7 +94,7 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
           className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl border border-ink/10 bg-white px-4 py-3 text-sm font-medium text-ink transition hover:bg-surface disabled:opacity-60"
         >
           <GoogleIcon />
-          {busy ? '处理中...' : '使用 Google 账号登录'}
+          {busy ? t('auth.busy') : t('auth.google')}
         </button>
 
         {error && (
@@ -104,13 +109,13 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
 
         <div className="my-5 flex items-center gap-3">
           <div className="h-px flex-1 bg-ink/10" />
-          <span className="text-xs text-ink-faint">或</span>
+          <span className="text-xs text-ink-faint">{t('common.or')}</span>
           <div className="h-px flex-1 bg-ink/10" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <label className="block">
-            <span className="mb-1 block text-xs font-medium text-ink-muted">邮箱</span>
+            <span className="mb-1 block text-xs font-medium text-ink-muted">{t('auth.email')}</span>
             <input
               type="email"
               required
@@ -122,7 +127,7 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
           </label>
 
           <label className="block">
-            <span className="mb-1 block text-xs font-medium text-ink-muted">密码</span>
+            <span className="mb-1 block text-xs font-medium text-ink-muted">{t('auth.password')}</span>
             <input
               type="password"
               required
@@ -130,7 +135,7 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-low/40"
-              placeholder="至少 6 位"
+              placeholder={t('auth.passwordPlaceholder')}
             />
           </label>
 
@@ -139,7 +144,11 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
             disabled={busy}
             className="w-full rounded-2xl bg-ink px-4 py-3 text-sm font-semibold text-white transition hover:bg-ink/90 disabled:opacity-60"
           >
-            {busy ? '处理中...' : mode === 'signin' ? '邮箱登录' : '邮箱注册'}
+            {busy
+              ? t('auth.busy')
+              : mode === 'signin'
+                ? t('auth.signInEmail')
+                : t('auth.signUpEmail')}
           </button>
         </form>
 
@@ -148,7 +157,7 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
           onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
           className="mt-4 w-full text-center text-sm text-ink-muted hover:text-ink"
         >
-          {mode === 'signin' ? '没有账号？注册' : '已有账号？登录'}
+          {mode === 'signin' ? t('auth.noAccount') : t('auth.hasAccount')}
         </button>
 
         {onDismiss && (
@@ -157,7 +166,7 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
             onClick={onDismiss}
             className="mt-3 w-full text-center text-sm text-ink-faint hover:text-ink-muted"
           >
-            先继续浏览演示
+            {t('guest.continueBrowsing')}
           </button>
         )}
       </div>

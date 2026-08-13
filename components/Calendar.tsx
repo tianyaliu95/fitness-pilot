@@ -11,6 +11,7 @@ import {
 } from '@/lib/day-info';
 import { pacificDateParts } from '@/lib/pacific-date';
 import { useTodayISO } from '@/lib/today-context';
+import { useLocale, useT } from '@/lib/i18n';
 import { DayCell } from './DayCell';
 
 interface CalendarProps {
@@ -18,6 +19,8 @@ interface CalendarProps {
 }
 
 export function Calendar({ state }: CalendarProps) {
+  const t = useT();
+  const { bcp47 } = useLocale();
   const todayIso = useTodayISO();
   const todayParts = useMemo(() => pacificDateParts(todayIso), [todayIso]);
   const [viewYear, setViewYear] = useState(todayParts.year);
@@ -33,7 +36,15 @@ export function Calendar({ state }: CalendarProps) {
     [viewYear, viewMonth]
   );
 
-  const weekdays = getWeekdayLabels();
+  const weekdays = getWeekdayLabels([
+    t('weekday.0'),
+    t('weekday.1'),
+    t('weekday.2'),
+    t('weekday.3'),
+    t('weekday.4'),
+    t('weekday.5'),
+    t('weekday.6'),
+  ]);
 
   function prevMonth() {
     if (viewMonth === 0) {
@@ -65,7 +76,7 @@ export function Calendar({ state }: CalendarProps) {
           type="button"
           onClick={prevMonth}
           className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95 sm:h-10 sm:w-10 sm:rounded-2xl"
-          aria-label="上个月"
+          aria-label={t('calendar.prevMonth')}
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -74,14 +85,14 @@ export function Calendar({ state }: CalendarProps) {
 
         <div className="text-center">
           <h2 className="text-lg font-bold text-ink sm:text-xl">
-            {formatMonthYear(viewYear, viewMonth)}
+            {formatMonthYear(viewYear, viewMonth, bcp47)}
           </h2>
           <button
             type="button"
             onClick={goToday}
             className="mt-0.5 text-xs font-medium text-low-dark hover:underline"
           >
-            回到今天
+            {t('home.goToday')}
           </button>
         </div>
 
@@ -89,7 +100,7 @@ export function Calendar({ state }: CalendarProps) {
           type="button"
           onClick={nextMonth}
           className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-muted text-ink transition hover:bg-ink/5 active:scale-95 sm:h-10 sm:w-10 sm:rounded-2xl"
-          aria-label="下个月"
+          aria-label={t('calendar.nextMonth')}
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -98,9 +109,9 @@ export function Calendar({ state }: CalendarProps) {
       </div>
 
       <div className="mb-1.5 grid grid-cols-7 gap-0.5 sm:mb-2 sm:gap-2">
-        {weekdays.map((wd) => (
+        {weekdays.map((wd, i) => (
           <div
-            key={wd}
+            key={i}
             className="py-0.5 text-center text-xs font-medium text-ink-faint sm:py-1 sm:text-sm"
           >
             {wd}
