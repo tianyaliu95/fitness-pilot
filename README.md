@@ -71,3 +71,14 @@ service cloud.firestore {
 npm run build
 npm run start
 ```
+
+## SEO
+
+生产域名：`https://fitness-pilot.vercel.app`（代码里已作为默认 canonical；也可设 `NEXT_PUBLIC_SITE_URL`）。
+
+上线后建议：
+
+1. 在 [Google Search Console](https://search.google.com/search-console) 用「网址前缀」验证 `https://fitness-pilot.vercel.app`，并提交 sitemap：  
+   `https://fitness-pilot.vercel.app/sitemap.xml`
+2. （可选）在 [Bing Webmaster Tools](https://www.bing.com/webmasters) 同样提交
+3. 用 [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) 或类似工具预览分享卡片

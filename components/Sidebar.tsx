@@ -147,27 +147,39 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
           ))}
         </nav>
 
-        {isConfigured && user && (
-          <button
-            type="button"
-            onClick={() => logOut()}
-            className="mt-auto flex items-center gap-3 rounded-2xl px-4 py-3 text-lg font-medium text-ink-muted transition hover:bg-white/60 hover:text-ink"
+        <div className="mt-auto space-y-1">
+          <Link
+            href="/about"
+            className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-lg font-medium transition ${
+              pathname === '/about'
+                ? 'bg-white text-ink shadow-soft'
+                : 'text-ink-muted hover:bg-white/60 hover:text-ink'
+            }`}
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            {t('nav.signOut')}
-          </button>
-        )}
-        {isConfigured && !user && (
-          <button
-            type="button"
-            onClick={openLogin}
-            className="mt-auto flex items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-lg font-medium text-white transition hover:bg-ink/90"
-          >
-            {t('auth.signInRegister')}
-          </button>
-        )}
+            {t('nav.about')}
+          </Link>
+          {isConfigured && user && (
+            <button
+              type="button"
+              onClick={() => logOut()}
+              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-lg font-medium text-ink-muted transition hover:bg-white/60 hover:text-ink"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              {t('nav.signOut')}
+            </button>
+          )}
+          {isConfigured && !user && (
+            <button
+              type="button"
+              onClick={openLogin}
+              className="flex w-full items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-lg font-medium text-white transition hover:bg-ink/90"
+            >
+              {t('auth.signInRegister')}
+            </button>
+          )}
+        </div>
       </aside>
 
       <nav className="fixed inset-x-0 bottom-0 z-50 flex gap-0 bg-white/70 shadow-[0_-8px_30px_rgba(26,26,46,0.06)] backdrop-blur-xl backdrop-saturate-150 safe-bottom md:hidden">

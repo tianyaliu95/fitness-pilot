@@ -11,6 +11,8 @@ import { LocaleProvider, useT } from '@/lib/i18n';
 import { TodayProvider, useTodayISO } from '@/lib/today-context';
 import { UserLocaleSync } from './UserLocaleSync';
 import { ScrollToTopOnNavigate } from './ScrollToTopOnNavigate';
+import { BackToTop } from './BackToTop';
+import { SEO_SHELL_BYPASS_PATHS } from '@/lib/seo';
 
 function GuestBanner() {
   const { isGuest } = useAppState();
@@ -48,6 +50,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
           </div>
         </main>
       </PullToRefresh>
+      <BackToTop aboveTabBar />
     </div>
   );
 }
@@ -72,7 +75,7 @@ function ShellGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (pathname === '/login') {
+  if (SEO_SHELL_BYPASS_PATHS.has(pathname)) {
     return <div className="relative z-[1]">{children}</div>;
   }
 

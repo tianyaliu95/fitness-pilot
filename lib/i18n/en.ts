@@ -17,6 +17,7 @@ export const en = {
   'nav.profileShort': 'Me',
   'nav.signOut': 'Sign Out',
   'nav.signIn': 'Sign In',
+  'nav.about': 'About',
 
   // Common
   'common.loading': 'Loading',
@@ -34,6 +35,7 @@ export const en = {
   'common.no': 'No',
   'common.tabs': 'Sections',
   'common.backToCalendar': 'Back to Calendar',
+  'common.backToTop': 'Back to top',
 
   // Language
   'language.label': 'Language',

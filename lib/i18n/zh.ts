@@ -17,6 +17,7 @@ export const zh: Record<MessageKey, string> = {
   'nav.profileShort': '我的',
   'nav.signOut': '退出登录',
   'nav.signIn': '登录 / 注册',
+  'nav.about': '关于',
 
   'common.loading': '加载中',
   'common.today': '今天',
@@ -33,6 +34,7 @@ export const zh: Record<MessageKey, string> = {
   'common.no': '否',
   'common.tabs': '内容分类',
   'common.backToCalendar': '返回日历',
+  'common.backToTop': '回到顶部',
 
   'language.label': '语言',
   'language.section': '语言偏好',

@@ -32,7 +32,7 @@ export function HomeClient() {
   }, [today.weight, state.weightLog]);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 pb-14 sm:pb-12">
       <header className="md:hidden">
         <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Fitness Pilot</h1>
         {locale === 'en' ? (

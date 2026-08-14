@@ -87,10 +87,17 @@ export function getGuestPlaceholderState(locale: Locale = 'en'): AppState {
       height: '175',
     },
     weightLog: {
-      [addDays(today, -9)]: '78.5',
+      [addDays(today, -11)]: '80.0',
+      [addDays(today, -10)]: '79.8',
+      [addDays(today, -9)]: '79.5',
+      [addDays(today, -8)]: '78.5',
+      [addDays(today, -7)]: '78.9',
       [addDays(today, -6)]: '78.2',
+      [addDays(today, -5)]: '77.9',
+      [addDays(today, -4)]: '78.5',
       [addDays(today, -3)]: '77.9',
-      [addDays(today, -1)]: '77.8',
+      [addDays(today, -2)]: '77.5',
+      [addDays(today, -1)]: '76.8',
     },
     trainingLog: {
       [addDays(today, -4)]: {

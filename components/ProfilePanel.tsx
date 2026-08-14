@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import type { AppState, UserProfile } from '@/lib/types';
 import { formatDisplayDate } from '@/lib/day-info';
 import { todayISO } from '@/lib/cycle';
@@ -422,6 +423,12 @@ export function ProfilePanel({
           </button>
         </div>
       )}
+
+      <p className="text-center text-xs text-ink-faint">
+        <Link href="/about" className="underline-offset-2 hover:text-ink-muted hover:underline">
+          {t('nav.about')} · Fitness Pilot
+        </Link>
+      </p>
     </div>
   );
 }
