@@ -113,7 +113,7 @@ export function DatePicker({ value, max, onChange, label }: DatePickerProps) {
         aria-haspopup="dialog"
         className={`
           flex w-full cursor-pointer items-center justify-between gap-2 rounded-xl border
-          bg-surface px-3 py-2.5 text-left text-xs transition
+          bg-surface px-3 py-2.5 text-left text-base transition
           ${open
             ? 'border-ink/20 ring-2 ring-ink/10'
             : 'border-ink/10 hover:border-ink/20 hover:bg-surface-muted'

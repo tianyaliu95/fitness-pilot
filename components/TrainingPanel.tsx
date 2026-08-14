@@ -115,7 +115,7 @@ export function TrainingPanel({
               value={day.workout}
               onChange={(e) => updateWorkout(day.dayIndex, e.target.value)}
               placeholder={t('training.placeholder')}
-              className="w-full rounded-xl border border-ink/10 bg-white/70 px-3.5 py-2.5 text-xs text-ink outline-none transition placeholder:text-ink-faint hover:border-ink/15 focus:border-low/40 focus-visible:ring-2 focus-visible:ring-low/30"
+              className="w-full rounded-xl border border-ink/10 bg-white/70 px-3.5 py-2.5 text-base text-ink outline-none transition placeholder:text-ink-faint hover:border-ink/15 focus:border-low/40 focus-visible:ring-2 focus-visible:ring-low/30"
             />
           </div>
         ))}

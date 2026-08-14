@@ -248,7 +248,7 @@ export function ProfilePanel({
                   setDraftProfile((p) => ({ ...p, name: e.target.value }))
                 }
                 placeholder={t('profile.namePlaceholder')}
-                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-xs text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-base text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
             <label className="block">
@@ -261,7 +261,7 @@ export function ProfilePanel({
                   setDraftProfile((p) => ({ ...p, age: e.target.value }))
                 }
                 placeholder={t('profile.agePlaceholder')}
-                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-xs text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-base text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
             <label className="block sm:col-span-2">
@@ -274,7 +274,7 @@ export function ProfilePanel({
                   setDraftProfile((p) => ({ ...p, height: e.target.value }))
                 }
                 placeholder={t('profile.heightPlaceholder')}
-                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-xs text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-base text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
           </div>
@@ -327,7 +327,7 @@ export function ProfilePanel({
                 value={draftWeight}
                 onChange={(e) => setDraftWeight(e.target.value)}
                 placeholder={t('profile.weightPlaceholder')}
-                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-xs text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-base text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
               />
             </label>
           </div>

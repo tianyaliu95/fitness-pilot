@@ -44,7 +44,7 @@ function MealPlanForm({
               type="text"
               value={plan[key]}
               onChange={(e) => onChange(key, e.target.value)}
-              className={`w-full rounded-xl border bg-surface px-3 py-2.5 text-xs text-ink outline-none transition focus-visible:ring-2 ${accent}`}
+              className={`w-full rounded-xl border bg-surface px-3 py-2.5 text-base text-ink outline-none transition focus-visible:ring-2 ${accent}`}
             />
           </label>
         ))}
@@ -65,7 +65,7 @@ function MealPlanForm({
           onChange={(e) => onChange('notes', e.target.value)}
           placeholder={t('intake.notesPlaceholder')}
           rows={2}
-          className={`w-full resize-none rounded-xl border bg-surface px-3 py-2.5 text-xs text-ink outline-none transition focus-visible:ring-2 ${accent}`}
+          className={`w-full resize-none rounded-xl border bg-surface px-3 py-2.5 text-base text-ink outline-none transition focus-visible:ring-2 ${accent}`}
         />
       </label>
     </div>
