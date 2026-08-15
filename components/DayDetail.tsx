@@ -5,16 +5,19 @@ import { useEffect, useState } from 'react';
 import type { DayInfo, TrainingLogEntry, TrainingStatus } from '@/lib/types';
 import { hasCompletionChoice } from '@/lib/training-log';
 import { formatDisplayDate } from '@/lib/day-info';
+import { todayISO } from '@/lib/cycle';
 import { useLocale, useT } from '@/lib/i18n';
 import { SaveBar } from './SaveBar';
 
 interface DayDetailProps {
   day: DayInfo;
   savedTraining: TrainingLogEntry | null;
+  savedWeight: string;
   cloudSyncing: boolean;
   lastSavedAt: Date | null;
   cloudSaveError: string | null;
   onSave: (entry: TrainingLogEntry) => void;
+  onSaveWeight: (weight: string) => void;
   onToggleDelay: (delayed: boolean) => void;
 }
 
@@ -27,28 +30,39 @@ function statusToUi(completed: TrainingStatus | undefined): boolean | null {
 export function DayDetail({
   day,
   savedTraining,
+  savedWeight,
   cloudSyncing,
   lastSavedAt,
   cloudSaveError,
   onSave,
+  onSaveWeight,
   onToggleDelay,
 }: DayDetailProps) {
   const t = useT();
   const { bcp47 } = useLocale();
   const isLow = day.carbType === 'low';
   const [draftNotes, setDraftNotes] = useState(savedTraining?.notes ?? '');
+  const [draftWeight, setDraftWeight] = useState(savedWeight);
   const [selectedCompleted, setSelectedCompleted] = useState<boolean | null>(
     statusToUi(savedTraining?.completed)
   );
 
   const savedNotes = savedTraining?.notes ?? '';
   const notesDirty = draftNotes !== savedNotes;
+  const weightDirty = draftWeight !== savedWeight;
+  const canLogWeight = day.date <= todayISO();
 
   useEffect(() => {
     if (!notesDirty) {
       setDraftNotes(savedNotes);
     }
   }, [savedNotes, notesDirty]);
+
+  useEffect(() => {
+    if (!weightDirty) {
+      setDraftWeight(savedWeight);
+    }
+  }, [savedWeight, weightDirty]);
 
   useEffect(() => {
     setSelectedCompleted(statusToUi(savedTraining?.completed));
@@ -212,14 +226,36 @@ export function DayDetail({
         />
       </div>
 
-      {!day.weight && (
-        <p className="mt-4 text-center text-xs text-ink-faint">
-          {t('day.weightLinkBefore')}
-          <Link href="/profile" className="mx-1 font-medium text-ink-muted hover:text-ink">
-            {t('nav.profile')}
-          </Link>
-        </p>
-      )}
+      <div className="mt-6 glass-panel rounded-3xl p-5 sm:p-6">
+        <h2 className="font-semibold text-ink">{t('day.weightSection')}</h2>
+        {canLogWeight ? (
+          <>
+            <label className="mt-3 block">
+              <span className="mb-1 block text-xs font-medium text-ink-muted">
+                {t('profile.weightKg')}
+              </span>
+              <input
+                type="text"
+                inputMode="decimal"
+                value={draftWeight}
+                onChange={(e) => setDraftWeight(e.target.value)}
+                placeholder={t('profile.weightPlaceholder')}
+                className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-base text-ink outline-none transition focus-visible:ring-2 focus-visible:ring-low/40"
+              />
+            </label>
+            <SaveBar
+              embedded
+              dirty={weightDirty}
+              saving={cloudSyncing}
+              lastSavedAt={lastSavedAt}
+              saveError={cloudSaveError}
+              onSave={() => onSaveWeight(draftWeight.trim())}
+            />
+          </>
+        ) : (
+          <p className="mt-2 text-sm text-ink-muted">{t('day.weightFuture')}</p>
+        )}
+      </div>
     </div>
   );
 }

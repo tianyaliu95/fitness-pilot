@@ -9,7 +9,7 @@ import {
   getWeekdayLabels,
   formatDateISO,
 } from '@/lib/day-info';
-import { pacificDateParts } from '@/lib/pacific-date';
+import { isoDateParts } from '@/lib/local-date';
 import { useTodayISO } from '@/lib/today-context';
 import { useLocale, useT } from '@/lib/i18n';
 import { DayCell } from './DayCell';
@@ -22,7 +22,7 @@ export function Calendar({ state }: CalendarProps) {
   const t = useT();
   const { bcp47 } = useLocale();
   const todayIso = useTodayISO();
-  const todayParts = useMemo(() => pacificDateParts(todayIso), [todayIso]);
+  const todayParts = useMemo(() => isoDateParts(todayIso), [todayIso]);
   const [viewYear, setViewYear] = useState(todayParts.year);
   const [viewMonth, setViewMonth] = useState(todayParts.month);
 

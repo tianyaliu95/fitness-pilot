@@ -1,5 +1,5 @@
 /**
- * Canvas icon — thick stroke + solid tip drawn on top with overlap (no white seam).
+ * Canvas icon - thick stroke + solid tip drawn on top with overlap (no white seam).
  */
 const fs = require('fs');
 const path = require('path');
@@ -72,7 +72,7 @@ function drawArrow(color, startOur) {
   ctx.arc(sx, sy, HALF, 0, Math.PI * 2);
   ctx.fill();
 
-  // Shaft — butt end at geometric tip attach point
+  // Shaft - butt end at geometric tip attach point
   ctx.beginPath();
   ctx.moveTo(pts[0][0], pts[0][1]);
   for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);

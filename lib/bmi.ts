@@ -60,7 +60,7 @@ const CATEGORIES: Array<{
   },
 ];
 
-/** BMI = weight(kg) / height(m)² — WHO standard */
+/** BMI = weight(kg) / height(m)² - WHO standard */
 export function calculateBmi(weightKg: number, heightCm: number): number | null {
   if (weightKg <= 0 || heightCm <= 0) return null;
   const heightM = heightCm / 100;

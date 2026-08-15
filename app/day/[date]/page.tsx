@@ -19,6 +19,7 @@ export default function DayPage() {
     () => state.trainingLog[date] ?? null,
     [state.trainingLog, date]
   );
+  const savedWeight = state.weightLog[date] ?? '';
 
   function applyTrainingLogUpdate(prev: AppState, entry: TrainingLogEntry): AppState {
     return {
@@ -38,6 +39,20 @@ export default function DayPage() {
     });
   }
 
+  function handleSaveWeight(weight: string) {
+    updateState((prev) => {
+      const nextLog = { ...prev.weightLog };
+      if (weight.trim()) {
+        nextLog[date] = weight.trim();
+      } else {
+        delete nextLog[date];
+      }
+      const next = { ...prev, weightLog: nextLog };
+      void persistStateNow(next);
+      return next;
+    });
+  }
+
   function handleToggleDelay(delayed: boolean) {
     updateState((prev) => {
       const next = setDateDelayed(prev, date, delayed);
@@ -50,10 +65,12 @@ export default function DayPage() {
     <DayDetail
       day={day}
       savedTraining={savedTraining}
+      savedWeight={savedWeight}
       cloudSyncing={cloudSyncing}
       lastSavedAt={lastSavedAt}
       cloudSaveError={cloudSaveError}
       onSave={handleSave}
+      onSaveWeight={handleSaveWeight}
       onToggleDelay={handleToggleDelay}
     />
   );

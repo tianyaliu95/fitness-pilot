@@ -8,7 +8,7 @@ interface LoginPromptContextValue {
   closeLogin: () => void;
 }
 
-/** Navigate to the full-page login screen (no modal — Safari private-safe). */
+/** Navigate to the full-page login screen (no modal - Safari private-safe). */
 export function useLoginPrompt(): LoginPromptContextValue {
   const router = useRouter();
   const pathname = usePathname();

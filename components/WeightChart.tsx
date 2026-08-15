@@ -130,7 +130,7 @@ export function WeightChart({ data }: WeightChartProps) {
     });
   }, [data, fullStart, view.lo, view.hi]);
 
-  /** Y domain stays based on all data — only the time (X) axis zooms/pans. */
+  /** Y domain stays based on all data - only the time (X) axis zooms/pans. */
   const yDomain = useMemo(() => {
     const weights = data.map((d) => d.weight);
     return niceWeightYDomain(Math.min(...weights), Math.max(...weights));

@@ -85,7 +85,7 @@ function fillMissingWeightLog(canonical: WeightLog, cloud: WeightLog): WeightLog
   return result;
 }
 
-/** Only fill dates missing from cloud — never overwrite existing entries. */
+/** Only fill dates missing from cloud - never overwrite existing entries. */
 export function applyCanonicalFloor(cloud: AppState | null): AppState {
   if (!cloud) return CANONICAL_RESTORE;
 

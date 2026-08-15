@@ -2,7 +2,6 @@
 
 import { useId, useRef } from 'react';
 import { useT } from '@/lib/i18n';
-import { scrollPageToTop } from './ScrollToTopOnNavigate';
 
 export type TabTone = 'default' | 'low' | 'high';
 
@@ -67,7 +66,6 @@ export function TabBar({
 
   function selectTab(id: string) {
     onChange(id);
-    scrollPageToTop();
   }
 
   function focusTabAt(index: number) {

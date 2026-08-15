@@ -41,7 +41,7 @@ function nestedScrollBlocksPull(target: EventTarget | null) {
 /**
  * Pull-to-refresh for standalone PWA.
  * - Gesture driven via refs + rAF (no React per-frame).
- * - Uses translateY (compositor) not paddingTop (layout) — calendar has many cells.
+ * - Uses translateY (compositor) not paddingTop (layout) - calendar has many cells.
  * - Must wrap only scrollable main content; keep position:fixed tab bar outside.
  */
 export function PullToRefresh({ children }: { children: React.ReactNode }) {

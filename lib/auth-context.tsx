@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await signInWithPopup(auth, provider);
     } catch (err) {
       if (err instanceof FirebaseError) {
-        // Incognito / mobile often block popups — fall back to full-page redirect.
+        // Incognito / mobile often block popups - fall back to full-page redirect.
         if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
           await signInWithRedirect(auth, provider);
           return;

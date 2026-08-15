@@ -10,7 +10,7 @@ interface LanguageSwitcherProps {
 
 /**
  * Segmented control with native language names (industry standard).
- * Placed under Profile → Preferences; also on the login screen.
+ * Global chrome: sidebar (desktop) + home header (mobile); also Profile / login.
  */
 export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
   const { locale, setLocale, t } = useLocale();

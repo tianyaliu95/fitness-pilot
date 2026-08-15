@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AppState, MealPlan } from '@/lib/types';
 import { MEAL_FIELDS, mealPlanEquals } from '@/lib/intake';
 import { MealMacroFields } from '@/components/MacroDisplay';
@@ -8,6 +8,11 @@ import { getLatestWeight } from '@/lib/weight';
 import { useT } from '@/lib/i18n';
 import { SaveBar } from './SaveBar';
 import { TabBar, tabPanelProps } from './TabBar';
+import {
+  tourScrollMarginClass,
+  useOnboardingStep,
+  useScrollTourTarget,
+} from './Onboarding';
 
 interface IntakePanelProps {
   state: AppState;
@@ -80,6 +85,9 @@ export function IntakePanel({
   onUpdate,
 }: IntakePanelProps) {
   const t = useT();
+  const highlight = useOnboardingStep() === 'intake';
+  const titleRef = useRef<HTMLDivElement>(null);
+  useScrollTourTarget(highlight, titleRef, 160, 4);
   const [tab, setTab] = useState<IntakeTab>('low');
   const [draftLow, setDraftLow] = useState(state.intakeLow);
   const [draftHigh, setDraftHigh] = useState(state.intakeHigh);
@@ -107,13 +115,19 @@ export function IntakePanel({
 
   return (
     <div className="space-y-5">
-      <header>
-        <h2 className="text-xl font-bold text-ink sm:text-2xl">{t('intake.title')}</h2>
-        <p className="mt-1 text-sm text-ink-muted">
-          {t('intake.subtitle')}
-          {weightKg && t('intake.weightBasis', { weight: weightKg })}
-        </p>
-      </header>
+      <div
+        ref={titleRef}
+        id="tour-intake"
+        className={tourScrollMarginClass}
+      >
+        <header>
+          <h2 className="text-xl font-bold text-ink sm:text-2xl">{t('intake.title')}</h2>
+          <p className="mt-1 text-sm text-ink-muted">
+            {t('intake.subtitle')}
+            {weightKg && t('intake.weightBasis', { weight: weightKg })}
+          </p>
+        </header>
+      </div>
 
       <TabBar
         idPrefix="intake"

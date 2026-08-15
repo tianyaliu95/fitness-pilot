@@ -154,7 +154,7 @@ const SECTIONS: Section[] = [
         Cloud data is kept while needed to provide the Service and meet legal
         requirements; local data goes away when you clear site data or remove
         the PWA. We use reasonable measures such as encryption in transit and
-        per-user cloud isolation—please protect your credentials. The Service
+        per-user cloud isolation - please protect your credentials. The Service
         is for personal fitness planning only, not medical advice.
       </p>
     ),

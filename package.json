@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "verify:pacific-today": "npx --yes tsx scripts/verify-pacific-today.ts"
+    "verify:local-today": "npx --yes tsx scripts/verify-local-today.ts"
   },
   "dependencies": {
     "firebase": "^12.15.0",

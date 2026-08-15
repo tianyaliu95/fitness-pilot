@@ -63,7 +63,7 @@ const FAQS = [
     qZh: '什么是「暂停一天」？',
     aZh: '勾选暂停后，当天的周期计划会顺延到下一天，当天训练记为未完成，方便生病或出差时不打乱后续节奏。',
     qEn: 'What does "pause a day" do?',
-    aEn: "Pausing defers today's cycle plan to tomorrow and marks the workout incomplete — useful when you're sick or traveling.",
+    aEn: "Pausing defers today's cycle plan to tomorrow and marks the workout incomplete - useful when you're sick or traveling.",
   },
   {
     qZh: '如何在手机上安装？',
@@ -114,8 +114,8 @@ export default function AboutPage() {
               帮你把碳循环训练落到日历上：低碳 / 高碳日、训练安排、营养目标、体重与日志集中管理，支持演示试用与登录后云端同步。
             </p>
             <p className="mt-2 text-sm leading-relaxed text-ink-muted sm:text-base">
-              Fitness Pilot helps you run carb cycling on a calendar — low/high-carb days,
-              workouts, nutrition targets, weight, and logs — with a free demo and optional
+              Fitness Pilot helps you run carb cycling on a calendar - low/high-carb days,
+              workouts, nutrition targets, weight, and logs - with a free demo and optional
               cloud sync after sign-in.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -133,6 +133,65 @@ export default function AboutPage() {
               </Link>
             </div>
           </header>
+
+          <section
+            className="mb-6 glass-panel rounded-3xl p-5 sm:p-7"
+            aria-labelledby="carb-cycling-heading"
+          >
+            <h2 id="carb-cycling-heading" className="text-lg font-bold text-ink sm:text-xl">
+              什么是碳循环 · What Is Carb Cycling?
+            </h2>
+            <div className="mt-4 space-y-4 text-sm leading-relaxed text-ink-muted sm:text-base">
+              <p>
+                碳循环是一种按「天」轮换碳水摄入的吃法：有的日子吃得少（低碳日），有的日子吃得多（高碳日），通常和训练计划对齐 - 练得重的日子给身体更多能量，休息或轻练的日子则收紧碳水。
+              </p>
+              <p>
+                Carb cycling means alternating carbohydrate intake by day: some days are
+                low-carb, others high-carb, often paired with training - more fuel on harder
+                workout days, tighter carbs on rest or lighter days.
+              </p>
+              <p>
+                常见做法是定一个几天的小周期（例如 3 天低碳 + 1 天高碳），然后循环重复。你不必死记今天是第几天：Fitness Pilot
+                会按你设定的起始日和日程，自动在日历上标出低碳 / 高碳与当天该练什么。
+              </p>
+              <p>
+                A typical setup is a short repeating cycle (for example 3 low days + 1 high
+                day). You don&apos;t need to track the day count yourself - Fitness Pilot maps
+                low/high-carb days and workouts onto the calendar from your start date and
+                schedule.
+              </p>
+            </div>
+            <ul className="mt-5 space-y-3 border-t border-ink/5 pt-5">
+              <li>
+                <p className="text-sm font-semibold text-ink">
+                  <span className="mr-2 inline-block rounded-full bg-low-light px-2.5 py-0.5 text-xs text-low-dark">
+                    低碳 · Low
+                  </span>
+                  少碳水，多依赖脂肪与蛋白质
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-ink-muted">
+                  Fewer carbs; rely more on fat and protein for the day.
+                </p>
+              </li>
+              <li>
+                <p className="text-sm font-semibold text-ink">
+                  <span className="mr-2 inline-block rounded-full bg-high-light px-2.5 py-0.5 text-xs text-high-dark">
+                    高碳 · High
+                  </span>
+                  多碳水，给训练补能量、帮恢复
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-ink-muted">
+                  More carbs to fuel harder sessions and support recovery.
+                </p>
+              </li>
+            </ul>
+            <p className="mt-5 border-t border-ink/5 pt-5 text-xs leading-relaxed text-ink-faint">
+              说明：碳循环因人而异，本站提供计划与记录工具，不构成医疗或营养建议。有健康问题请咨询专业人士。
+              <br />
+              Note: Carb cycling is individual. This app is a planning and logging tool - not
+              medical or nutrition advice. Consult a professional if you have health concerns.
+            </p>
+          </section>
 
           <section className="glass-panel rounded-3xl p-5 sm:p-7" aria-labelledby="features-heading">
             <h2 id="features-heading" className="text-lg font-bold text-ink sm:text-xl">

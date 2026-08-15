@@ -53,10 +53,10 @@ export interface UserProfile {
 
 export interface AppState {
   anchorDate: string;
-  /** ISO date — calendar cycle styling starts here; empty = all dates active */
+  /** ISO date - calendar cycle styling starts here; empty = all dates active */
   cycleStartDate: string;
   delayedDates: string[];
-  /** Past dates frozen on cycle reset — carb/workout unchanged */
+  /** Past dates frozen on cycle reset - carb/workout unchanged */
   historicalDays: HistoricalDays;
   intakeLow: MealPlan;
   intakeHigh: MealPlan;
@@ -64,7 +64,7 @@ export interface AppState {
   weightLog: WeightLog;
   trainingLog: TrainingLog;
   profile: UserProfile;
-  /** UI language preference — synced with the user account */
+  /** UI language preference - synced with the user account */
   locale: 'en' | 'zh';
 }
 
@@ -73,7 +73,7 @@ export interface DayInfo {
   cycleDayIndex: number;
   cycleLength: number;
   carbType: CarbType;
-  /** Display workout — "暂停" when the day is delayed */
+  /** Display workout - "暂停" when the day is delayed */
   workout: string;
   /** Underlying cycle workout (unchanged when delayed) */
   scheduledWorkout: string;
@@ -82,7 +82,7 @@ export interface DayInfo {
   weight: string | null;
   isToday: boolean;
   isDelayed: boolean;
-  /** On/after cycleStartDate — show carb/workout styling */
+  /** On/after cycleStartDate - show carb/workout styling */
   isCycleActive: boolean;
   /** Recorded training marked 否 */
   trainingIncomplete: boolean;

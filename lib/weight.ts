@@ -69,7 +69,7 @@ export function niceWeightYDomain(
   const lo = Math.min(minWeight, maxWeight);
   const hi = Math.max(minWeight, maxWeight);
   const span = Math.max(hi - lo, 0.5);
-  // ~25% of span each side, at least 1.5 kg — opens the chart without hugging data
+  // ~25% of span each side, at least 1.5 kg - opens the chart without hugging data
   const pad = Math.max(span * 0.25, 1.5);
   const paddedLo = lo - pad;
   const paddedHi = hi + pad;

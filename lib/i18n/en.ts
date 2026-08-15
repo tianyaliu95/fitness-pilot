@@ -49,7 +49,7 @@ export const en = {
 
   // Auth
   'auth.subtitle':
-    'Sign in to sync your data to the cloud — same progress on phone and computer.',
+    'Sign in to sync your data to the cloud - same progress on phone and computer.',
   'auth.google': 'Continue with Google',
   'auth.email': 'Email',
   'auth.password': 'Password',
@@ -133,6 +133,8 @@ export const en = {
   'day.notesLabel': 'Session details',
   'day.notesDetailPh': 'What you did, sets, weights, how it felt…',
   'day.weightLinkBefore': "You can log today's weight in",
+  'day.weightSection': 'Weight',
+  'day.weightFuture': 'Weigh-ins can be logged through today.',
   'day.resetTitle': 'Clear Yes/No',
 
   // Profile
@@ -156,6 +158,61 @@ export const en = {
   'profile.bmi': 'BMI',
   'profile.pwaHint':
     'Add to Home Screen? In Safari, tap Share → Add to Home Screen',
+
+  'install.title': 'Add to Home Screen',
+  'install.subtitle':
+    'Install to your home screen for full-screen use. On iPhone, use Safari: Share → Add to Home Screen.',
+  'install.cta': 'Install app',
+  'install.iosStep1': 'Tap the Share button at the bottom',
+  'install.iosStep2': 'Scroll and tap Add to Home Screen',
+  'install.iosStep3': 'Tap Add',
+  'install.browserHint':
+    'Chrome or Edge: open the browser menu and choose Install app / Add to Home Screen.',
+  'install.installed': 'Running as an app',
+  'install.installedHint': 'Opened from your home screen.',
+  'install.dismiss': 'Dismiss',
+
+  'onboarding.title': 'Set up your cycle',
+  'onboarding.subtitle':
+    'Pick when your carb cycle starts and what Day 1 training is. You can change this later in Training Plan.',
+  'onboarding.startDate': 'Cycle start date',
+  'onboarding.startDateHelp': 'The calendar shows carb type and workouts from this day on.',
+  'onboarding.dayOne': 'Day 1 workout',
+  'onboarding.cta': 'Start',
+  'onboarding.skip': 'Skip',
+  'onboarding.next': 'Next',
+  'onboarding.back': 'Back',
+  'onboarding.done': 'Got it',
+  'onboarding.progress': 'Getting started · {current} / {total}',
+  // 1 Calendar → 2 Nutrition → 3 Workouts → 4 Carb cycle →
+  // 5 Workout log → 6 Profile → 7 Weight → 8 Shortcuts
+  'onboarding.step1Title': 'Your Calendar',
+  'onboarding.step1Body':
+    'Each day is low-carb or high-carb. Tap a date to log training. Demo data is pre-filled so you can look around.',
+  'onboarding.step2Title': 'Nutrition Targets',
+  'onboarding.step2Body':
+    'Set meals and macro ranges separately for low-carb and high-carb days.',
+  'onboarding.step3Title': 'Training Plan - Workouts',
+  'onboarding.step3Body':
+    'Edit each day\'s workout here. Each tab saves on its own.',
+  'onboarding.step4Title': 'Training Plan - Carb Cycle',
+  'onboarding.step4Body':
+    'Set the cycle start date and the low/high-carb schedule below. Each tab saves on its own.',
+  'onboarding.step5Title': 'Workout Log',
+  'onboarding.step5Body':
+    'Review past sessions, completion rate, and streaks here. Tap a day to open its detail.',
+  'onboarding.step6Title': 'Your Profile',
+  'onboarding.step6Body':
+    'Name, age, height, and BMI live here. Edit them anytime - they help personalize targets.',
+  'onboarding.step7Title': 'Weight Log & Chart',
+  'onboarding.step7Body':
+    'Log weigh-ins below, then check the trend chart and recent history.',
+  'onboarding.step8Title': 'The Four Shortcuts',
+  'onboarding.step8Log': 'Log Workout opens today\'s training log.',
+  'onboarding.step8Weight': 'Weight Log is on the Profile page.',
+  'onboarding.step8Pause':
+    'Pause a Day holds tomorrow on the same cycle day and marks today incomplete - for sick days or travel.',
+  'onboarding.step8Reset': 'Reset Cycle sets today to a chosen day in the cycle.',
   'profile.deleteWeight': 'Delete weigh-in for {date}',
   'profile.nameUnset': 'Name Not Set',
   'profile.empty': 'Not Set',
@@ -164,7 +221,7 @@ export const en = {
   'profile.agePlaceholder': 'e.g. 28',
   'profile.heightPlaceholder': 'e.g. 175',
   'profile.bmiHint':
-    'BMI uses the WHO formula: weight (kg) ÷ height (m)². Based on your latest weight and height — for reference only.',
+    'BMI uses the WHO formula: weight (kg) ÷ height (m)². Based on your latest weight and height - for reference only.',
 
   // BMI
   'bmi.underweight': 'Under',
@@ -207,7 +264,7 @@ export const en = {
     '“Pause a day” keeps tomorrow on the same cycle day and marks the workout incomplete.',
   'settings.help4': 'Reset cycle lets you pick which day today becomes.',
   'settings.help5': 'Reset only affects today and future days.',
-  'settings.help6': 'Data is per account — switching accounts keeps them separate.',
+  'settings.help6': 'Data is per account - switching accounts keeps them separate.',
   'settings.help7':
     'Browse the demo signed out; sign in to save (demo edits never sync).',
 

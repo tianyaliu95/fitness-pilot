@@ -38,7 +38,7 @@ import { readStoredLocale } from './i18n/locale';
 interface AppStateContextValue {
   state: AppState;
   hydrated: boolean;
-  /** Firebase on, no signed-in user — demo data, never persisted. */
+  /** Firebase on, no signed-in user - demo data, never persisted. */
   isGuest: boolean;
   cloudSyncing: boolean;
   lastSavedAt: Date | null;
@@ -86,7 +86,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Guest browse: placeholder only — never persist, never touch cloud.
+    // Guest browse: placeholder only - never persist, never touch cloud.
     if (!userIdentity) {
       skipCloudSave.current = true;
       setPersistReady(false);
@@ -124,7 +124,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
             ? applyCanonicalFloor(rawCloudState)
             : rawCloudState;
 
-        // Cloud (or empty defaults) only — guest in-memory state is discarded.
+        // Cloud (or empty defaults) only - guest in-memory state is discarded.
         const initial = resolveHydratedState(localSettings, cloudState);
 
         setState(initial);

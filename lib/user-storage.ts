@@ -49,7 +49,7 @@ export function loadFromStorage(docId: string): StoredSnapshot | null {
   return parseStored(raw);
 }
 
-/** Local cache for settings only — trainingLog is never written here. */
+/** Local cache for settings only - trainingLog is never written here. */
 export function saveToStorage(
   docId: string,
   state: AppState,

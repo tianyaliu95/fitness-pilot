@@ -11,6 +11,7 @@ import {
 import { useT } from '@/lib/i18n';
 import { SaveBar } from './SaveBar';
 import { DatePicker } from './DatePicker';
+import { useOnboardingStep } from './Onboarding';
 
 interface SettingsPanelProps {
   state: AppState;
@@ -49,6 +50,7 @@ export function SettingsPanel({
   onDirtyChange,
 }: SettingsPanelProps) {
   const t = useT();
+  const highlightCarbCycle = useOnboardingStep() === 'carbCycle';
   const [draftDays, setDraftDays] = useState(state.cycleDays);
   const cycleDirty = !cycleDaysEqual(draftDays, state.cycleDays);
   const startDateValue = state.cycleStartDate || todayISO();
@@ -127,7 +129,11 @@ export function SettingsPanel({
         </header>
       )}
 
-      <section className="glass-panel rounded-3xl p-5 sm:p-6">
+      <section
+        className={`glass-panel rounded-3xl p-5 sm:p-6 ${
+          highlightCarbCycle ? 'ring-2 ring-ink/15' : ''
+        }`}
+      >
         <h3 className="text-base font-bold text-ink">{t('settings.startDateTitle')}</h3>
         <p className="mt-1 text-sm text-ink-muted">{t('settings.startDateHelp')}</p>
         <div className="mt-4">
@@ -139,7 +145,11 @@ export function SettingsPanel({
         </div>
       </section>
 
-      <section className="glass-panel rounded-3xl p-5 sm:p-6">
+      <section
+        className={`glass-panel rounded-3xl p-5 sm:p-6 ${
+          highlightCarbCycle ? 'ring-2 ring-ink/15' : ''
+        }`}
+      >
         <h3 className="text-base font-bold text-ink">{t('settings.schedule')}</h3>
         <p className="mt-1 text-sm text-ink-muted">{summary}</p>
 

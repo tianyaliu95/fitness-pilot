@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import type { AppState, UserProfile } from '@/lib/types';
 import { formatDisplayDate } from '@/lib/day-info';
@@ -13,8 +13,14 @@ import { BmiGauge } from './BmiGauge';
 import { DatePicker } from './DatePicker';
 import { SaveBar } from './SaveBar';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { InstallPrompt } from './InstallPrompt';
 import { useAuth } from '@/lib/auth-context';
 import { useLoginPrompt } from '@/lib/login-prompt';
+import {
+  tourScrollMarginClass,
+  useOnboardingStep,
+  useScrollTourTarget,
+} from './Onboarding';
 
 interface ProfilePanelProps {
   state: AppState;
@@ -79,6 +85,13 @@ export function ProfilePanel({
 }: ProfilePanelProps) {
   const t = useT();
   const { bcp47 } = useLocale();
+  const tourStep = useOnboardingStep();
+  const highlightInfo = tourStep === 'profileInfo';
+  const highlightWeight = tourStep === 'profileWeight';
+  const profileInfoRef = useRef<HTMLDivElement>(null);
+  const profileWeightRef = useRef<HTMLDivElement>(null);
+  useScrollTourTarget(highlightInfo, profileInfoRef, 160, 12);
+  useScrollTourTarget(highlightWeight, profileWeightRef, 160, 12);
   const today = todayISO();
   const [selectedDate, setSelectedDate] = useState(today);
   const [draftProfile, setDraftProfile] = useState(state.profile);
@@ -185,8 +198,14 @@ export function ProfilePanel({
         </div>
       </section>
 
+      <InstallPrompt />
+
       {/* Profile + BMI */}
-      <div className="glass-panel rounded-3xl p-5 sm:p-6">
+      <div
+        ref={profileInfoRef}
+        id="tour-profile-info"
+        className={`${tourScrollMarginClass} glass-panel rounded-3xl p-5 sm:p-6`}
+      >
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 flex-1 items-start gap-4">
             <ProfileAvatar
@@ -307,9 +326,16 @@ export function ProfilePanel({
         <p className="mt-4 text-xs leading-relaxed text-ink-faint">{t('profile.bmiHint')}</p>
       </div>
 
-      {/* Weight log + recent history + chart */}
-      <div className="grid gap-4 md:grid-cols-5 md:gap-5">
-        <div className="relative z-20 order-1 flex h-96 flex-col overflow-visible glass-panel rounded-3xl p-5 md:col-span-2 sm:p-6">
+      {/* Weight log + chart + recent history (mobile: log → chart → history) */}
+      <div
+        ref={profileWeightRef}
+        id="tour-profile-weight"
+        className={`${tourScrollMarginClass} grid gap-4 md:grid-cols-5 md:gap-5`}
+      >
+        <div
+          id="weight-log"
+          className="relative z-20 order-1 flex h-96 flex-col overflow-visible glass-panel rounded-3xl p-5 md:col-span-2 sm:p-6"
+        >
           <div className="mb-3 flex shrink-0 items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-ink">{t('controls.weightLog')}</h3>
             {selectedDate === today && (
@@ -394,10 +420,6 @@ export function ProfilePanel({
         )}
       </div>
 
-      <p className="px-1 text-center text-xs leading-relaxed text-ink-faint sm:hidden">
-        {t('profile.pwaHint')}
-      </p>
-
       {isConfigured && user && (
         <div className="flex justify-center">
           <button
@@ -424,7 +446,7 @@ export function ProfilePanel({
         </div>
       )}
 
-      <p className="text-center text-xs text-ink-faint">
+      <p className="pt-10 text-center text-xs text-ink-faint sm:pt-12">
         <Link href="/about" className="underline-offset-2 hover:text-ink-muted hover:underline">
           {t('nav.about')} · Fitness Pilot
         </Link>

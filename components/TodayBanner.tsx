@@ -30,7 +30,7 @@ function MacroHighlight({
         {label}
       </p>
       <p className="mt-1 text-xl font-extrabold leading-tight text-white drop-shadow-sm sm:mt-1.5 sm:text-3xl">
-        {hasGrams ? grams : '—'}
+        {hasGrams ? grams : '-'}
       </p>
       {perKg ? (
         <p className="mt-1 text-sm font-bold text-white drop-shadow-sm sm:mt-2 sm:text-xl">{perKg}</p>

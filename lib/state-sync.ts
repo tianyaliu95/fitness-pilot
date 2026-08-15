@@ -30,7 +30,7 @@ export function withoutTrainingLog(state: AppState): AppState {
   return { ...state, trainingLog: {} };
 }
 
-/** Score settings without training — used to guard accidental settings wipes. */
+/** Score settings without training - used to guard accidental settings wipes. */
 function scoreWithoutTraining(state: AppState): number {
   return scoreAppState(withoutTrainingLog(state));
 }
@@ -84,7 +84,7 @@ export interface CloudSnapshot {
 
 /**
  * Hydrate logged-in user state.
- * Cloud wins entirely when present — never merge guest / unrelated local over it.
+ * Cloud wins entirely when present - never merge guest / unrelated local over it.
  * Local cache is only a fallback when cloud is empty (same user, settings-only).
  * Legacy cloud docs without `locale` keep the device language preference.
  */
@@ -97,7 +97,7 @@ export function resolveHydratedState(
       ...cloudState,
       trainingLog: cloudState.trainingLog,
     });
-    // mergeState defaults missing locale to zh — restore device pref for legacy docs.
+    // mergeState defaults missing locale to zh - restore device pref for legacy docs.
     if (!parseLocale((cloudState as Partial<AppState>).locale)) {
       const device =
         parseLocale(localSettings?.locale) ??

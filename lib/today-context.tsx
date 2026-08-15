@@ -7,12 +7,12 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { msUntilNextPacificMidnight, pacificTodayISO } from './pacific-date';
+import { localTodayISO, msUntilNextLocalMidnight } from './local-date';
 
-const TodayContext = createContext(pacificTodayISO());
+const TodayContext = createContext(localTodayISO());
 
 /**
- * Subscribes to Pacific calendar day changes (midnight PT + tab refocus).
+ * Subscribes to local-timezone calendar day changes (midnight + tab refocus).
  * Call in a layout shell so the tree re-renders when the date rolls over.
  */
 export function useTodayISO(): string {
@@ -20,10 +20,10 @@ export function useTodayISO(): string {
 }
 
 export function TodayProvider({ children }: { children: React.ReactNode }) {
-  const [today, setToday] = useState(() => pacificTodayISO());
+  const [today, setToday] = useState(() => localTodayISO());
 
   const syncToday = useCallback(() => {
-    const next = pacificTodayISO();
+    const next = localTodayISO();
     setToday((prev) => (prev !== next ? next : prev));
   }, []);
 
@@ -34,9 +34,10 @@ export function TodayProvider({ children }: { children: React.ReactNode }) {
       timer = setTimeout(() => {
         syncToday();
         scheduleNextMidnight();
-      }, msUntilNextPacificMidnight());
+      }, msUntilNextLocalMidnight());
     }
 
+    syncToday();
     scheduleNextMidnight();
 
     const onVisibility = () => {

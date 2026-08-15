@@ -12,6 +12,7 @@ import { TodayProvider, useTodayISO } from '@/lib/today-context';
 import { UserLocaleSync } from './UserLocaleSync';
 import { ScrollToTopOnNavigate } from './ScrollToTopOnNavigate';
 import { BackToTop } from './BackToTop';
+import { OnboardingProvider, OnboardingSpacer, useOnboardingStep } from './Onboarding';
 import { SEO_SHELL_BYPASS_PATHS } from '@/lib/seo';
 
 function GuestBanner() {
@@ -35,7 +36,16 @@ function GuestBanner() {
 }
 
 function ShellContent({ children }: { children: React.ReactNode }) {
+  return (
+    <OnboardingProvider>
+      <ShellLayout>{children}</ShellLayout>
+    </OnboardingProvider>
+  );
+}
+
+function ShellLayout({ children }: { children: React.ReactNode }) {
   const { cloudSyncing } = useAppState();
+  const touring = useOnboardingStep() !== null;
   useTodayISO();
 
   return (
@@ -43,8 +53,15 @@ function ShellContent({ children }: { children: React.ReactNode }) {
       {/* Tab bar stays outside PullToRefresh so translateY does not re-root fixed. */}
       <Sidebar cloudSyncing={cloudSyncing} />
       <PullToRefresh>
-        <main className="min-w-0 px-4 pb-mobile-nav pt-[max(2.25rem,env(safe-area-inset-top,0px))] sm:px-6 sm:pt-8 md:pb-10">
+        <main
+          className={`min-w-0 px-4 pb-mobile-nav sm:px-6 md:pb-10 ${
+            touring
+              ? 'pt-0'
+              : 'pt-[max(2.25rem,env(safe-area-inset-top,0px))] sm:pt-8'
+          }`}
+        >
           <div className="mx-auto w-full max-w-4xl">
+            <OnboardingSpacer />
             <GuestBanner />
             {children}
           </div>

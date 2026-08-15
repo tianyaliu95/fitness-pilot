@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { formatDateISO, parseDateISO, todayISO } from '@/lib/cycle';
 import {
   formatDisplayDate,
@@ -9,6 +10,9 @@ import {
   getWeekdayLabels,
 } from '@/lib/day-info';
 import { useLocale, useT } from '@/lib/i18n';
+
+/** Above onboarding (z-40), bottom nav (z-50), and pull-to-refresh (z-60). */
+const POPOVER_Z = 'z-[70]';
 
 interface DatePickerProps {
   value: string;
@@ -23,7 +27,13 @@ export function DatePicker({ value, max, onChange, label }: DatePickerProps) {
   const fieldLabel = label ?? t('datePicker.label');
   const maxDate = max ?? todayISO();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number; width: number } | null>(
+    null
+  );
 
   const selected = parseDateISO(value);
   const maxParsed = parseDateISO(maxDate);
@@ -33,19 +43,54 @@ export function DatePicker({ value, max, onChange, label }: DatePickerProps) {
   const [viewMonth, setViewMonth] = useState(selected.getMonth());
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (open) {
       setViewYear(selected.getFullYear());
       setViewMonth(selected.getMonth());
     }
   }, [open, value]);
 
+  useLayoutEffect(() => {
+    if (!open) {
+      setPos(null);
+      return;
+    }
+
+    function updatePos() {
+      const el = triggerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      setPos({
+        top: rect.bottom + 8,
+        left: rect.left,
+        width: rect.width,
+      });
+    }
+
+    updatePos();
+    window.addEventListener('resize', updatePos);
+    window.addEventListener('scroll', updatePos, true);
+    return () => {
+      window.removeEventListener('resize', updatePos);
+      window.removeEventListener('scroll', updatePos, true);
+    };
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
 
     function onPointerDown(e: MouseEvent) {
-      if (!rootRef.current?.contains(e.target as Node)) {
-        setOpen(false);
+      const target = e.target as Node;
+      if (
+        rootRef.current?.contains(target) ||
+        popoverRef.current?.contains(target)
+      ) {
+        return;
       }
+      setOpen(false);
     }
 
     function onKeyDown(e: KeyboardEvent) {
@@ -103,10 +148,95 @@ export function DatePicker({ value, max, onChange, label }: DatePickerProps) {
     return iso > maxDate;
   }
 
+  const popover =
+    mounted &&
+    open &&
+    pos &&
+    createPortal(
+      <div
+        ref={popoverRef}
+        role="dialog"
+        aria-label={t('datePicker.select')}
+        className={`fixed ${POPOVER_Z} rounded-2xl border border-ink/10 bg-white p-4 shadow-card`}
+        style={{ top: pos.top, left: pos.left, width: pos.width }}
+      >
+        <div className="mb-3 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={goPrevMonth}
+            aria-label={t('calendar.prevMonth')}
+            className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink"
+          >
+            <ChevronLeft />
+          </button>
+          <span className="text-sm font-semibold text-ink">
+            {formatMonthYear(viewYear, viewMonth, bcp47)}
+          </span>
+          <button
+            type="button"
+            onClick={goNextMonth}
+            disabled={!canGoNext}
+            aria-label={t('calendar.nextMonth')}
+            className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            <ChevronRight />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-7 gap-1">
+          {weekdays.map((wd, i) => (
+            <div
+              key={i}
+              className="py-1 text-center text-xs font-medium text-ink-faint"
+            >
+              {wd}
+            </div>
+          ))}
+
+          {grid.map((day, i) => {
+            if (!day) {
+              return <div key={`empty-${i}`} />;
+            }
+
+            const iso = formatDateISO(day);
+            const disabled = isDisabled(iso);
+            const isSelected = iso === value;
+            const isToday = iso === today;
+
+            return (
+              <button
+                key={iso}
+                type="button"
+                disabled={disabled}
+                onClick={() => selectDate(iso)}
+                className={`
+                    flex h-9 w-full items-center justify-center rounded-xl text-sm font-medium transition
+                    ${disabled
+                      ? 'cursor-not-allowed text-ink-faint/40'
+                      : 'cursor-pointer hover:bg-surface-muted'
+                    }
+                    ${isSelected
+                      ? 'bg-ink text-white hover:bg-ink/90'
+                      : isToday
+                        ? 'ring-1 ring-ink/20 text-ink'
+                        : 'text-ink'
+                    }
+                  `}
+              >
+                {day.getDate()}
+              </button>
+            );
+          })}
+        </div>
+      </div>,
+      document.body
+    );
+
   return (
-    <div ref={rootRef} className={`relative ${open ? 'z-[100]' : ''}`}>
+    <div ref={rootRef} className="relative">
       <span className="mb-1 block text-xs font-medium text-ink-muted">{fieldLabel}</span>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
@@ -123,83 +253,7 @@ export function DatePicker({ value, max, onChange, label }: DatePickerProps) {
         <span className="font-medium text-ink">{formatDisplayDate(value, bcp47)}</span>
         <CalendarIcon className="shrink-0 text-ink-muted" />
       </button>
-
-      {open && (
-        <div
-          role="dialog"
-          aria-label={t('datePicker.select')}
-          className="absolute left-0 right-0 z-[100] mt-2 rounded-2xl border border-ink/10 bg-white p-4 shadow-card"
-        >
-          <div className="mb-3 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={goPrevMonth}
-              aria-label={t('calendar.prevMonth')}
-              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink"
-            >
-              <ChevronLeft />
-            </button>
-            <span className="text-sm font-semibold text-ink">
-              {formatMonthYear(viewYear, viewMonth, bcp47)}
-            </span>
-            <button
-              type="button"
-              onClick={goNextMonth}
-              disabled={!canGoNext}
-              aria-label={t('calendar.nextMonth')}
-              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-muted transition hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
-            >
-              <ChevronRight />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-7 gap-1">
-            {weekdays.map((wd, i) => (
-              <div
-                key={i}
-                className="py-1 text-center text-xs font-medium text-ink-faint"
-              >
-                {wd}
-              </div>
-            ))}
-
-            {grid.map((day, i) => {
-              if (!day) {
-                return <div key={`empty-${i}`} />;
-              }
-
-              const iso = formatDateISO(day);
-              const disabled = isDisabled(iso);
-              const isSelected = iso === value;
-              const isToday = iso === today;
-
-              return (
-                <button
-                  key={iso}
-                  type="button"
-                  disabled={disabled}
-                  onClick={() => selectDate(iso)}
-                  className={`
-                    flex h-9 w-full items-center justify-center rounded-xl text-sm font-medium transition
-                    ${disabled
-                      ? 'cursor-not-allowed text-ink-faint/40'
-                      : 'cursor-pointer hover:bg-surface-muted'
-                    }
-                    ${isSelected
-                      ? 'bg-ink text-white hover:bg-ink/90'
-                      : isToday
-                        ? 'ring-1 ring-ink/20 text-ink'
-                        : 'text-ink'
-                    }
-                  `}
-                >
-                  {day.getDate()}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      {popover}
     </div>
   );
 }

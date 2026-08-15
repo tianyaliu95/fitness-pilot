@@ -5,7 +5,7 @@ import type {
   UserProfile,
 } from './types';
 import { normalizeTrainingLog } from './training-log';
-import { pacificTodayISO } from './pacific-date';
+import { localTodayISO } from './local-date';
 import {
   DEFAULT_MEAL_HIGH,
   DEFAULT_MEAL_LOW,
@@ -23,7 +23,7 @@ export const DEFAULT_CYCLE_DAYS: CycleDayTemplate[] = [
 ];
 
 export function todayISO(): string {
-  return pacificTodayISO();
+  return localTodayISO();
 }
 
 export function formatDateISO(d: Date): string {
@@ -74,7 +74,7 @@ export function getCycleDayIndex(
   const rawDays = diffDays(anchorDate, targetDate);
   // Only delays on/after the anchor shift the cycle. Pre-anchor pauses
   // (e.g. left over after a reset, or merged from another device) must not
-  // subtract from rawDays — that off-by-one re-locks the prior workout.
+  // subtract from rawDays - that off-by-one re-locks the prior workout.
   const delaysBefore = delayedDates.filter(
     (d) => d >= anchorDate && d < targetDate
   ).length;

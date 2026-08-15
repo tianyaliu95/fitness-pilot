@@ -5,6 +5,7 @@ import type { AppState, CycleDayTemplate } from '@/lib/types';
 import { getCarbMessageKey } from '@/lib/cycle';
 import { useT } from '@/lib/i18n';
 import { SaveBar } from './SaveBar';
+import { useOnboardingStep } from './Onboarding';
 
 interface TrainingPanelProps {
   state: AppState;
@@ -41,6 +42,7 @@ export function TrainingPanel({
   onDirtyChange,
 }: TrainingPanelProps) {
   const t = useT();
+  const highlightWorkouts = useOnboardingStep() === 'planning';
   const [draftDays, setDraftDays] = useState(state.cycleDays);
   const dirty = !cycleDaysEqual(draftDays, state.cycleDays);
 
@@ -95,7 +97,11 @@ export function TrainingPanel({
         </header>
       )}
 
-      <div className="glass-panel space-y-4 rounded-3xl p-4 sm:p-5">
+      <div
+        className={`glass-panel space-y-4 rounded-3xl p-4 sm:p-5 ${
+          highlightWorkouts ? 'ring-2 ring-ink/15' : ''
+        }`}
+      >
         {draftDays.map((day) => (
           <div key={day.dayIndex}>
             <div className="mb-2 flex flex-wrap items-center gap-2">

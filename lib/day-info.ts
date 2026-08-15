@@ -118,7 +118,7 @@ export function formatDisplayDate(iso: string, locale = 'zh-CN'): string {
   });
 }
 
-/** Shorter EN dates (Thu, Aug 13) — leave zh on long form via formatDisplayDate. */
+/** Shorter EN dates (Thu, Aug 13) - leave zh on long form via formatDisplayDate. */
 export function formatDisplayDateShort(iso: string, locale = 'en-US'): string {
   const d = parseDateISO(iso);
   return d.toLocaleDateString(locale, {

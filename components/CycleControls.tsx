@@ -1,10 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { CycleDayTemplate } from '@/lib/types';
 import { getCarbMessageKey, todayISO } from '@/lib/cycle';
 import { useT } from '@/lib/i18n';
+import {
+  TOUR_PAUSE_BELOW_OVERLAY_PX,
+  tourScrollMarginPauseClass,
+  useOnboardingStep,
+  useScrollTourTarget,
+} from './Onboarding';
 
 interface CycleControlsProps {
   cycleDays: CycleDayTemplate[];
@@ -69,8 +75,12 @@ export function CycleControls({
   isTodayDelayed,
 }: CycleControlsProps) {
   const t = useT();
+  const highlight = useOnboardingStep() === 'pause';
+  const rootRef = useRef<HTMLDivElement>(null);
+  useScrollTourTarget(highlight, rootRef, 120, TOUR_PAUSE_BELOW_OVERLAY_PX);
   const [resetOpen, setResetOpen] = useState(false);
   const [pendingDay, setPendingDay] = useState<number | null>(null);
+  const tourLift = highlight ? 'relative z-[36]' : '';
 
   const pending = pendingDay !== null ? cycleDays[pendingDay] : null;
 
@@ -81,40 +91,49 @@ export function CycleControls({
 
   return (
     <div className="space-y-3">
-      <div className="mx-auto grid max-w-md grid-cols-2 justify-items-center gap-2 sm:mx-0 sm:flex sm:max-w-none sm:flex-wrap sm:justify-start sm:gap-3">
-        <Link href={`/day/${todayISO()}`} className={pillIdle}>
-          <IconLog />
-          {t('controls.logWorkout')}
-        </Link>
-
-        <Link href="/profile" className={pillIdle}>
-          <IconChart />
-          {t('controls.weightLog')}
-        </Link>
-
-        {isTodayDelayed ? (
-          <button type="button" onClick={onUndoDelay} className={pillActive}>
-            <IconUndo />
-            {t('controls.undoPause')}
-          </button>
-        ) : (
-          <button type="button" onClick={onDelay} className={pillIdle}>
-            <IconPause />
-            {t('controls.pauseDay')}
-          </button>
-        )}
-
-        <button
-          type="button"
-          onClick={() => {
-            setResetOpen(!resetOpen);
-            setPendingDay(null);
-          }}
-          className={pillIdle}
+      <div>
+        {highlight ? (
+          <div aria-hidden className="tour-spotlight-dim fixed inset-0 z-[35] bg-ink/40" />
+        ) : null}
+        <div
+          ref={rootRef}
+          id="tour-cycle-controls"
+          className={`${tourScrollMarginPauseClass} mx-auto grid max-w-md grid-cols-2 justify-items-center gap-2 sm:mx-0 sm:flex sm:max-w-none sm:flex-wrap sm:justify-start sm:gap-3`}
         >
-          <IconReset />
-          {t('controls.resetCycle')}
-        </button>
+          <Link href={`/day/${todayISO()}`} className={`${pillIdle} ${tourLift}`}>
+            <IconLog />
+            {t('controls.logWorkout')}
+          </Link>
+
+          <Link href="/profile?section=weight-log" scroll={false} className={`${pillIdle} ${tourLift}`}>
+            <IconChart />
+            {t('controls.weightLog')}
+          </Link>
+
+          {isTodayDelayed ? (
+            <button type="button" onClick={onUndoDelay} className={`${pillActive} ${tourLift}`}>
+              <IconUndo />
+              {t('controls.undoPause')}
+            </button>
+          ) : (
+            <button type="button" onClick={onDelay} className={`${pillIdle} ${tourLift}`}>
+              <IconPause />
+              {t('controls.pauseDay')}
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              setResetOpen(!resetOpen);
+              setPendingDay(null);
+            }}
+            className={`${pillIdle} ${tourLift}`}
+          >
+            <IconReset />
+            {t('controls.resetCycle')}
+          </button>
+        </div>
       </div>
 
       {resetOpen && pendingDay === null && (

@@ -1,6 +1,6 @@
 'use client';
 
-/** Soft blurry depth field — adapted from personal-website AmbientField. */
+/** Soft blurry depth field - adapted from personal-website AmbientField. */
 export function AmbientField() {
   return (
     <div className="ambient" aria-hidden="true">

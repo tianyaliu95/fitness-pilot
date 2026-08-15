@@ -127,7 +127,7 @@ export function BmiGauge({ bmi, category }: BmiGaugeProps) {
             </>
           ) : (
             <>
-              <p className="text-3xl font-bold text-ink-faint">—</p>
+              <p className="text-3xl font-bold text-ink-faint">-</p>
               <p className="mb-4 mt-2 text-sm text-ink-muted">{t('bmi.needData')}</p>
             </>
           )}

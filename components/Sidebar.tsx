@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/auth-context';
 import { useLoginPrompt } from '@/lib/login-prompt';
 import { useT } from '@/lib/i18n';
 import type { MessageKey } from '@/lib/i18n/en';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 const NAV_ITEMS: {
   href: string;
@@ -147,17 +148,10 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
           ))}
         </nav>
 
-        <div className="mt-auto space-y-1">
-          <Link
-            href="/about"
-            className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-lg font-medium transition ${
-              pathname === '/about'
-                ? 'bg-white text-ink shadow-soft'
-                : 'text-ink-muted hover:bg-white/60 hover:text-ink'
-            }`}
-          >
-            {t('nav.about')}
-          </Link>
+        <div className="mt-auto space-y-2">
+          <div className="px-2 py-1">
+            <LanguageSwitcher compact />
+          </div>
           {isConfigured && user && (
             <button
               type="button"

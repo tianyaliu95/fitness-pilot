@@ -30,7 +30,7 @@ function GoogleIcon() {
 }
 
 interface AuthFormProps {
-  /** Shown as “continue browsing” — return to the app without signing in. */
+  /** Shown as “continue browsing” - return to the app without signing in. */
   onDismiss?: () => void;
 }
 
@@ -122,7 +122,7 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-base text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
-              placeholder="you@example.com"
+              placeholder="Enter your email"
             />
           </label>
 
