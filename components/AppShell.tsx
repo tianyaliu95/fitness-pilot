@@ -11,7 +11,7 @@ import { LocaleProvider, useT } from '@/lib/i18n';
 import { TodayProvider, useTodayISO } from '@/lib/today-context';
 import { UserLocaleSync } from './UserLocaleSync';
 import { ScrollToTopOnNavigate } from './ScrollToTopOnNavigate';
-import { BackToTop } from './BackToTop';
+import { FloatingCorner } from './FloatingCorner';
 import { OnboardingProvider, OnboardingSpacer, useOnboardingStep } from './Onboarding';
 import { SEO_SHELL_BYPASS_PATHS } from '@/lib/seo';
 
@@ -67,7 +67,7 @@ function ShellLayout({ children }: { children: React.ReactNode }) {
           </div>
         </main>
       </PullToRefresh>
-      <BackToTop aboveTabBar />
+      <FloatingCorner />
     </div>
   );
 }

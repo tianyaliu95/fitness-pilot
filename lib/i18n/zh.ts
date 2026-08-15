@@ -292,4 +292,23 @@ export const zh: Record<MessageKey, string> = {
   'weekday.4': '四',
   'weekday.5': '五',
   'weekday.6': '六',
+
+  'coach.title': 'AI 助手',
+  'coach.subtitle': '问问碳循环、训练节奏，以及怎么用这个 App。',
+  'coach.welcome':
+    '直接提问，或点下面的示例。回答仅供参考，不构成医疗建议。',
+  'coach.placeholder': '问问低碳/高碳日、训练、宏量…',
+  'coach.send': '发送',
+  'coach.open': '打开 AI 助手',
+  'coach.close': '关闭 AI 助手',
+  'coach.fabLabel': '问 AI',
+  'coach.badge': 'AI',
+  'coach.poweredBy': 'AI 驱动',
+  'coach.thinking': '思考中…',
+  'coach.error': '暂时无法回复，请稍后再试。',
+  'coach.disclaimer': '演示用 AI 助手，用于学习与作品展示，非医疗或营养处方。',
+  'coach.suggest1': '用简单的话解释什么是碳循环？',
+  'coach.suggest2': '高碳日一般怎么配合训练？',
+  'coach.suggest3': '「暂停一天」和「重置循环」是做什么的？',
+  'coach.suggest4': '在这里怎么设置周期起始日？',
 };

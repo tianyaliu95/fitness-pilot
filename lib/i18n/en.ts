@@ -326,6 +326,27 @@ export const en = {
   'weekday.4': 'T',
   'weekday.5': 'F',
   'weekday.6': 'S',
+
+  // AI Coach widget
+  'coach.title': 'AI Coach',
+  'coach.subtitle': 'Ask about carb cycling, training rhythm, and how to use this app.',
+  'coach.welcome':
+    'Try a quick question - or pick a suggestion below. Answers are general guidance, not medical advice.',
+  'coach.placeholder': 'Ask about low/high-carb days, workouts, macros…',
+  'coach.send': 'Send',
+  'coach.open': 'Open AI coach',
+  'coach.close': 'Close AI coach',
+  'coach.fabLabel': 'Ask AI',
+  'coach.badge': 'AI',
+  'coach.poweredBy': 'AI-powered',
+  'coach.thinking': 'Thinking…',
+  'coach.error': 'Could not get a reply. Try again in a moment.',
+  'coach.disclaimer':
+    'Demo AI coach for education and portfolio. Not medical or nutrition advice.',
+  'coach.suggest1': 'What is carb cycling in simple terms?',
+  'coach.suggest2': 'How should I pair high-carb days with training?',
+  'coach.suggest3': 'What do Pause a Day and Reset Cycle do?',
+  'coach.suggest4': 'How do I set my cycle start date here?',
 } as const;
 
 export type MessageKey = keyof typeof en;

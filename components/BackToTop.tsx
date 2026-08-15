@@ -5,12 +5,8 @@ import { useT } from '@/lib/i18n';
 
 const SHOW_AFTER_PX = 320;
 
-type BackToTopProps = {
-  /** Lift above the mobile bottom tab bar. */
-  aboveTabBar?: boolean;
-};
-
-export function BackToTop({ aboveTabBar = false }: BackToTopProps) {
+/** Sits in FloatingCorner under the chat FAB (not independently fixed). */
+export function BackToTop() {
   const t = useT();
   const [visible, setVisible] = useState(false);
 
@@ -27,23 +23,14 @@ export function BackToTop({ aboveTabBar = false }: BackToTopProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  const bottomClass = aboveTabBar
-    ? 'bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] md:bottom-8'
-    : 'bottom-[max(1.5rem,env(safe-area-inset-bottom,0px))]';
+  if (!visible) return null;
 
   return (
     <button
       type="button"
       onClick={scrollToTop}
       aria-label={t('common.backToTop')}
-      tabIndex={visible ? 0 : -1}
-      className={`
-        fixed right-4 z-40 flex h-11 w-11 items-center justify-center rounded-full
-        border border-white/60 bg-ink/90 text-white shadow-card backdrop-blur-md
-        transition duration-200 hover:bg-ink active:scale-95
-        ${bottomClass}
-        ${visible ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none translate-y-2 opacity-0'}
-      `}
+      className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-ink/90 text-white shadow-card backdrop-blur-md transition duration-200 hover:bg-ink active:scale-95"
     >
       <svg
         className="h-5 w-5"

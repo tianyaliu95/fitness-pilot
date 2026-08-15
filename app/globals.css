@@ -74,6 +74,18 @@
   .tour-step-back {
     animation: tour-step-back 1s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
+
+  .coach-fab-sparkle {
+    animation: coach-sparkle 2.4s ease-in-out infinite;
+  }
+
+  .coach-panel-enter {
+    animation: coach-panel-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .coach-panel-exit {
+    animation: coach-panel-out 0.42s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
 }
 
 @keyframes ui-enter {
@@ -118,11 +130,48 @@
   }
 }
 
+@keyframes coach-sparkle {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12) rotate(8deg);
+  }
+}
+
+@keyframes coach-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes coach-panel-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-enter,
   .tour-spotlight-dim,
   .tour-step-forward,
-  .tour-step-back {
+  .tour-step-back,
+  .coach-fab-sparkle,
+  .coach-panel-enter,
+  .coach-panel-exit {
     animation: none !important;
   }
 
