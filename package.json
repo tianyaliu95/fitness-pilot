@@ -10,6 +10,7 @@
     "verify:local-today": "npx --yes tsx scripts/verify-local-today.ts"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "firebase": "^12.15.0",
     "next": "^14.0.0",
     "react": "^18.2.0",
