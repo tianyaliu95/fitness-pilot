@@ -182,8 +182,11 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
             <button
               type="button"
               onClick={openLogin}
-              className="flex w-full items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-lg font-medium text-white transition hover:bg-ink/90"
+              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-lg font-medium text-ink-muted transition hover:bg-white/60 hover:text-ink"
             >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
               {t('auth.signInRegister')}
             </button>
           )}

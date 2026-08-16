@@ -51,6 +51,7 @@ export const en = {
     'Sign in to sync your data to the cloud - same progress on phone and computer.',
   'auth.google': 'Continue with Google',
   'auth.email': 'Email',
+  'auth.emailPlaceholder': 'Enter your email',
   'auth.password': 'Password',
   'auth.passwordPlaceholder': 'At least 6 characters',
   'auth.signInEmail': 'Sign In with Email',

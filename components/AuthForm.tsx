@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 import { formatAuthError } from '@/lib/auth-errors';
 import { useT } from '@/lib/i18n';
@@ -82,7 +83,15 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
           <LanguageSwitcher compact />
         </div>
 
-        <h1 className="mt-3 font-display text-2xl font-bold tracking-tight text-ink">
+        <h1 className="mt-3 flex items-center gap-3 font-display text-2xl font-bold tracking-tight text-ink">
+          <Image
+            src="/icons/icon-192.png"
+            alt=""
+            width={40}
+            height={40}
+            className="h-10 w-10 shrink-0 rounded-[0.7rem] bg-white shadow-soft ring-1 ring-ink/[0.06]"
+            priority
+          />
           Fitness Pilot
         </h1>
         <p className="mt-2 text-sm text-ink-muted">{t('auth.subtitle')}</p>
@@ -122,7 +131,7 @@ export function AuthForm({ onDismiss }: AuthFormProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border border-ink/10 bg-surface px-3 py-2.5 text-base text-ink outline-none focus-visible:ring-2 focus-visible:ring-low/40"
-              placeholder="Enter your email"
+              placeholder={t('auth.emailPlaceholder')}
             />
           </label>
 

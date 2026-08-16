@@ -46,6 +46,7 @@ export const zh: Record<MessageKey, string> = {
   'auth.subtitle': '登录后数据会自动保存到云端，电脑和手机打开都是最新内容。',
   'auth.google': '使用 Google 账号登录',
   'auth.email': '邮箱',
+  'auth.emailPlaceholder': '输入你的邮箱',
   'auth.password': '密码',
   'auth.passwordPlaceholder': '至少 6 位',
   'auth.signInEmail': '邮箱登录',
@@ -53,7 +54,7 @@ export const zh: Record<MessageKey, string> = {
   'auth.busy': '处理中...',
   'auth.noAccount': '没有账号？注册',
   'auth.hasAccount': '已有账号？登录',
-  'auth.signInRegister': '登录 / 注册',
+  'auth.signInRegister': '登录/注册',
 
   'carb.low': '低碳',
   'carb.high': '高碳',
