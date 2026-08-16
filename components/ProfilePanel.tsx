@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { AppState, UserProfile } from '@/lib/types';
 import { formatDisplayDate } from '@/lib/day-info';
@@ -8,8 +9,17 @@ import { todayISO } from '@/lib/cycle';
 import { calculateBmi, getBmiCategory, parsePositiveNumber } from '@/lib/bmi';
 import { getLatestWeight, getWeightSeries } from '@/lib/weight';
 import { useLocale, useT } from '@/lib/i18n';
-import { WeightChart } from './WeightChart';
 import { BmiGauge } from './BmiGauge';
+
+const WeightChart = dynamic(
+  () => import('./WeightChart').then((m) => m.WeightChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-48 animate-pulse rounded-2xl bg-ink/5" aria-hidden />
+    ),
+  }
+);
 import { DatePicker } from './DatePicker';
 import { SaveBar } from './SaveBar';
 import { LanguageSwitcher } from './LanguageSwitcher';

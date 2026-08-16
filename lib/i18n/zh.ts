@@ -39,8 +39,7 @@ export const zh: Record<MessageKey, string> = {
   'language.label': '语言',
   'language.section': '语言偏好',
 
-  'guest.banner':
-    '当前为演示数据，可随意浏览。保存到云端前请先登录（登录不会同步游客改动）。',
+  'guest.banner': '当前为演示数据，登录后可保存到云端。',
   'guest.bannerCta': '登录',
   'guest.continueBrowsing': '先继续浏览演示',
 

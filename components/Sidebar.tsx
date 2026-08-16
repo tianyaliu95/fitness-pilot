@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
@@ -119,19 +120,32 @@ export function Sidebar({ cloudSyncing }: { cloudSyncing: boolean }) {
     <>
       <aside className="hidden md:sticky md:top-0 md:flex md:h-screen md:w-60 md:flex-col md:border-r md:border-white/50 md:bg-white/55 md:px-4 md:py-8 md:shadow-soft md:backdrop-blur-xl md:backdrop-saturate-150">
         <div className="mb-8 px-2">
-          <h1 className="mb-2 mt-4 font-display text-3xl font-bold tracking-tight text-ink">
-            <Link href="/">
+          <Link
+            href="/"
+            className="group mt-3 flex items-center gap-3 rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-low/35 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          >
+            <Image
+              src="/icons/icon-192.png"
+              alt=""
+              width={48}
+              height={48}
+              className="h-12 w-12 shrink-0 rounded-[0.85rem] bg-white shadow-soft ring-1 ring-ink/[0.06] transition group-hover:ring-ink/10"
+              priority
+            />
+            <span className="min-w-0 font-display text-2xl font-bold tracking-tight text-ink transition group-hover:text-ink/90">
               Fitness Pilot
-            </Link>
-          </h1>
-          <p className="mt-0.5 text-xl font-bold text-ink-muted mb-6">{t('brand.tagline')}</p>
+            </span>
+          </Link>
+          <p className="mt-5 text-base font-medium leading-snug text-ink-muted">
+            {t('brand.tagline')}
+          </p>
           {isConfigured && user && (
-            <p className="mt-2 text-lg font-medium text-ink-faint">
+            <p className="mt-2 text-sm font-medium text-ink-faint">
               {cloudSyncing ? t('brand.syncing') : t('brand.synced')}
             </p>
           )}
           {isConfigured && !user && (
-            <p className="mt-2 text-lg font-medium text-ink-faint">{t('brand.demoMode')}</p>
+            <p className="mt-2 text-sm font-medium text-ink-faint">{t('brand.demoMode')}</p>
           )}
         </div>
 

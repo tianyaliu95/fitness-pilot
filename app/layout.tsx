@@ -16,6 +16,8 @@ const outfit = Outfit({
   weight: ['600', '700'],
   variable: '--font-display',
   display: 'swap',
+  adjustFontFallback: true,
+  fallback: ['ui-sans-serif', 'system-ui', 'sans-serif'],
 });
 
 export const metadata: Metadata = buildRootMetadata();

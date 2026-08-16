@@ -72,6 +72,43 @@ npm run build
 npm run start
 ```
 
+## AI coach (streaming)
+
+`POST /api/coach` streams Gemini replies as SSE (`text/event-stream`). The floating coach UI appends `{ text }` chunks into the assistant bubble as they arrive (token-by-token), then closes on `{ done: true }`.
+
+Requires server env `GEMINI_API_KEY` (see `.env.example`).
+
+## Core Web Vitals
+
+Optimizations aimed at LCP / CLS / INP:
+
+- Early brand paint during auth/hydrate (`ShellLoading`) so LCP text is not blocked on a blank spinner
+- Fixed-height slot for the guest banner to avoid layout shift when it appears
+- Defer ambient orb motion until idle; lighter blur (no always-on `will-change`)
+- `next/dynamic` for ambient field, floating coach corner, and the profile weight chart
+- `next/font` with `display: 'swap'` + `adjustFontFallback`
+
+### Measured scores (Lighthouse 12, mobile simulation)
+
+| Target | Perf | LCP | CLS | FCP | SI |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Local (`npm run build && start`) after CWV work | **84** | 4.6 s | **0** | 0.8 s | 1.5 s |
+| Production baseline (pre-deploy) | 67 | 6.0 s | 0 | 4.2 s | 4.9 s |
+
+LCP under lab mobile throttling is still dominated by client auth/hydrate; field numbers on a warm CDN are typically better. Re-check after deploy:
+
+```bash
+npm run cwv
+```
+
+Evidence screenshots (lab filmstrip / final frame):
+
+![Lighthouse early frame](docs/cwv/lcp-early.png)
+
+![Lighthouse final frame (CLS 0)](docs/cwv/lcp-final.png)
+
+Raw summary: [`docs/cwv/metrics.json`](docs/cwv/metrics.json).
+
 ## SEO
 
 生产域名：`https://fitness-pilot.vercel.app`（代码里已作为默认 canonical；也可设 `NEXT_PUBLIC_SITE_URL`）。

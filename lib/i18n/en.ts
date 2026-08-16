@@ -1,6 +1,6 @@
 export const en = {
   // Brand
-  'brand.tagline': 'Carb-Cycling Training Helper',
+  'brand.tagline': 'Carb-Cycling Helper',
   'brand.syncing': 'Syncing…',
   'brand.synced': 'Cloud Sync On',
   'brand.demoMode': 'Demo Mode',
@@ -42,8 +42,7 @@ export const en = {
   'language.section': 'Language Preference',
 
   // Guest
-  'guest.banner':
-    "You're browsing demo data. Sign in to save to the cloud (demo edits won't sync).",
+  'guest.banner': 'Demo Mode - Sign in to save to the cloud.',
   'guest.bannerCta': 'Sign In',
   'guest.continueBrowsing': 'Continue browsing demo',
 

@@ -196,10 +196,10 @@
 .ambient-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(44px);
-  opacity: 0.55;
+  filter: blur(28px);
+  opacity: 0.5;
   mix-blend-mode: multiply;
-  will-change: transform;
+  transform: translateZ(0);
 }
 
 .ambient-orb-a {
@@ -208,7 +208,6 @@
   left: -8%;
   top: -10%;
   background: #9ec4e8;
-  animation: ambient-drift-a 18s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
 }
 
 .ambient-orb-b {
@@ -217,7 +216,6 @@
   right: -6%;
   top: 16%;
   background: #b7d0e6;
-  animation: ambient-drift-b 22s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
 }
 
 .ambient-orb-c {
@@ -226,6 +224,17 @@
   left: 26%;
   bottom: -18%;
   background: #c5d8ea;
+}
+
+.ambient-motion .ambient-orb-a {
+  animation: ambient-drift-a 18s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
+}
+
+.ambient-motion .ambient-orb-b {
+  animation: ambient-drift-b 22s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
+}
+
+.ambient-motion .ambient-orb-c {
   animation: ambient-drift-c 26s cubic-bezier(0.22, 1, 0.36, 1) infinite alternate;
 }
 

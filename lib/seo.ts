@@ -4,7 +4,7 @@ export const SITE_NAME = 'Fitness Pilot';
 export const SITE_NAME_ZH = 'Fitness Pilot - 碳循环训练助手';
 
 export const SITE_TAGLINE_ZH = '碳循环训练助手';
-export const SITE_TAGLINE_EN = 'Carb-Cycling Training Helper';
+export const SITE_TAGLINE_EN = 'Carb-Cycling Helper';
 
 export const SITE_DESCRIPTION_ZH =
   'Fitness Pilot 是免费的碳循环健身助手：按周期规划低碳/高碳日、训练安排、营养目标、体重与训练日志，支持云端同步与手机安装（PWA）。';

@@ -35,6 +35,8 @@ export function CoachWidget() {
   function openPanel() {
     setPanelMounted(true);
     setPanelExiting(false);
+    // Warm serverless route so the first real ask is less cold.
+    void fetch('/api/coach', { method: 'GET', cache: 'no-store' }).catch(() => {});
   }
 
   function closePanel() {
@@ -88,8 +90,12 @@ export function CoachWidget() {
       role: 'user',
       content,
     };
+    const assistantId = `a-${Date.now()}`;
     const next = [...messages, userMsg];
-    setMessages(next);
+    setMessages([
+      ...next,
+      { id: assistantId, role: 'assistant', content: '' },
+    ]);
     setBusy(true);
 
     try {
@@ -101,19 +107,70 @@ export function CoachWidget() {
           messages: next.map(({ role, content: c }) => ({ role, content: c })),
         }),
       });
-      const data = (await res.json()) as { reply?: string; error?: string };
-      if (!res.ok || !data.reply) {
-        throw new Error(data.error || t('coach.error'));
+
+      if (!res.ok || !res.body) {
+        let message = t('coach.error');
+        try {
+          const data = (await res.json()) as { error?: string };
+          if (data.error) message = data.error;
+        } catch {
+          /* ignore */
+        }
+        throw new Error(message);
       }
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `a-${Date.now()}`,
-          role: 'assistant',
-          content: data.reply!,
-        },
-      ]);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let gotText = false;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop() ?? '';
+
+        for (const block of parts) {
+          const line = block
+            .split('\n')
+            .map((l) => l.trim())
+            .find((l) => l.startsWith('data:'));
+          if (!line) continue;
+          const payload = line.slice(5).trim();
+          if (!payload) continue;
+
+          let event: { text?: string; error?: string; done?: boolean };
+          try {
+            event = JSON.parse(payload) as {
+              text?: string;
+              error?: string;
+              done?: boolean;
+            };
+          } catch {
+            continue;
+          }
+
+          if (event.error) throw new Error(event.error);
+          if (event.text) {
+            gotText = true;
+            const chunk = event.text;
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantId
+                  ? { ...m, content: m.content + chunk }
+                  : m
+              )
+            );
+          }
+        }
+      }
+
+      if (!gotText) throw new Error(t('coach.error'));
     } catch (err) {
+      setMessages((prev) =>
+        prev.filter((m) => m.id !== assistantId || m.content.trim().length > 0)
+      );
       setError(err instanceof Error ? err.message : t('coach.error'));
     } finally {
       setBusy(false);
@@ -214,17 +271,11 @@ export function CoachWidget() {
                         : 'border border-ink/8 bg-surface text-ink'
                     }`}
                   >
-                    {m.content}
+                    {m.content || (busy ? t('coach.thinking') : '')}
                   </div>
                 </div>
               ))
             )}
-            {busy ? (
-              <div className="flex items-center gap-2 text-xs text-ink-faint">
-                <ChatIcon className="h-3.5 w-3.5 animate-pulse text-low-dark" />
-                {t('coach.thinking')}
-              </div>
-            ) : null}
             <div ref={bottomRef} />
           </div>
 
