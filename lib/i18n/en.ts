@@ -59,7 +59,7 @@ export const en = {
   'auth.busy': 'Please wait…',
   'auth.noAccount': 'Need an account? Sign Up',
   'auth.hasAccount': 'Already have an account? Sign In',
-  'auth.signInRegister': 'Sign In / Sign Up',
+  'auth.signInRegister': 'Sign In',
 
   // Carb / cycle
   'carb.low': 'Low Carb',
