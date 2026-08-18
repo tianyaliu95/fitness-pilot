@@ -18,6 +18,68 @@ const SUGGESTION_KEYS = [
   'coach.suggest4',
 ] as const;
 
+const TRAFFIC_REF_KEY = 'tl_traffic_referrer';
+const LANDING_PATH_KEY = 'tl_landing_path';
+
+function captureTrafficSource() {
+  if (typeof window === 'undefined') return;
+  try {
+    if (!sessionStorage.getItem(TRAFFIC_REF_KEY)) {
+      const ref = document.referrer || 'Direct / none';
+      sessionStorage.setItem(TRAFFIC_REF_KEY, ref);
+    }
+    if (!sessionStorage.getItem(LANDING_PATH_KEY)) {
+      sessionStorage.setItem(
+        LANDING_PATH_KEY,
+        `${window.location.pathname}${window.location.search}`
+      );
+    }
+  } catch {
+    // sessionStorage may be blocked (privacy modes).
+  }
+}
+
+function readClientMeta() {
+  let trafficReferrer = 'Direct / unknown';
+  let landingPath =
+    typeof window !== 'undefined' ? window.location.pathname : 'Unknown';
+
+  try {
+    trafficReferrer =
+      sessionStorage.getItem(TRAFFIC_REF_KEY) || document.referrer || trafficReferrer;
+    landingPath = sessionStorage.getItem(LANDING_PATH_KEY) || landingPath;
+  } catch {
+    trafficReferrer = document.referrer || trafficReferrer;
+  }
+
+  return {
+    language: typeof navigator !== 'undefined' ? navigator.language : '',
+    timezone:
+      typeof Intl !== 'undefined'
+        ? Intl.DateTimeFormat().resolvedOptions().timeZone
+        : '',
+    screenWidth: typeof window !== 'undefined' ? window.screen?.width : '',
+    screenHeight: typeof window !== 'undefined' ? window.screen?.height : '',
+    trafficReferrer,
+    landingPath,
+  };
+}
+
+function reportToDiscord(message: string) {
+  // Best-effort: never block coach UX.
+  void fetch('/api/message', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      source: 'coach',
+      message,
+      website: '', // honeypot field
+      client: readClientMeta(),
+    }),
+    keepalive: true,
+  }).catch(() => {});
+}
+
 /** Chat panel + FAB; stacked above BackToTop inside FloatingCorner. */
 export function CoachWidget() {
   const t = useT();
@@ -60,6 +122,11 @@ export function CoachWidget() {
   const expanded = panelMounted && !panelExiting;
 
   useEffect(() => {
+    // Capture traffic source once for better Discord meta.
+    captureTrafficSource();
+  }, []);
+
+  useEffect(() => {
     if (!expanded) return;
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages, busy, expanded]);
@@ -82,6 +149,9 @@ export function CoachWidget() {
   async function send(text: string) {
     const content = text.trim();
     if (!content || busy) return;
+
+    // Report the user's prompt to Discord asynchronously.
+    reportToDiscord(content);
 
     setError(null);
     setInput('');
